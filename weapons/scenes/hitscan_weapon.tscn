@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ge3marf5qho1"]
+
+[ext_resource type="Script" uid="uid://cdqo713qvxda6" path="res://weapons/scripts/hitscan_weapon.gd" id="1_wf1e5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wf1e5"]
+albedo_color = Color(0.18612671, 0.32989383, 0.4453125, 1)
+
+[node name="HitscanWeapon" type="Node3D" unique_id=1514030515]
+script = ExtResource("1_wf1e5")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1962387582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+size = Vector3(0.1, 0.1, 0.4)
+material = SubResource("StandardMaterial3D_wf1e5")

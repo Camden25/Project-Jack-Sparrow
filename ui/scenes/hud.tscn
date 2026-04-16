@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://cii2uxyl0lgup"]
+
+[ext_resource type="Script" uid="uid://dcb06heyrt3vo" path="res://ui/scripts/hud.gd" id="1_f048j"]
+
+[node name="Hud" type="CanvasLayer" unique_id=1709117453 groups=["UI"]]
+script = ExtResource("1_f048j")
+
+[node name="HealthContainer" type="VBoxContainer" parent="." unique_id=1372640014]
+offset_left = 2.0
+offset_top = 592.0
+offset_right = 349.0
+offset_bottom = 646.0
+
+[node name="HealthBar" type="ProgressBar" parent="HealthContainer" unique_id=1921182281]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="HealthContainer" unique_id=395244896]
+layout_mode = 2
+
+[node name="AmmoContainer" type="VBoxContainer" parent="." unique_id=1462678104]
+offset_left = 8.0
+offset_top = 539.0
+offset_right = 48.0
+offset_bottom = 579.0
+
+[node name="AmmoLabel" type="Label" parent="AmmoContainer" unique_id=349336618]
+layout_mode = 2
+
+[node name="AbilityCooldown" type="PanelContainer" parent="." unique_id=1128658568]
+offset_left = 1049.0
+offset_top = 565.0
+offset_right = 1137.0
+offset_bottom = 642.0
+
+[node name="CooldownBar" type="ProgressBar" parent="AbilityCooldown" unique_id=783707118]
+layout_mode = 2
+
+[node name="CooldownLabel" type="Label" parent="AbilityCooldown" unique_id=1379424185]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="." unique_id=1822108120]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1

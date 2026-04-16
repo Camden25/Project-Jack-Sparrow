@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dtvnb8g67y04t"]
+
+[ext_resource type="Script" uid="uid://c7snpk8cube7x" path="res://player/scripts/player.gd" id="1_apn28"]
+[ext_resource type="PackedScene" uid="uid://ge3marf5qho1" path="res://weapons/scenes/hitscan_weapon.tscn" id="2_87uja"]
+[ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="2_t0cpu"]
+[ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="3_8h4do"]
+[ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="4_rclgo"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_apn28"]
+size = Vector3(0.8, 0.2, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_apn28"]
+albedo_color = Color(0.1953125, 0.17547607, 0.17547607, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fb3t6"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vd578"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_4flbx"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_head_rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Player" type="CharacterBody3D" unique_id=2137087947]
+collision_layer = 2
+script = ExtResource("1_apn28")
+
+[node name="Head" type="Node3D" parent="." unique_id=1362564654]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51024574, -0.24809673)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=534312897]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Head" unique_id=533545592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.124791265)
+mesh = SubResource("BoxMesh_apn28")
+surface_material_override/0 = SubResource("StandardMaterial3D_apn28")
+
+[node name="WeaponHolder" type="Node3D" parent="Head" unique_id=642220492]
+transform = Transform3D(1, 0, 0, 0, 0.98268723, -0.18527216, 0, 0.18527216, 0.98268723, 0, -0.16418967, -0.24333629)
+
+[node name="HitscanWeapon" parent="Head/WeaponHolder" unique_id=1514030515 instance=ExtResource("2_87uja")]
+transform = Transform3D(1, 0, 0, 0, 0.9991081, 0.042224407, 0, -0.042224407, 0.9991081, 0, -0.02004522, 0.0037792325)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1989458039]
+shape = SubResource("CapsuleShape3D_fb3t6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=452882940]
+mesh = SubResource("CapsuleMesh_vd578")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=115522110]
+replication_config = SubResource("SceneReplicationConfig_4flbx")
+
+[node name="InterpolationController" type="Node" parent="." unique_id=1738458528]
+script = ExtResource("2_t0cpu")
+
+[node name="PlayerHealth" type="Node" parent="." unique_id=1665343129]
+script = ExtResource("3_8h4do")
+
+[node name="LagCompensationBuffer" type="Node" parent="." unique_id=1103989687]
+script = ExtResource("4_rclgo")

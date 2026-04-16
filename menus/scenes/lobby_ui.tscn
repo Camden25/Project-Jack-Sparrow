@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dnhn7braga8se"]
+
+[ext_resource type="Script" uid="uid://be1bv1qfgjyjm" path="res://menus/scripts/lobby_ui.gd" id="1_3pl75"]
+
+[node name="LobbyUi" type="Control" unique_id=2020736158]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3pl75")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1294055306]
+layout_mode = 0
+offset_left = 479.0
+offset_top = 270.0
+offset_right = 575.0
+offset_bottom = 402.0
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=1661937517]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="VBoxContainer" unique_id=2067670885]
+layout_mode = 2
+text = "Host Lobby"
+
+[node name="JoinButton" type="Button" parent="VBoxContainer" unique_id=1147435224]
+layout_mode = 2
+text = "Join Lobby"
+
+[node name="InviteButton" type="Button" parent="VBoxContainer" unique_id=828065382]
+layout_mode = 2
+text = "Invite Player"
+
+[node name="StartButton" type="Button" parent="VBoxContainer" unique_id=1761144598]
+layout_mode = 2
+text = "Start Game"
+
+[node name="PlayerList" type="VBoxContainer" parent="VBoxContainer" unique_id=1964665698]
+layout_mode = 2

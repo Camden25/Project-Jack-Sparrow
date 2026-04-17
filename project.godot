@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 NetworkManager="*uid://hgte52atvu5r"
 MatchEvents="*uid://5hicbr1f5hpf"
+PlayerManager="*uid://dakjsliyxe862"
+
+[display]
+
+window/stretch/mode="viewport"
 
 [editor_plugins]
 

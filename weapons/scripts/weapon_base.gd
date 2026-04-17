@@ -24,7 +24,7 @@ func try_fire(origin: Vector3, direction: Vector3):
 	await get_tree().create_timer(fire_rate).timeout
 	can_fire = true
 
-func _fire(origin: Vector3, direction: Vector3):
+func _fire(_origin: Vector3, _direction: Vector3):
 	pass  # override in subclass
 
 func reload():

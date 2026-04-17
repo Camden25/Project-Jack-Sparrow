@@ -6,6 +6,9 @@ const MAX_PLAYERS = 6
 var steam_lobby_id: int = 0
 var players: Dictionary = {}  # peer_id: player_data
 
+enum GameState { LOBBY, IN_GAME }
+var game_state: GameState = GameState.LOBBY
+
 var is_host: bool = false
 
 signal player_connected(peer_id: int)
@@ -88,7 +91,7 @@ func _on_steam_lobby_created(result: int, lobby_id: int):
 	
 	is_host = true
 	
-	players[1] = { "steam_id": Steam.getSteamID(), "name": Steam.getPersonaName() }
+	PlayerManager.register_player(1, Steam.getSteamID(), Steam.getPersonaName())
 	
 	print("Host ready")
 	
@@ -166,10 +169,12 @@ func _on_peer_connected(peer_id: int):
 		for existing_id in players:
 			var data = players[existing_id]
 			_register_player.rpc_id(peer_id, data.steam_id, data.name)
+		
+		if game_state == GameState.IN_GAME:
+			_redirect_to_game.rpc_id(peer_id)
 
 func _on_peer_disconnected(peer_id: int):
-	print("Peer disconnected: " + str(peer_id))
-	players.erase(peer_id)
+	PlayerManager.unregister_player(peer_id)
 	emit_signal("player_disconnected", peer_id)
 
 func _on_connected_to_server():
@@ -189,18 +194,12 @@ func _on_p2p_session_request(remote_steam_id: int):
 #endregion
 
 
-#region PLAYER REGISTRATION
+#region UTILITIES
 
 @rpc("any_peer", "call_remote", "reliable")
 func _register_player(steam_id: int, player_name: String):
 	var sender_id = multiplayer.get_remote_sender_id()
-	players[sender_id] = { "steam_id": steam_id, "name": player_name }
-	print("Registered player: " + player_name + " peer: " + str(sender_id))
-
-#endregion
-
-
-#region UTILITIES
+	PlayerManager.register_player(sender_id, steam_id, player_name)
 
 func is_server() -> bool:
 	return multiplayer.is_server()
@@ -221,6 +220,13 @@ func _on_lobby_match_list(lobbies: Array):
 		var _owner = Steam.getLobbyOwner(lobby_id)
 		var members = Steam.getNumLobbyMembers(lobby_id)
 		print("Lobby: " + str(lobby_id) + " owner: " + str(_owner) + " players: " + str(members))
+
+func set_game_state(state: GameState):
+	game_state = state
+
+@rpc("authority", "call_remote", "reliable")
+func _redirect_to_game():
+	get_tree().change_scene_to_file("res://maps/world.tscn")
 
 #endregion
 

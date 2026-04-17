@@ -20,7 +20,9 @@ func _server_validate_shot(origin: Vector3, direction: Vector3, timestamp: float
 		push_error("Shooter ID mismatch")
 		return
 	
-	_spawn_tracer_server(origin, direction)
+	var world = get_tree().get_root().get_node_or_null("World")
+	if world:
+		world.spawn_tracer(origin, direction)
 	
 	# Get sender's ping to determine rewind amount
 	var ping = _get_peer_ping(sender_id)
@@ -45,17 +47,10 @@ func _server_validate_shot(origin: Vector3, direction: Vector3, timestamp: float
 		if player:
 			var health_component = player.get_node_or_null("PlayerHealth")
 			if health_component:
+				if PlayerManager.is_same_team(sender_id, player.get_multiplayer_authority()):
+					return
 				health_component.apply_damage(damage, sender_id)
 				MatchEvents.confirm_hit.rpc(sender_id, int(player.name))
-
-func _spawn_tracer_server(origin: Vector3, direction: Vector3):
-	var projectiles_node = get_tree().get_root().get_node_or_null("World/Projectiles")
-	if not projectiles_node:
-		return
-	var tracer = preload("res://weapons/scenes/tracer.tscn").instantiate()
-	tracer.start_pos = origin
-	tracer.direction = direction
-	projectiles_node.add_child(tracer)  # MultiplayerSpawner auto-replicates this
 
 # Rewinds all players except shooter, returns their original positions
 func _rewind_players(timestamp: float, shooter_id: int) -> Dictionary:
@@ -90,7 +85,7 @@ func _restore_players(original_positions: Dictionary):
 		player.global_position = original_positions[player].position
 		player.global_basis = original_positions[player].basis
 
-func _get_peer_ping(peer_id: int) -> float:
+func _get_peer_ping(_peer_id: int) -> float:
 	# GodotSteam has ping via Steam networking
 	return 0.05  # assume 50ms temporarily
 

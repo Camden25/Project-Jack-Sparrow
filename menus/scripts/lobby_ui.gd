@@ -50,9 +50,6 @@ func _on_invite_pressed():
 	Steam.activateGameOverlayInviteDialog(NetworkManager.steam_lobby_id)
 
 func _on_start_pressed():
-	#if NetworkManager.players.size() < 2:
-		#status_label.text = "Need at least 2 players"
-		#return
 	start_game.rpc()
 
 #endregion
@@ -118,6 +115,7 @@ func _refresh_player_list():
 @rpc("authority", "call_local", "reliable")
 func start_game():
 	print("starting game")
+	NetworkManager.set_game_state(NetworkManager.GameState.IN_GAME)
 	get_tree().change_scene_to_file("res://maps/world.tscn")
 
 #endregion

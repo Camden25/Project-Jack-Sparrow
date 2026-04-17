@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ge3marf5qho1" path="res://weapons/scenes/hitscan_weapon.tscn" id="2_87uja"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="2_t0cpu"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="3_8h4do"]
+[ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/WorldHealthBar.tscn" id="3_tn8gd"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="4_rclgo"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_apn28"]
@@ -64,3 +65,6 @@ script = ExtResource("3_8h4do")
 
 [node name="LagCompensationBuffer" type="Node" parent="." unique_id=1103989687]
 script = ExtResource("4_rclgo")
+
+[node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("3_tn8gd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3374529, 0)

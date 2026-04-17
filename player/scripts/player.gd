@@ -31,6 +31,7 @@ signal dash_cooldown_changed(remaining: float, total: float)
 @onready var camera: Camera3D = $Head/Camera3D
 
 @onready var weapon_holder = $Head/WeaponHolder
+@onready var world_health_bar = $WorldHealthBar
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -58,6 +59,22 @@ func _ready():
 	
 	if multiplayer.is_server():
 		health_component.player_died.connect(_on_player_died)
+	
+	var my_id = multiplayer.get_unique_id()
+	var peer_id = get_multiplayer_authority()
+	
+	if peer_id == my_id:
+		world_health_bar.queue_free()
+		return
+	
+	if PlayerManager.player_registry.has(peer_id):
+		_setup_health_bar(peer_id)
+	else:
+		PlayerManager.player_registered.connect(
+			func(registered_id):
+				if registered_id == peer_id:
+					_setup_health_bar(peer_id)
+		)
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():
@@ -158,6 +175,22 @@ func _tick_dash(delta: float):
 		dash_cooldown_timer -= delta
 		dash_cooldown_timer = max(0.0, dash_cooldown_timer)
 		emit_signal("dash_cooldown_changed", dash_cooldown_timer, DASH_COOLDOWN)
+
+func _setup_health_bar(peer_id: int):
+	var player_name = PlayerManager.get_player_name(peer_id)
+	var player_team = PlayerManager.get_team(peer_id)
+	world_health_bar.setup(player_name, player_team)
+	health_component.health_changed.connect(
+		func(h): world_health_bar.update_health(h, health_component.MAX_HEALTH)
+	)
+	world_health_bar.update_health(health_component.health, health_component.MAX_HEALTH)
+
+func set_active(active: bool):
+	set_physics_process(active and is_multiplayer_authority())
+	set_process_unhandled_input(active and is_multiplayer_authority())
+	$CollisionShape3D.disabled = not active
+	$MeshInstance3D.visible = active
+	world_health_bar.visible = active if world_health_bar else true
 
 func _on_player_died(peer_id: int):
 	print("Player died: " + str(peer_id))

@@ -23,7 +23,7 @@ func add_snapshot(pos: Vector3, rot: Vector3, head_rot: Vector3):
 	if buffer.size() > MAX_BUFFER_SIZE:
 		buffer.pop_front()
 
-func interpolate(delta: float):
+func interpolate(_delta: float):
 	if buffer.size() < 2:
 		return
 	

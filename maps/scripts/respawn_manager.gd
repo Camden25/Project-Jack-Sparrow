@@ -13,7 +13,10 @@ func get_spawn_position(peer_id: int) -> Vector3:
 	if points.is_empty():
 		return Vector3.ZERO
 	# Pick random spawn point
-	return points[randi() % points.size()].global_position
+	
+	var spawn_position: Vector3 = points[randi() % points.size()].global_position
+	print(peer_id, " get spawn position ", spawn_position)
+	return spawn_position
 
 func handle_player_death(peer_id: int):
 	if not multiplayer.is_server():

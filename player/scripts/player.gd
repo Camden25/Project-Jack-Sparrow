@@ -19,6 +19,8 @@ var dash_direction: Vector3 = Vector3.ZERO
 signal dash_cooldown_changed(remaining: float, total: float)
 #end dash stuff
 
+var spawn_position: Vector3
+
 @export var net_position: Vector3
 @export var net_rotation: Vector3  
 @export var net_head_rotation: Vector3
@@ -45,6 +47,10 @@ func _ready():
 	
 	lag_buffer.setup(self)
 	interpolation_controller.setup(self, head)
+	
+	global_position = spawn_position
+	
+	print("player position of ", name, " is ", global_position)
 	
 	if not is_multiplayer_authority():
 		$Head/Camera3D.current = false

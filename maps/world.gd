@@ -36,9 +36,15 @@ func _spawn_player(peer_id: int) -> Node:
 	print("Spawning player object ", peer_id)
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(peer_id)
-	player.global_position = respawn_manager.get_spawn_position(peer_id)
+	player.spawn_position = respawn_manager.get_spawn_position(peer_id)
+	print(peer_id, " position: ", player.spawn_position)
 	players_node.add_child(player)
 	return player
+
+@rpc("authority", "call_remote", "reliable")
+func _spawn_player_client(peer_id: int) -> void:
+	print("spawning player object client ", peer_id)
+	
 
 func spawn_tracer(origin: Vector3, direction: Vector3):
 	if not multiplayer.is_server():

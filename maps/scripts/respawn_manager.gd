@@ -39,11 +39,20 @@ func respawn_player(peer_id: int):
 		return
 	var spawn_pos = get_spawn_position(peer_id)
 	var player = _get_player(peer_id)
-	if player:
-		player.global_position = spawn_pos
-		player.health_component.health = player.health_component.MAX_HEALTH
-		player.health_component._sync_health.rpc(player.health_component.MAX_HEALTH)
-		_set_player_active.rpc(peer_id, true)
+	if not player:
+		return
+	
+	player.health_component.set_health(player.health_component.MAX_HEALTH)
+	_set_player_active.rpc(peer_id, true)
+	
+	player.global_position = spawn_pos
+	
+	if peer_id == 1:
+		player.confirm_spawn(spawn_pos)
+	else:
+		var world = get_tree().get_root().get_node_or_null("World")
+		if world:
+			world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 
 @rpc("authority", "call_local", "reliable")
 func _broadcast_death(peer_id: int):

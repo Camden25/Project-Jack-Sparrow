@@ -6,6 +6,9 @@ const MAX_PLAYERS = 6
 var steam_lobby_id: int = 0
 var players: Dictionary = {}  # peer_id: player_data
 
+var peer_pings: Dictionary = {}  # peer_id: ping_seconds
+var _ping_timestamps: Dictionary = {}  # peer_id: send_time
+
 enum GameState { LOBBY, IN_GAME }
 var game_state: GameState = GameState.LOBBY
 
@@ -56,6 +59,9 @@ func _ready():
 	Steam.lobby_joined.connect(_on_steam_lobby_joined)
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	Steam.p2p_session_request.connect(_on_p2p_session_request)
+	
+	if multiplayer.is_server():
+		_ping_loop()
 
 func _process(_delta):
 	Steam.run_callbacks()
@@ -165,13 +171,16 @@ func _on_peer_connected(peer_id: int):
 	emit_signal("player_connected", peer_id)
 	
 	if multiplayer.is_server():
-		# Send existing players to new peer
-		for existing_id in players:
-			var data = players[existing_id]
-			_register_player.rpc_id(peer_id, data.steam_id, data.name)
+		for existing_id in PlayerManager.player_registry:
+			var data = PlayerManager.player_registry[existing_id]
+			_sync_existing_player.rpc_id(peer_id, existing_id, data.steam_id, data.name)
 		
 		if game_state == GameState.IN_GAME:
 			_redirect_to_game.rpc_id(peer_id)
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_existing_player(existing_peer_id: int, steam_id: int, player_name: String):
+	PlayerManager.register_player(existing_peer_id, steam_id, player_name)
 
 func _on_peer_disconnected(peer_id: int):
 	PlayerManager.unregister_player(peer_id)
@@ -179,12 +188,12 @@ func _on_peer_disconnected(peer_id: int):
 
 func _on_connected_to_server():
 	print("Connected to server successfully")
-	# Send our info to server
+	var my_id = multiplayer.get_unique_id()
+	PlayerManager.register_player(my_id, Steam.getSteamID(), Steam.getPersonaName())
 	_register_player.rpc_id(1, Steam.getSteamID(), Steam.getPersonaName())
 
 func _on_server_disconnected():
 	multiplayer.multiplayer_peer = null
-	players.clear()
 	emit_signal("server_disconnected")
 
 func _on_p2p_session_request(remote_steam_id: int):
@@ -208,11 +217,11 @@ func get_my_peer_id() -> int:
 	return multiplayer.get_unique_id()
 
 func disconnect_game():
-	multiplayer.multiplayer_peer = null
-	steam_lobby_id = 0
-	players.clear()
 	if steam_lobby_id != 0:
 		Steam.leaveLobby(steam_lobby_id)
+	multiplayer.multiplayer_peer = null
+	steam_lobby_id = 0
+	PlayerManager.player_registry.clear()
 
 func _on_lobby_match_list(lobbies: Array):
 	for lobby_id in lobbies:
@@ -227,6 +236,16 @@ func set_game_state(state: GameState):
 @rpc("authority", "call_remote", "reliable")
 func _redirect_to_game():
 	get_tree().change_scene_to_file("res://maps/world.tscn")
+	_client_ready_in_game.rpc_id(1)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _client_ready_in_game():
+	var peer_id = multiplayer.get_remote_sender_id()
+	var world = get_tree().get_root().get_node_or_null("World")
+	if world:
+		world._spawn_player(peer_id)
+		var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
+		world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 
 #endregion
 
@@ -244,4 +263,33 @@ func join_local():
 	peer.create_client("127.0.0.1", DEFAULT_PORT)
 	multiplayer.multiplayer_peer = peer
 
+#endregion
+
+#region PING
+func _ping_loop():
+	while true:
+		await get_tree().create_timer(1.0).timeout
+		if not multiplayer.is_server():
+			break
+		for peer_id in PlayerManager.player_registry.keys():
+			if peer_id == 1:
+				peer_pings[1] = 0.0
+				continue
+			_ping_timestamps[peer_id] = Time.get_ticks_msec() / 1000.0
+			_send_ping.rpc_id(peer_id)
+
+@rpc("authority", "call_remote", "reliable")
+func _send_ping():
+	_pong.rpc_id(1)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _pong():
+	var sender_id = multiplayer.get_remote_sender_id()
+	if _ping_timestamps.has(sender_id):
+		var rtt = (Time.get_ticks_msec() / 1000.0) - _ping_timestamps[sender_id]
+		peer_pings[sender_id] = rtt / 2.0  # one-way latency
+		_ping_timestamps.erase(sender_id)
+
+func get_peer_ping(peer_id: int) -> float:
+	return peer_pings.get(peer_id, 0.05)  # default 50ms if unknown
 #endregion

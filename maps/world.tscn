@@ -102,13 +102,13 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_ha2k4"]
 size = Vector3(3, 4, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81eie"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ha2k4"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81eie"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("7_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -117,6 +117,12 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_op0be"]
 size = Vector3(5, 6, 5)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("8_q1kd2")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdhg2"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("8_q1kd2")
@@ -124,12 +130,6 @@ uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyssw"]
-resource_local_to_scene = true
-albedo_texture = ExtResource("8_q1kd2")
-uv1_offset = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vi7bc"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -311,7 +311,7 @@ shape = SubResource("BoxShape3D_ha2k4")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D17" unique_id=1786638693 instance=ExtResource("2_uds71")]
 size = Vector3(3, 4, 0.5)
-material = SubResource("StandardMaterial3D_81eie")
+material = SubResource("StandardMaterial3D_ha2k4")
 block_color = 3
 
 [node name="StaticBody3D5" type="StaticBody3D" parent="Map" unique_id=254131007]
@@ -322,7 +322,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D5" unique_id=1713144646 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_xqrul")
+material = SubResource("StandardMaterial3D_81eie")
 block_color = 5
 
 [node name="StaticBody3D6" type="StaticBody3D" parent="Map" unique_id=1947543647]
@@ -333,7 +333,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D6" unique_id=983073050 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_pdhg2")
+material = SubResource("StandardMaterial3D_xqrul")
 block_color = 2
 
 [node name="StaticBody3D15" type="StaticBody3D" parent="Map" unique_id=733757138]
@@ -344,7 +344,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D15" unique_id=2049415498 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_vyssw")
+material = SubResource("StandardMaterial3D_pdhg2")
 block_color = 2
 
 [node name="StaticBody3D16" type="StaticBody3D" parent="Map" unique_id=346116360]
@@ -355,7 +355,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D16" unique_id=1488672695 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_vi7bc")
+material = SubResource("StandardMaterial3D_vyssw")
 block_color = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map" unique_id=1923603419]
@@ -364,7 +364,7 @@ transform = Transform3D(0.94278705, -0.22165883, 0.24903806, 0, 0.74697477, 0.66
 [node name="RespawnManager" type="Node" parent="." unique_id=2014685689]
 script = ExtResource("10_w3kvc")
 
-[node name="Ui" parent="." unique_id=1709117453 instance=ExtResource("9_op0be")]
+[node name="Hud" parent="." unique_id=1709117453 instance=ExtResource("9_op0be")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1502055358]
 environment = SubResource("Environment_7mbce")

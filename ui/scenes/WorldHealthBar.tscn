@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" uid="uid://blaja2tdot4sh" path="res://ui/scripts/world_health_bar.gd" id="1_tny5q"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tny5q"]
+albedo_color = Color(0.22265625, 0.22265625, 0.22265625, 1)
+
 [sub_resource type="QuadMesh" id="QuadMesh_tny5q"]
+material = SubResource("StandardMaterial3D_tny5q")
+size = Vector2(1.6, 0.4)
 
 [sub_resource type="QuadMesh" id="QuadMesh_b618d"]
+size = Vector2(1.5, 0.3)
 
 [node name="WorldHealthBar" type="Node3D" unique_id=1504346951]
 script = ExtResource("1_tny5q")
@@ -15,7 +21,9 @@ script = ExtResource("1_tny5q")
 mesh = SubResource("QuadMesh_tny5q")
 
 [node name="HealthBarFill" type="MeshInstance3D" parent="BillboardContainer" unique_id=1375130895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.001)
 mesh = SubResource("QuadMesh_b618d")
 
 [node name="NameLabel" type="Label3D" parent="BillboardContainer" unique_id=2147066170]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30778313, 0.02)
 text = "test name"

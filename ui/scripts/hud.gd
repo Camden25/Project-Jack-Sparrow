@@ -5,6 +5,9 @@ extends CanvasLayer
 @onready var ammo_label: Label = $AmmoContainer/AmmoLabel
 @onready var cooldown_bar: ProgressBar = $AbilityCooldown/CooldownBar
 @onready var cooldown_label: Label = $AbilityCooldown/CooldownLabel
+@onready var control_point_progress_label: Label = $ControlPointProgress
+@onready var death_label: Label = $DeathLabel
+@onready var ping_label: Label = $PingLabel
 
 var local_player: Player = null
 
@@ -52,11 +55,15 @@ func _process(_delta: float):
 	if weapon_holder and weapon_holder.get_child_count() > 0:
 		var weapon = weapon_holder.get_child(0)
 		ammo_label.text = str(weapon.current_ammo) + " / " + str(weapon.max_ammo)
+	
+	set_control_point_progress()
+	set_point_label()
 
 func _on_health_changed(new_health: int):
 	health_bar.value = new_health
 	health_bar.max_value = 100
 	health_label.text = str(new_health) + " HP"
+	death_label.visible = new_health <= 0
 
 func _on_dash_cooldown_changed(remaining: float, total: float):
 	cooldown_bar.max_value = total
@@ -65,3 +72,18 @@ func _on_dash_cooldown_changed(remaining: float, total: float):
 		cooldown_label.text = "READY"
 	else:
 		cooldown_label.text = str(snappedf(remaining, 0.1)) + "s"
+
+func set_control_point_progress() -> void:
+	var control_point_progress: Dictionary = get_parent().get_node("ControlPoint").progress
+	var value: String
+	if control_point_progress[0] >= 1:
+		value = "Team A Wins!"
+	elif control_point_progress[1] >= 1:
+		value = "Team B Wins!"
+	else:
+		value = ("A: " + str(int(100*control_point_progress[0])) + "%  |  B: " + str(int(100*control_point_progress[1])) + "%")
+	control_point_progress_label.text = value
+
+func set_point_label() -> void:
+	ping_label.text = str(int(NetworkManager.get_peer_ping(NetworkManager.get_my_peer_id()))) + " ms"
+ 

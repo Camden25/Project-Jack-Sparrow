@@ -32,6 +32,12 @@ func apply_healing(amount: int, _healer_peer_id: int):
 	#if health <= 0:
 		#emit_signal("player_died", get_parent().get_multiplayer_authority())
 
+func set_health(amount: int):
+	if not multiplayer.is_server():
+		return
+	health = clamp(amount, 0, MAX_HEALTH)
+	_sync_health.rpc(health)
+
 @rpc("authority", "call_local", "reliable")
 func _sync_health(new_health: int):
 	health = new_health

@@ -31,8 +31,8 @@ enabled=PackedStringArray("res://addons/godotsteam/plugin.cfg")
 
 [global_group]
 
-UI=""
 World=""
+HUD=""
 
 [input]
 

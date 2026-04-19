@@ -18,8 +18,9 @@ func _ready() -> void:
 	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
 	
-	for i in range(PlayerManager.player_registry.size()):
-		_on_player_connected(PlayerManager.player_registry.keys()[i])
+	if multiplayer.is_server():
+		for peer_id in PlayerManager.player_registry.keys():
+			_spawn_player(peer_id)
 
 func _on_player_connected(peer_id: int):
 	print("_on_player_connected ran with id ", peer_id)
@@ -33,18 +34,39 @@ func _on_player_disconnected(peer_id: int):
 			player.queue_free()
 
 func _spawn_player(peer_id: int) -> Node:
-	print("Spawning player object ", peer_id)
 	var player = PLAYER_SCENE.instantiate()
 	player.name = str(peer_id)
-	player.spawn_position = respawn_manager.get_spawn_position(peer_id)
-	print(peer_id, " position: ", player.spawn_position)
 	players_node.add_child(player)
+	
+	var spawn_pos = respawn_manager.get_spawn_position(peer_id)
+	player.global_position = spawn_pos
+	
+	if peer_id == 1:
+		player.confirm_spawn(spawn_pos)
+	else:
+		_delayed_spawn_confirm(peer_id, spawn_pos)
+	
 	return player
 
+func _delayed_spawn_confirm(peer_id: int, spawn_pos: Vector3):
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_set_client_spawn_position.rpc_id(peer_id, spawn_pos)
+
 @rpc("authority", "call_remote", "reliable")
-func _spawn_player_client(peer_id: int) -> void:
-	print("spawning player object client ", peer_id)
-	
+func _set_client_spawn_position(spawn_pos: Vector3):
+	var my_id = str(multiplayer.get_unique_id())
+	var player = players_node.get_node_or_null(my_id)
+	if player:
+		if player.spawn_confirmed:
+			player.confirm_respawn(spawn_pos)
+		else:
+			player.confirm_spawn(spawn_pos)
+	else:
+		await get_tree().process_frame
+		player = players_node.get_node_or_null(my_id)
+		if player:
+			player.confirm_spawn(spawn_pos)
 
 func spawn_tracer(origin: Vector3, direction: Vector3):
 	if not multiplayer.is_server():

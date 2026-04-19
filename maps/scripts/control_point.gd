@@ -1,8 +1,10 @@
 extends Area3D
 
-const CAPTURE_RATE: float = 0.01 # progress per second
+const PROGRESS_RATE: float = 0.01 # progress per second
+const CAPTURE_RATE: float = 0.2 # capture per second
 
-var progress: Dictionary = { 0 : 0, 1 : 0 } # 0 = team A, 1 = team B
+var progress: Dictionary = { 0 : 0, 1 : 0 }
+var capture_progress: float = 0.5 # 0 = team A, 1 = team B
 var controlling_team: PlayerManager.Team = PlayerManager.Team.NONE
 var players_in_zone: Array = []
 
@@ -26,35 +28,36 @@ func _physics_process(delta: float):
 		var team = PlayerManager.get_team(player.get_multiplayer_authority())
 		if team == PlayerManager.Team.TEAM_A:
 			team_a_count += 1
-		else:
+		if team == PlayerManager.Team.TEAM_B:
 			team_b_count += 1
 	
-	if team_a_count > 0 and team_b_count > 0:
-		return
-	
-	var old_progress = progress
-	
-	if team_a_count > 0 and controlling_team != PlayerManager.Team.TEAM_A:
-		controlling_team = PlayerManager.Team.TEAM_A
-		_sync_captured.rpc(PlayerManager.Team.TEAM_A)
-	elif team_b_count > 0 and controlling_team != PlayerManager.Team.TEAM_B:
-		controlling_team = PlayerManager.Team.TEAM_B
-		_sync_captured.rpc(PlayerManager.Team.TEAM_B)
+	var old_progress = progress.duplicate()
 	
 	if controlling_team == PlayerManager.Team.TEAM_A:
-		progress[0] += CAPTURE_RATE * delta
-	elif team_b_count > 0:
-		progress[1] += CAPTURE_RATE * delta
+		progress[0] += PROGRESS_RATE * delta
+	if controlling_team == PlayerManager.Team.TEAM_B:
+		progress[1] += PROGRESS_RATE * delta
 	
 	if old_progress != progress:
 		_sync_progress.rpc(progress)
 	
-	if progress[0] >= 1:
-		print("team a wins!")
-	elif progress[1] >= 1:
-		print("team b wins!")
-	else:
-		print("team a progress: ", float(int(1000*progress[0]))/10, "   team b progress: ", float(int(1000*progress[1]))/10)
+	if team_a_count > 0 and team_b_count > 0:
+		return
+	
+	if team_a_count > 0 and controlling_team != PlayerManager.Team.TEAM_A:
+		capture_progress -= CAPTURE_RATE * delta
+	elif team_b_count > 0 and controlling_team != PlayerManager.Team.TEAM_B:
+		capture_progress += CAPTURE_RATE * delta
+	
+	if capture_progress <= 0.0:
+		controlling_team = PlayerManager.Team.TEAM_A
+		_sync_captured.rpc(PlayerManager.Team.TEAM_A)
+	if capture_progress >= 1.0:
+		controlling_team = PlayerManager.Team.TEAM_B
+		_sync_captured.rpc(PlayerManager.Team.TEAM_B)
+	
+	capture_progress = clamp(capture_progress, 0.0, 1.0)
+	
 
 @rpc("authority", "call_local", "unreliable")
 func _sync_progress(new_progress: Dictionary):

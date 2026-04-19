@@ -25,8 +25,11 @@ func _server_validate_shot(origin: Vector3, direction: Vector3, timestamp: float
 		world.spawn_tracer(origin, direction)
 	
 	# Get sender's ping to determine rewind amount
-	var ping = _get_peer_ping(sender_id)
+	var ping = NetworkManager.get_peer_ping(sender_id)
 	var rewind_time = timestamp - ping
+	
+	var now = Time.get_ticks_msec() / 1000.0
+	rewind_time = clampf(rewind_time, now - 0.3, now)
 	
 	# Rewind all players to rewind_time
 	var rewound_positions = _rewind_players(rewind_time, sender_id)
@@ -34,7 +37,10 @@ func _server_validate_shot(origin: Vector3, direction: Vector3, timestamp: float
 	# Run authoritative raycast
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(origin, origin + direction * max_range)
-	query.exclude = [get_parent()]  # exclude shooter
+	
+	var shooter_node = get_tree().get_root().get_node_or_null("World/Players/" + str(sender_id))
+	if shooter_node: query.exclude = [shooter_node.get_rid()]
+	
 	var result = space_state.intersect_ray(query)
 	
 	# Restore all players
@@ -52,7 +58,6 @@ func _server_validate_shot(origin: Vector3, direction: Vector3, timestamp: float
 				health_component.apply_damage(damage, sender_id)
 				MatchEvents.confirm_hit.rpc(sender_id, int(player.name))
 
-# Rewinds all players except shooter, returns their original positions
 func _rewind_players(timestamp: float, shooter_id: int) -> Dictionary:
 	var original_positions = {}
 	var players_node = get_tree().get_root().get_node_or_null("World/Players")
@@ -63,7 +68,7 @@ func _rewind_players(timestamp: float, shooter_id: int) -> Dictionary:
 		if not player is CharacterBody3D:
 			continue
 		if player.get_multiplayer_authority() == shooter_id:
-			continue  # don't rewind shooter
+			continue
 		
 		var buffer = player.get_node_or_null("LagCompensationBuffer")
 		if not buffer:
@@ -85,10 +90,6 @@ func _restore_players(original_positions: Dictionary):
 		player.global_position = original_positions[player].position
 		player.global_basis = original_positions[player].basis
 
-func _get_peer_ping(_peer_id: int) -> float:
-	# GodotSteam has ping via Steam networking
-	return 0.05  # assume 50ms temporarily
-
 func _find_player_root(node: Node) -> Node:
 	var current = node
 	while current:
@@ -98,4 +99,4 @@ func _find_player_root(node: Node) -> Node:
 	return null
 
 func _play_hit_effect():
-	pass  # placeholder for hit marker UI
+	pass

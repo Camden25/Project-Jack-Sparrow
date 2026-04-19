@@ -19,7 +19,7 @@ var dash_direction: Vector3 = Vector3.ZERO
 signal dash_cooldown_changed(remaining: float, total: float)
 #end dash stuff
 
-var spawn_position: Vector3
+var spawn_confirmed: bool = false
 
 @export var net_position: Vector3
 @export var net_rotation: Vector3  
@@ -48,9 +48,31 @@ func _ready():
 	lag_buffer.setup(self)
 	interpolation_controller.setup(self, head)
 	
-	global_position = spawn_position
-	
 	print("player position of ", name, " is ", global_position)
+	
+	var my_id = multiplayer.get_unique_id()
+	var peer_id = get_multiplayer_authority()
+	
+	print("player ready — name: ", name, " peer_id: ", peer_id, " my_id: ", my_id, " is_authority: ", is_multiplayer_authority())
+	print("world_health_bar is null: ", world_health_bar == null)
+	
+	if peer_id == my_id:
+		print("queueing free health bar for local player")
+		world_health_bar.queue_free()
+	else:
+		print("setting up health bar for remote player ", peer_id)
+		print("registry has peer: ", PlayerManager.player_registry.has(peer_id))
+		print("full registry: ", PlayerManager.player_registry)
+		if PlayerManager.player_registry.has(peer_id):
+			_setup_health_bar(peer_id)
+		else:
+			print("connecting to player_registered signal")
+			PlayerManager.player_registered.connect(
+				func(registered_id):
+					print("player_registered fired for ", registered_id, " waiting for ", peer_id)
+					if registered_id == peer_id:
+						_setup_health_bar(peer_id)
+			)
 	
 	if not is_multiplayer_authority():
 		$Head/Camera3D.current = false
@@ -65,22 +87,6 @@ func _ready():
 	
 	if multiplayer.is_server():
 		health_component.player_died.connect(_on_player_died)
-	
-	var my_id = multiplayer.get_unique_id()
-	var peer_id = get_multiplayer_authority()
-	
-	if peer_id == my_id:
-		world_health_bar.queue_free()
-		return
-	
-	if PlayerManager.player_registry.has(peer_id):
-		_setup_health_bar(peer_id)
-	else:
-		PlayerManager.player_registered.connect(
-			func(registered_id):
-				if registered_id == peer_id:
-					_setup_health_bar(peer_id)
-		)
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():
@@ -113,6 +119,10 @@ func _process(delta: float) -> void:
 
 func _physics_process(delta):
 	if not is_multiplayer_authority():
+		return
+	
+	if not spawn_confirmed:
+		print("spawn not confirmed for ", name)
 		return
 	
 	# Gravity
@@ -183,12 +193,12 @@ func _tick_dash(delta: float):
 		emit_signal("dash_cooldown_changed", dash_cooldown_timer, DASH_COOLDOWN)
 
 func _setup_health_bar(peer_id: int):
+	print("_setup_health_bar called for ", peer_id, " on client ", multiplayer.get_unique_id())
+	print("player registry: ", PlayerManager.player_registry)
 	var player_name = PlayerManager.get_player_name(peer_id)
 	var player_team = PlayerManager.get_team(peer_id)
 	world_health_bar.setup(player_name, player_team)
-	health_component.health_changed.connect(
-		func(h): world_health_bar.update_health(h, health_component.MAX_HEALTH)
-	)
+	health_component.health_changed.connect(func(h): world_health_bar.update_health(h, health_component.MAX_HEALTH))
 	world_health_bar.update_health(health_component.health, health_component.MAX_HEALTH)
 
 func set_active(active: bool):
@@ -196,7 +206,19 @@ func set_active(active: bool):
 	set_process_unhandled_input(active and is_multiplayer_authority())
 	$CollisionShape3D.disabled = not active
 	$MeshInstance3D.visible = active
-	world_health_bar.visible = active if world_health_bar else true
+	if world_health_bar:
+		world_health_bar.visible = active
+
+func confirm_spawn(spawn_pos: Vector3):
+	print("confirm_spawn called on ", multiplayer.get_unique_id(), " pos: ", spawn_pos)
+	global_position = spawn_pos
+	spawn_confirmed = true
+
+func confirm_respawn(spawn_pos: Vector3):
+	spawn_confirmed = false
+	global_position = spawn_pos
+	await get_tree().process_frame
+	spawn_confirmed = true
 
 func _on_player_died(peer_id: int):
 	print("Player died: " + str(peer_id))

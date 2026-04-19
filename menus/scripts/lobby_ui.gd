@@ -1,5 +1,11 @@
 extends Control
 
+# client:
+# name doesnt update
+# health not visible
+# not resetting to spawn point
+# no actual lag compensation
+
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var host_button: Button = $VBoxContainer/HostButton
 @onready var join_button: Button = $VBoxContainer/JoinButton
@@ -59,7 +65,7 @@ func _on_start_pressed():
 
 func _on_lobby_created(_lobby_id: int):
 	status_label.text = "Lobby created"
-	invite_button.show()
+	#invite_button.show()
 	start_button.show()
 	_refresh_player_list()
 
@@ -85,6 +91,11 @@ func _on_server_disconnected():
 func _on_lobby_match_list(lobbies: Array):
 	if lobbies.is_empty():
 		print("No lobbies found")
+		host_button.disabled = false
+		join_button.disabled = false
+		invite_button.hide()
+		start_button.hide()
+		status_label.text = "No lobbies found"
 		return
 	
 	var lobby_id = lobbies[0]
@@ -101,8 +112,8 @@ func _refresh_player_list():
 		child.queue_free()
 	
 	# Rebuild from NetworkManager.players
-	for peer_id in NetworkManager.players:
-		var data = NetworkManager.players[peer_id]
+	for peer_id in PlayerManager.player_registry:
+		var data = PlayerManager.player_registry[peer_id]
 		var label = Label.new()
 		label.text = str(data.get("name", "Unknown")) + " (" + str(peer_id) + ")"
 		player_list.add_child(label)
@@ -117,5 +128,14 @@ func start_game():
 	print("starting game")
 	NetworkManager.set_game_state(NetworkManager.GameState.IN_GAME)
 	get_tree().change_scene_to_file("res://maps/world.tscn")
+
+#@rpc("any_peer", "call_remote", "reliable")
+#func _notify_server_ready():
+	#var peer_id = multiplayer.get_remote_sender_id()
+	#var world = get_tree().get_root().get_node_or_null("World")
+	#if world:
+		#world._spawn_player(peer_id)
+		#var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
+		#world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 
 #endregion

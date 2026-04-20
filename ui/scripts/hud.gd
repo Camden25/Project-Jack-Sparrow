@@ -57,7 +57,7 @@ func _process(_delta: float):
 		ammo_label.text = str(weapon.current_ammo) + " / " + str(weapon.max_ammo)
 	
 	set_control_point_progress()
-	set_point_label()
+	set_ping_label()
 
 func _on_health_changed(new_health: int):
 	health_bar.value = new_health
@@ -84,6 +84,6 @@ func set_control_point_progress() -> void:
 		value = ("A: " + str(int(100*control_point_progress[0])) + "%  |  B: " + str(int(100*control_point_progress[1])) + "%")
 	control_point_progress_label.text = value
 
-func set_point_label() -> void:
+func set_ping_label() -> void:
 	ping_label.text = str(int(NetworkManager.get_peer_ping(NetworkManager.get_my_peer_id()))) + " ms"
  

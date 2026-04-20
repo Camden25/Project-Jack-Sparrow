@@ -1,10 +1,10 @@
 extends CharacterBody3D
 class_name Player
 
-const SPEED = 10.0
-const JUMP_VELOCITY = 6.0
-const SENSITIVITY = 0.003
-const AIR_CONTROL = 0.3
+var SPEED = 10.0
+var JUMP_VELOCITY = 6.0
+var SENSITIVITY = 0.003
+var AIR_CONTROL = 0.3
 
 #dash stuff
 const DASH_SPEED: float = 30.0

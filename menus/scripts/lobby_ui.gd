@@ -107,15 +107,15 @@ func _on_lobby_match_list(lobbies: Array):
 #region PLAYER LIST
 
 func _refresh_player_list():
-	# Clear existing
 	for child in player_list.get_children():
 		child.queue_free()
 	
-	# Rebuild from NetworkManager.players
 	for peer_id in PlayerManager.player_registry:
 		var data = PlayerManager.player_registry[peer_id]
 		var label = Label.new()
-		label.text = str(data.get("name", "Unknown")) + " (" + str(peer_id) + ")"
+		var team = PlayerManager.get_team(peer_id)
+		var team_str = " [A]" if team == PlayerManager.Team.TEAM_A else " [B]" if team == PlayerManager.Team.TEAM_B else ""
+		label.text = str(data.get("name", "Unknown")) + team_str + " (" + str(peer_id) + ")"
 		player_list.add_child(label)
 
 #endregion
@@ -128,14 +128,5 @@ func start_game():
 	print("starting game")
 	NetworkManager.set_game_state(NetworkManager.GameState.IN_GAME)
 	get_tree().change_scene_to_file("res://maps/world.tscn")
-
-#@rpc("any_peer", "call_remote", "reliable")
-#func _notify_server_ready():
-	#var peer_id = multiplayer.get_remote_sender_id()
-	#var world = get_tree().get_root().get_node_or_null("World")
-	#if world:
-		#world._spawn_player(peer_id)
-		#var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
-		#world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 
 #endregion

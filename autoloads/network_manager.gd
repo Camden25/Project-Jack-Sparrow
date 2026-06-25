@@ -4,7 +4,6 @@ const DEFAULT_PORT = 7777
 const MAX_PLAYERS = 6
 
 var steam_lobby_id: int = 0
-var players: Dictionary = {}  # peer_id: player_data
 
 var peer_pings: Dictionary = {}  # peer_id: ping_seconds
 var _ping_timestamps: Dictionary = {}  # peer_id: send_time
@@ -249,21 +248,6 @@ func _client_ready_in_game():
 
 #endregion
 
-
-#region LOCAL FUNCTIONS
-
-func host_local():
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(DEFAULT_PORT, MAX_PLAYERS)
-	multiplayer.multiplayer_peer = peer
-	players[1] = { "steam_id": 0, "name": "Host" }
-
-func join_local():
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_client("127.0.0.1", DEFAULT_PORT)
-	multiplayer.multiplayer_peer = peer
-
-#endregion
 
 #region PING
 func _ping_loop():

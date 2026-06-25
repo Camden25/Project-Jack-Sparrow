@@ -14,6 +14,7 @@ var local_player: Player = null
 func _ready():
 	# Wait for world to spawn local player
 	NetworkManager.player_connected.connect(_on_player_connected)
+	MatchEvents.hit_confirmed.connect(_on_hit_confirmed)
 	await get_tree().process_frame
 	await get_tree().process_frame
 	_on_player_connected(multiplayer.get_unique_id())
@@ -87,3 +88,10 @@ func set_control_point_progress() -> void:
 func set_ping_label() -> void:
 	ping_label.text = str(int(NetworkManager.get_peer_ping(NetworkManager.get_my_peer_id()))) + " ms"
  
+func _on_hit_confirmed(shooter_id: int, _target_peer_id: int):
+	if shooter_id == multiplayer.get_unique_id():
+		on_hit()
+
+func on_hit() -> void:
+	var hit_marker_instance = load("res://ui/scenes/hit_marker.tscn").instantiate()
+	add_child(hit_marker_instance)

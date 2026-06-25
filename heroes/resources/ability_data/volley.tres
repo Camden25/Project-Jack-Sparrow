@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://2sjl6gcfc1xu"]
+
+[ext_resource type="Script" uid="uid://dwnj3qg2y1f1w" path="res://hero_base/resources/ability_data.gd" id="1_ji7i4"]
+
+[resource]
+script = ExtResource("1_ji7i4")
+ability_name = "Volley"
+slot = 4
+metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://drxfoh0amthv1"]
+
+[ext_resource type="Script" uid="uid://dwnj3qg2y1f1w" path="res://hero_base/resources/ability_data.gd" id="1_f64xl"]
+
+[resource]
+script = ExtResource("1_f64xl")
+ability_name = "Smoke Canister"
+slot = 3
+cooldown = 14.0
+metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

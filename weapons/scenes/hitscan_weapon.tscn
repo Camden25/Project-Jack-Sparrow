@@ -12,3 +12,6 @@ script = ExtResource("1_wf1e5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
 size = Vector3(0.1, 0.1, 0.4)
 material = SubResource("StandardMaterial3D_wf1e5")
+
+[node name="TracerSpawn" type="Marker3D" parent="." unique_id=1581257827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)

@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cbgxnb8h53w3"]
+
+[ext_resource type="Script" uid="uid://bbp8tm3u4ebki" path="res://ui/scripts/hit_marker.gd" id="1_8tkpu"]
+
+[node name="HitMarker" type="Control" unique_id=370075715]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8tkpu")
+
+[node name="Label" type="Label" parent="." unique_id=1434850029]
+modulate = Color(1, 1, 1, 0.3137255)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "x"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Timer" type="Timer" parent="." unique_id=1485576961]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

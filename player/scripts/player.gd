@@ -97,7 +97,7 @@ func _unhandled_input(event):
 		head.rotate_x(-event.relative.y * SENSITIVITY)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 	
-	if event.is_action_pressed("fire"):
+	if event.is_action_pressed("primary_fire"):
 		var weapon = weapon_holder.get_child(0) if weapon_holder.get_child_count() > 0 else null
 		if weapon:
 			var origin = $Head/Camera3D.global_position

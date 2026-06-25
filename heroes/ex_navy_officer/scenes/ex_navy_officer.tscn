@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://b3x4vl7qlg45v"]
+
+[ext_resource type="Script" uid="uid://r10xq208p2wf" path="res://heroes/ex_navy_officer/scripts/ex_navy_officer.gd" id="1_1xyps"]
+[ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="2_ku7lh"]
+[ext_resource type="Script" uid="uid://cgki5vo1q2hn6" path="res://heroes/ex_navy_officer/weapons/musket/musket.gd" id="2_q50x8"]
+[ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_238cb"]
+[ext_resource type="Script" uid="uid://uonyh4wwj3w7" path="res://heroes/ex_navy_officer/weapons/flintlock/flintlock.gd" id="3_deh7o"]
+[ext_resource type="PackedScene" uid="uid://ca568eoc2nil5" path="res://heroes/ex_navy_officer/abilities/retreat/retreat.tscn" id="4_5ahsj"]
+[ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="4_o8tqa"]
+[ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="5_q50x8"]
+[ext_resource type="PackedScene" uid="uid://dwakwibs0a0nd" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.tscn" id="5_xb7vd"]
+[ext_resource type="PackedScene" uid="uid://diuyhdfdcl3or" path="res://heroes/ex_navy_officer/abilities/volley/volley.tscn" id="6_ebtu4"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xyps"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wf8xl"]
+radius = 0.4
+height = 1.8
+
+[node name="ExNavyOfficer" type="CharacterBody3D" unique_id=1407199022]
+script = ExtResource("1_1xyps")
+
+[node name="Head" type="Node3D" parent="." unique_id=1163300351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=548424471]
+
+[node name="WeaponHolder" type="Node3D" parent="Head" unique_id=734619863]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=43896049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1xyps")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1630175380]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_wf8xl")
+
+[node name="Abilities" type="Node" parent="." unique_id=1901336776]
+
+[node name="Musket" type="Node" parent="Abilities" unique_id=570751567]
+script = ExtResource("2_q50x8")
+metadata/_custom_type_script = "uid://cgki5vo1q2hn6"
+
+[node name="Flintlock" type="Node" parent="Abilities" unique_id=1741759279]
+script = ExtResource("3_deh7o")
+metadata/_custom_type_script = "uid://uonyh4wwj3w7"
+
+[node name="Retreat" parent="Abilities" unique_id=1971154756 instance=ExtResource("4_5ahsj")]
+
+[node name="SmokeCanister" parent="Abilities" unique_id=276487405 instance=ExtResource("5_xb7vd")]
+
+[node name="Volley" parent="Abilities" unique_id=1800544188 instance=ExtResource("6_ebtu4")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
+
+[node name="InterpolationController" type="Node" parent="." unique_id=538085759]
+script = ExtResource("2_ku7lh")
+
+[node name="LagCompensationBuffer" type="Node" parent="." unique_id=1720481619]
+script = ExtResource("3_238cb")
+
+[node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
+script = ExtResource("4_o8tqa")
+
+[node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("5_q50x8")]

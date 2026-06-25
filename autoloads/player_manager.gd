@@ -5,6 +5,10 @@ enum Team { NONE = -1, TEAM_A = 0, TEAM_B = 1 }
 # peer_id: { steam_id, name, team }
 var player_registry: Dictionary = {}
 
+const HEROES: Array = [
+	preload("res://heroes/resources/ex_navy_officer_data.tres"),
+]
+
 signal player_registered(peer_id: int)
 signal team_assigned(peer_id: int, team: Team)
 

@@ -14,6 +14,8 @@ func _ready():
 	if direction != Vector3.ZERO:
 		look_at(start_pos + direction)
 	max_distance = speed * lifetime
+	await get_tree().physics_frame
+	await get_tree().physics_frame
 	active = true
 	
 	if multiplayer.is_server():

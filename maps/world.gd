@@ -7,7 +7,7 @@ extends Node3D
 @onready var projectiles_node: Node3D = $Projectiles
 @onready var projectiles_spawner: MultiplayerSpawner = $Projectiles/MultiplayerSpawner
 
-const PLAYER_SCENE = preload("res://player/scenes/player.tscn")
+const PLAYER_SCENE = PlayerManager.HEROES[0].hero_scene
 
 var player_instances = []
 

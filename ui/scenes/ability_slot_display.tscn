@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://c3i8gvwd2qj52"]
+
+[ext_resource type="Script" uid="uid://bhttfnntlwq21" path="res://ui/scripts/ability_slot_display.gd" id="1_gdeci"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gtngf"]
+bg_color = Color(0.32, 0.32, 0.32, 1)
+
+[node name="AbilitySlotDisplay" type="Control" unique_id=649471692]
+custom_minimum_size = Vector2(60, 80)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_gdeci")
+
+[node name="Background" type="Panel" parent="." unique_id=884314738]
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gtngf")
+
+[node name="IconRect" type="TextureRect" parent="Background" unique_id=1292999766]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+
+[node name="CooldownOverlay" type="Control" parent="Background" unique_id=1981467665]
+anchors_preset = 0
+offset_right = 60.0
+offset_bottom = 60.0
+
+[node name="OverlayRect" type="ColorRect" parent="Background/CooldownOverlay" unique_id=298636419]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.44313726)
+
+[node name="CooldownLabel" type="Label" parent="Background" unique_id=501319349]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -30.0
+offset_top = -3.0
+offset_right = 30.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "ready"
+horizontal_alignment = 1
+
+[node name="ChargeBar" type="ProgressBar" parent="Background" unique_id=270829690]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -30.0
+offset_top = -7.0
+offset_right = 30.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="KeybindLabel" type="Label" parent="Background" unique_id=581780423]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 60.0
+horizontal_alignment = 1
+vertical_alignment = 1

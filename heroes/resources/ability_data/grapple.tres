@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://celdsrityfxpy"]
+
+[ext_resource type="Script" uid="uid://dwnj3qg2y1f1w" path="res://hero_base/resources/ability_data.gd" id="1_yaaa4"]
+
+[resource]
+script = ExtResource("1_yaaa4")
+ability_name = "Grapple"
+slot = 1
+cooldown = 5.0
+metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

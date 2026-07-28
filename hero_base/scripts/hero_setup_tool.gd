@@ -9,11 +9,13 @@ func _enter_tree():
 	_setup_hero_nodes()
 
 func _setup_hero_nodes():
-	# Don't add if nodes already exist
 	if get_node_or_null("Head"):
 		return
 	
 	print("HeroBase: auto-setting up hero nodes...")
+	
+	set_collision_layer_value(1, false)
+	set_collision_layer_value(2, true)
 	
 	# Head + Camera
 	var head = Node3D.new()
@@ -27,10 +29,20 @@ func _setup_hero_nodes():
 	head.add_child(camera)
 	camera.owner = get_tree().edited_scene_root
 	
-	var weapon_holder = Node3D.new()
-	weapon_holder.name = "WeaponHolder"
-	head.add_child(weapon_holder)
-	weapon_holder.owner = get_tree().edited_scene_root
+	var viewmodel_camera = Camera3D.new()
+	viewmodel_camera.name = "ViewmodelCamera3D"
+	head.add_child(viewmodel_camera)
+	viewmodel_camera.owner = get_tree().edited_scene_root
+	
+	var viewmodel_root = Node3D.new()
+	viewmodel_root.name = "ViewmodelRoot"
+	head.add_child(viewmodel_root)
+	viewmodel_root.owner = get_tree().edited_scene_root
+	
+	var muzzle_point = Marker3D.new()
+	muzzle_point.name = "MuzzlePoint"
+	viewmodel_root.add_child(muzzle_point)
+	viewmodel_root.owner = get_tree().edited_scene_root
 	
 	# Collision
 	var col = CollisionShape3D.new()
@@ -66,23 +78,25 @@ func _setup_hero_nodes():
 	add_child(sync)
 	sync.owner = get_tree().edited_scene_root
 	
+	print("SET PROPERTIES TO SYNC IN MULTIPLAYER SYNCHRONIZER")
+	
 	# Support nodes
-	var interp = Node.new()
+	var interp = InterpolationController.new()
 	interp.name = "InterpolationController"
 	add_child(interp)
 	interp.owner = get_tree().edited_scene_root
 	
-	var lag = Node.new()
+	var lag = LagCompensationBuffer.new()
 	lag.name = "LagCompensationBuffer"
 	add_child(lag)
 	lag.owner = get_tree().edited_scene_root
 	
-	var health = Node.new()
+	var health = PlayerHealth.new()
 	health.name = "PlayerHealth"
 	add_child(health)
 	health.owner = get_tree().edited_scene_root
 	
-	var whb = Node3D.new()
+	var whb = load("res://ui/scenes/world_health_bar.tscn").instantiate()
 	whb.name = "WorldHealthBar"
 	add_child(whb)
 	whb.owner = get_tree().edited_scene_root

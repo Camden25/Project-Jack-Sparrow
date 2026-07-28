@@ -1,9 +1,6 @@
 extends HitscanWeaponBase
 class_name Musket
-
-# Musket specific stats — these override whatever is in WeaponData
-# for things that need code-level control
-
+	
 var is_aiming: bool = false
 var aim_fov: float = 40.0
 var default_fov: float = 75.0
@@ -12,8 +9,6 @@ var fov_lerp_speed: float = 10.0
 signal aim_changed(aiming: bool)
 
 func _ready():
-	# Listen for aim input — handled here not in HeroBase
-	# since aiming is weapon-specific
 	pass
 
 func setup(player: HeroBase):

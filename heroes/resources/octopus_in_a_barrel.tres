@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="HeroData" format=3 uid="uid://cro3jaibcuy7m"]
+
+[ext_resource type="Script" uid="uid://d3o14sr872sv0" path="res://hero_base/resources/hero_data.gd" id="1_536l1"]
+[ext_resource type="PackedScene" uid="uid://cgig6n2qrnega" path="res://heroes/octopus_in_a_barrel/scenes/octopus_in_a_barrel.tscn" id="1_wtd1s"]
+
+[resource]
+script = ExtResource("1_536l1")
+hero_name = "Octopus in a Barrel"
+hero_description = "Just a funny octopus that grappels around and is in a barrel. Also has a cool shotgun"
+hero_scene = ExtResource("1_wtd1s")
+metadata/_custom_type_script = "uid://d3o14sr872sv0"

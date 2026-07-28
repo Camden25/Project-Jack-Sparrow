@@ -21,3 +21,9 @@ func _handle_reload():
 		var flintlock: Flintlock = get_weapon(WeaponData.WeaponSlot.SECONDARY)
 		if flintlock:
 			flintlock.reload()
+
+func get_hud_weapon() -> Weapon:
+	var musket: Musket = get_weapon(WeaponData.WeaponSlot.PRIMARY)
+	if musket and musket.is_aiming:
+		return musket
+	return get_weapon(WeaponData.WeaponSlot.SECONDARY)

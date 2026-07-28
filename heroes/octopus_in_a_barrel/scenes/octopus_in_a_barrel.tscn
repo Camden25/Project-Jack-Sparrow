@@ -1,0 +1,109 @@
+[gd_scene format=3 uid="uid://cgig6n2qrnega"]
+
+[ext_resource type="Script" uid="uid://boq4td7r5t5c7" path="res://heroes/octopus_in_a_barrel/scripts/octopus_in_a_barrel.gd" id="1_1ysjl"]
+[ext_resource type="Script" uid="uid://f2earvj8moqy" path="res://heroes/octopus_in_a_barrel/weapons/shotgun.gd" id="2_1bncc"]
+[ext_resource type="Resource" uid="uid://lmdcyshj0jxg" path="res://heroes/resources/weapon_data/shotgun.tres" id="3_88k53"]
+[ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_o7liv"]
+[ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="3_p17dx"]
+[ext_resource type="Script" uid="uid://0x6btoyovj4i" path="res://heroes/octopus_in_a_barrel/abilities/grapple.gd" id="4_dqia8"]
+[ext_resource type="Resource" uid="uid://celdsrityfxpy" path="res://heroes/resources/ability_data/grapple.tres" id="5_3lchr"]
+[ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="5_hoo6i"]
+[ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="6_hoo6i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
+albedo_color = Color(0.13757324, 0.44465637, 0.62890625, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hoo6i"]
+material = SubResource("StandardMaterial3D_5ahsj")
+size = Vector3(0.2, 0.2, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_88k53"]
+size = Vector3(0.2, 0.2, 0.8)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1bncc"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_o7liv"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3lchr"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_head_rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="OctopusInABarrel" type="CharacterBody3D" unique_id=12484712]
+collision_layer = 2
+script = ExtResource("1_1ysjl")
+metadata/_custom_type_script = "uid://yhqofnff6cko"
+
+[node name="Head" type="Node3D" parent="." unique_id=1923888390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=3988431]
+
+[node name="ViewmodelCamera3D" type="Camera3D" parent="Head" unique_id=158213675]
+
+[node name="ViewmodelRoot" type="Node3D" parent="Head" unique_id=1616452529]
+
+[node name="ShotgunViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1217954659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+layers = 524288
+mesh = SubResource("BoxMesh_hoo6i")
+
+[node name="MuzzlePoint" type="Marker3D" parent="Head/ViewmodelRoot" unique_id=539089620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -1.1008494)
+
+[node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1505101644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1782241447]
+
+[node name="ShotgunWorldMesh" type="MeshInstance3D" parent="Skeleton3D" unique_id=1677455256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+visible = false
+mesh = SubResource("BoxMesh_88k53")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=29040932]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1bncc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=829215856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_o7liv")
+
+[node name="Abilities" type="Node" parent="." unique_id=121148696]
+
+[node name="Shotgun" type="Node" parent="Abilities" unique_id=416376473]
+script = ExtResource("2_1bncc")
+muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
+data = ExtResource("3_88k53")
+viewmodel_path = NodePath("../../Head/ViewmodelRoot/ShotgunViewmodel")
+world_mesh_path = NodePath("../../Skeleton3D/ShotgunWorldMesh")
+metadata/_custom_type_script = "uid://blshrlucknmji"
+
+[node name="GrappleAbility" type="Node" parent="Abilities" unique_id=405542601]
+script = ExtResource("4_dqia8")
+data = ExtResource("5_3lchr")
+metadata/_custom_type_script = "uid://0x6btoyovj4i"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=95053359]
+replication_config = SubResource("SceneReplicationConfig_3lchr")
+
+[node name="InterpolationController" type="Node" parent="." unique_id=689914105]
+script = ExtResource("3_p17dx")
+
+[node name="LagCompensationBuffer" type="Node" parent="." unique_id=2072851932]
+script = ExtResource("3_o7liv")
+
+[node name="PlayerHealth" type="Node" parent="." unique_id=2053570232]
+script = ExtResource("5_hoo6i")
+
+[node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("6_hoo6i")]

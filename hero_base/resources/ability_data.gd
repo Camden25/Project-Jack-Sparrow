@@ -1,7 +1,7 @@
 extends Resource
 class_name AbilityData
 
-enum AbilitySlot { PRIMARY, SECONDARY, ABILITY_1, ABILITY_2, ULTIMATE }
+enum AbilitySlot { PRIMARY, SECONDARY, ABILITY_1, ABILITY_2, ABILITY_3, ULTIMATE }
 
 @export var ability_name: String = ""
 @export var icon: Texture2D

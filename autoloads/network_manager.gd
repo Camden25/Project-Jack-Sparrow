@@ -234,17 +234,17 @@ func set_game_state(state: GameState):
 
 @rpc("authority", "call_remote", "reliable")
 func _redirect_to_game():
-	get_tree().change_scene_to_file("res://maps/world.tscn")
-	_client_ready_in_game.rpc_id(1)
+	SceneManager.goto_scene("res://maps/world.tscn")
+	#_client_ready_in_game.rpc_id(1)
 
-@rpc("any_peer", "call_remote", "reliable")
-func _client_ready_in_game():
-	var peer_id = multiplayer.get_remote_sender_id()
-	var world = get_tree().get_root().get_node_or_null("World")
-	if world:
-		world._spawn_player(peer_id)
-		var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
-		world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
+#@rpc("any_peer", "call_remote", "reliable")
+#func _client_ready_in_game():
+	#var peer_id = multiplayer.get_remote_sender_id()
+	#var world = SceneManager.get_world()
+	#if world and world.has_node("Players"):
+		#world._spawn_player(peer_id)
+		#var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
+		#world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 
 #endregion
 

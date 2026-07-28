@@ -1,4 +1,5 @@
 extends Node
+class_name PlayerHealth
 
 signal health_changed(new_health: int)
 @warning_ignore("unused_signal")
@@ -14,14 +15,12 @@ func _enter_tree() -> void:
 func apply_damage(amount: int, attacker_peer_id: int):
 	if not multiplayer.is_server():
 		return
+	if health <= 0:
+		return
 	health = max(0, health - amount)
 	_sync_health.rpc(health)
 	if health <= 0:
-		var respawn_manager = get_tree().get_root().get_node_or_null("World/RespawnManager")
-		if respawn_manager:
-			respawn_manager.handle_player_death(
-				get_parent().get_multiplayer_authority()
-			)
+		emit_signal("player_died", get_parent().get_multiplayer_authority())
 		MatchEvents.confirm_kill.rpc(attacker_peer_id, get_parent().get_multiplayer_authority())
 
 func apply_healing(amount: int, _healer_peer_id: int):
@@ -29,13 +28,11 @@ func apply_healing(amount: int, _healer_peer_id: int):
 		return
 	health = min(MAX_HEALTH, health + amount)
 	_sync_health.rpc(health)
-	#if health <= 0:
-		#emit_signal("player_died", get_parent().get_multiplayer_authority())
 
 func set_health(amount: int):
-	if not multiplayer.is_server():
-		return
+	health = amount
 	health = clamp(amount, 0, MAX_HEALTH)
+	emit_signal("health_changed", health)
 	_sync_health.rpc(health)
 
 @rpc("authority", "call_local", "reliable")

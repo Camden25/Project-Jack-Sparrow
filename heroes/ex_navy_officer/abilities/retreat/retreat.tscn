@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://ca568eoc2nil5"]
-
-[ext_resource type="Script" uid="uid://c0iddf3hmgesl" path="res://heroes/ex_navy_officer/abilities/retreat/retreat.gd" id="1_qo4jw"]
-[ext_resource type="Resource" uid="uid://882n8etq1nxu" path="res://heroes/resources/ability_data/retreat.tres" id="2_qo4jw"]
-
-[node name="Retreat" type="Node" unique_id=1971154756]
-script = ExtResource("1_qo4jw")
-data = ExtResource("2_qo4jw")
-metadata/_custom_type_script = "uid://dssyoryef8i1m"

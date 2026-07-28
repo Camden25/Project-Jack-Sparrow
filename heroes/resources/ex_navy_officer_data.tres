@@ -6,5 +6,6 @@
 [resource]
 script = ExtResource("1_njml3")
 hero_name = "Ex Navy Officer"
+hero_description = "This is an ex navy officer that joined the pirates."
 hero_scene = ExtResource("1_jcg3m")
 metadata/_custom_type_script = "uid://d3o14sr872sv0"

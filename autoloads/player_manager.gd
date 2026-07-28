@@ -2,12 +2,14 @@ extends Node
 
 enum Team { NONE = -1, TEAM_A = 0, TEAM_B = 1 }
 
-# peer_id: { steam_id, name, team }
-var player_registry: Dictionary = {}
+var player_registry: Dictionary = {} # peer_id: { steam_id, name, team }
 
 const HEROES: Array = [
 	preload("res://heroes/resources/ex_navy_officer_data.tres"),
+	preload("res://heroes/resources/octopus_in_a_barrel.tres")
 ]
+
+var hero_selections: Dictionary = {} # peer_id: hero_index
 
 signal player_registered(peer_id: int)
 signal team_assigned(peer_id: int, team: Team)
@@ -65,3 +67,19 @@ func unregister_player(peer_id: int):
 
 func is_same_team(peer_a: int, peer_b: int) -> bool:
 	return get_team(peer_a) == get_team(peer_b)
+
+func set_hero_selections(selections: Dictionary):
+	hero_selections = selections
+
+func get_hero_for_peer(peer_id: int) -> HeroData:
+	if HEROES.is_empty():
+		return null
+	print(hero_selections)
+	print(peer_id)
+	var index = hero_selections.get(peer_id, 0)
+	if peer_id == 1:
+		print("peer id is local so getting id 0")
+		index = hero_selections.get(0, 0)
+	print(index)
+	index = clamp(index, 0, HEROES.size() - 1)
+	return HEROES[index]

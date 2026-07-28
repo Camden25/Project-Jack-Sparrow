@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ca568eoc2nil5"]
+
+[ext_resource type="Script" uid="uid://c0iddf3hmgesl" path="res://heroes/ex_navy_officer/abilities/dash/dash.gd" id="1_vkjm2"]
+[ext_resource type="Resource" uid="uid://882n8etq1nxu" path="res://heroes/resources/ability_data/dash.tres" id="2_mys8p"]
+
+[node name="Dash" type="Node" unique_id=1971154756]
+script = ExtResource("1_vkjm2")
+data = ExtResource("2_mys8p")
+metadata/_custom_type_script = "uid://dssyoryef8i1m"

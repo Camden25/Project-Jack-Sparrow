@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dcb06heyrt3vo" path="res://ui/scripts/hud.gd" id="1_f048j"]
 
-[node name="Hud" type="CanvasLayer" unique_id=1709117453 groups=["UI"]]
+[node name="HUD" type="CanvasLayer" unique_id=1709117453 groups=["UI"]]
 script = ExtResource("1_f048j")
 
 [node name="HealthContainer" type="VBoxContainer" parent="." unique_id=1372640014]
@@ -17,7 +17,7 @@ layout_mode = 2
 [node name="HealthLabel" type="Label" parent="HealthContainer" unique_id=395244896]
 layout_mode = 2
 
-[node name="AmmoContainer" type="VBoxContainer" parent="." unique_id=1462678104]
+[node name="AmmoContainer" type="HBoxContainer" parent="." unique_id=467167009]
 offset_left = 8.0
 offset_top = 539.0
 offset_right = 48.0
@@ -26,17 +26,47 @@ offset_bottom = 579.0
 [node name="AmmoLabel" type="Label" parent="AmmoContainer" unique_id=349336618]
 layout_mode = 2
 
-[node name="AbilityCooldown" type="PanelContainer" parent="." unique_id=1128658568]
-offset_left = 1049.0
-offset_top = 565.0
-offset_right = 1137.0
-offset_bottom = 642.0
-
-[node name="CooldownBar" type="ProgressBar" parent="AbilityCooldown" unique_id=783707118]
+[node name="ReloadLabel" type="Label" parent="AmmoContainer" unique_id=2111679346]
 layout_mode = 2
+text = "RELOADING..."
 
-[node name="CooldownLabel" type="Label" parent="AbilityCooldown" unique_id=1379424185]
+[node name="AbilityContainer" type="HBoxContainer" parent="." unique_id=2129524991]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="ObjectiveContainer" type="VBoxContainer" parent="." unique_id=909401379]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -57.0
+offset_top = 10.0
+offset_right = 57.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="WinsLabel" type="Label" parent="ObjectiveContainer" unique_id=1777308432]
 layout_mode = 2
+text = "A: 0 | B: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ControlPointLabel" type="Label" parent="ObjectiveContainer" unique_id=465669810]
+layout_mode = 2
+text = "A:  0%  |  B: 0%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PingLabel" type="Label" parent="." unique_id=1685956921]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0 ms"
 
 [node name="Crosshair" type="Label" parent="." unique_id=1822108120]
 anchors_preset = 15
@@ -49,36 +79,47 @@ text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ControlPointProgress" type="Label" parent="." unique_id=465669810]
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 78.0
-grow_horizontal = 2
-text = "A: 0  |  B: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DeathLabel" type="Label" parent="." unique_id=367231600]
-visible = false
+[node name="HitMarkerContainer" type="Control" parent="." unique_id=1313895928]
+layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -53.0
-offset_top = -60.0
-offset_right = 53.0
-offset_bottom = -37.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 32
-text = "You are dead!"
+
+[node name="KillFeedContainer" type="VBoxContainer" parent="." unique_id=339027768]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="DeathLabel" type="Label" parent="." unique_id=379492480]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "YOU DIED!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PingLabel" type="Label" parent="." unique_id=1685956921]
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 44.0
-offset_bottom = 27.0
-text = "0 ms"
+[node name="RespawnTimer" type="Label" parent="DeathLabel" unique_id=2139434579]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -43.0
+offset_top = 17.5
+offset_right = 43.0
+offset_bottom = 40.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "10 seconds"
+horizontal_alignment = 1
+vertical_alignment = 1

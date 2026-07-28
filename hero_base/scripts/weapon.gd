@@ -13,10 +13,22 @@ signal ammo_changed(current: int, maximum: int)
 signal reload_started
 signal reload_finished
 
+@export var viewmodel_path: NodePath
+@export var world_mesh_path: NodePath
+
+var _viewmodel: Node3D = null
+var _world_mesh: Node3D = null
+
 func setup(player: HeroBase):
 	owner_player = player
 	if data:
 		current_ammo = data.max_ammo
+	
+	if viewmodel_path:
+		_viewmodel = owner_player.get_node_or_null(viewmodel_path)
+	if world_mesh_path:
+		_world_mesh = owner_player.get_node_or_null(world_mesh_path)
+	_set_visible(false)
 
 func try_fire():
 	if not _can_fire or is_reloading or current_ammo <= 0:
@@ -29,7 +41,7 @@ func try_fire():
 		reload()
 
 func _fire():
-	pass  # override in subclass
+	pass
 
 func reload():
 	if is_reloading or not data or current_ammo == data.max_ammo:
@@ -51,3 +63,12 @@ func _process(delta: float):
 		if data and _fire_timer >= data.fire_rate:
 			_fire_timer = 0.0
 			_can_fire = true
+
+func set_weapon_visible(visible: bool):
+	_set_visible(visible)
+
+func _set_visible(v: bool):
+	if _viewmodel:
+		_viewmodel.visible = v
+	if _world_mesh:
+		_world_mesh.visible = v

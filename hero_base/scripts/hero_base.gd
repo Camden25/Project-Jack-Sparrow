@@ -1,7 +1,6 @@
 extends Player
 class_name HeroBase
 
-# Slot dictionaries — populated automatically from Abilities node children
 var ability_slots: Dictionary = {}  # AbilityData.AbilitySlot: Ability
 var weapon_slots: Dictionary = {}   # WeaponData.WeaponSlot: Weapon
 
@@ -15,7 +14,6 @@ signal healing_done(amount: int)
 func _ready():
 	super._ready()
 	
-	# Find the first Abilities node and register it
 	var abilities_node = get_node_or_null("Abilities")
 	if abilities_node:
 		_register_from_node(abilities_node)
@@ -24,17 +22,20 @@ func _ready():
 func _register_from_node(node: Node):
 	ability_slots.clear()
 	weapon_slots.clear()
-	print("registering abilites (hero_base.gd)")
+	
 	for child in node.get_children():
 		if child is Ability:
 			child.setup(self)
 			if child.data:
-				print("ability has data")
 				ability_slots[child.data.slot] = child
 		elif child is Weapon:
 			child.setup(self)
 			if child.data:
 				weapon_slots[child.data.slot] = child
+	
+	var primary = weapon_slots.get(WeaponData.WeaponSlot.PRIMARY)
+	if primary:
+		primary.set_weapon_visible(true)
 
 func swap_abilities(new_abilities_node: Node):
 	# Disable current
@@ -57,6 +58,14 @@ func _unhandled_input(event):
 	
 	if event.is_action_pressed("primary_fire"):
 		_handle_primary_fire()
+		var ability = ability_slots.get(AbilityData.AbilitySlot.PRIMARY)
+		if ability:
+			ability.try_activate()
+	
+	if event.is_action_pressed("secondary_fire"):
+		var ability = ability_slots.get(AbilityData.AbilitySlot.SECONDARY)
+		if ability:
+			ability.try_activate()
 	
 	if event.is_action_pressed("ability1"):
 		var ability = ability_slots.get(AbilityData.AbilitySlot.ABILITY_1)
@@ -65,6 +74,11 @@ func _unhandled_input(event):
 	
 	if event.is_action_pressed("ability2"):
 		var ability = ability_slots.get(AbilityData.AbilitySlot.ABILITY_2)
+		if ability:
+			ability.try_activate()
+	
+	if event.is_action_pressed("ability3"):
+		var ability = ability_slots.get(AbilityData.AbilitySlot.ABILITY_3)
 		if ability:
 			ability.try_activate()
 	
@@ -92,3 +106,33 @@ func get_ability(slot: AbilityData.AbilitySlot) -> Ability:
 
 func get_weapon(slot: WeaponData.WeaponSlot) -> Weapon:
 	return weapon_slots.get(slot)
+
+func get_hud_weapon() -> Weapon:
+	return weapon_slots.get(WeaponData.WeaponSlot.PRIMARY)
+
+func get_hud_abilities() -> Array:
+	var result = []
+	var slots = [
+		AbilityData.AbilitySlot.PRIMARY,
+		AbilityData.AbilitySlot.SECONDARY,
+		AbilityData.AbilitySlot.ABILITY_1,
+		AbilityData.AbilitySlot.ABILITY_2,
+		AbilityData.AbilitySlot.ABILITY_3,
+		AbilityData.AbilitySlot.ULTIMATE
+	]
+	for slot in slots:
+		var ability = ability_slots.get(slot)
+		if ability:
+			result.append(ability)
+	return result
+
+func _physics_process(delta):
+	super._physics_process(delta)
+	
+	if !is_multiplayer_authority():
+		return
+	
+	for ability in ability_slots.values():
+		ability.physics_update(delta)
+	
+	move_and_slide()

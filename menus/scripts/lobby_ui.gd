@@ -127,6 +127,6 @@ func _refresh_player_list():
 func start_game():
 	print("starting game")
 	NetworkManager.set_game_state(NetworkManager.GameState.IN_GAME)
-	get_tree().change_scene_to_file("res://maps/world.tscn")
+	SceneManager.goto_scene("res://maps/world.tscn")
 
 #endregion

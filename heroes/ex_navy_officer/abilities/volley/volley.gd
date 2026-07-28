@@ -37,12 +37,12 @@ func _fire_volley(target: Vector3):
 		return
 	
 	# Spawn flare at target for warning
-	var world = owner_player.get_tree().get_root().get_node_or_null("World")
-	if not world:
+	var projectiles_node = SceneManager.get_projectiles_node()
+	if not projectiles_node:
 		return
 	
 	var flare = FLARE_SCENE.instantiate()
-	world.get_node("Projectiles").add_child(flare)
+	projectiles_node.add_child(flare)
 	flare.global_position = target + Vector3(0, 0.1, 0)
 	
 	# Wait for warning duration
@@ -82,7 +82,7 @@ func _fire_volley(target: Vector3):
 		
 		# Spawn visual for each shot
 		var shot_vfx = VOLLEY_SHOT_SCENE.instantiate()
-		world.get_node("Projectiles").add_child(shot_vfx)
+		projectiles_node.add_child(shot_vfx)
 		if result:
 			shot_vfx.global_position = result.position
 		else:

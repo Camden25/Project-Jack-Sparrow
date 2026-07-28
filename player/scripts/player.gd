@@ -6,19 +6,6 @@ var JUMP_VELOCITY = 6.0
 var SENSITIVITY = 0.003
 var AIR_CONTROL = 0.3
 
-#dash stuff
-const DASH_SPEED: float = 30.0
-const DASH_DURATION: float = 0.15
-const DASH_COOLDOWN: float = 3.0
-
-var is_dashing: bool = false
-var dash_timer: float = 0.0
-var dash_cooldown_timer: float = 0.0
-var dash_direction: Vector3 = Vector3.ZERO
-
-signal dash_cooldown_changed(remaining: float, total: float)
-#end dash stuff
-
 var spawn_confirmed: bool = false
 
 @export var net_position: Vector3
@@ -32,14 +19,20 @@ var spawn_confirmed: bool = false
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 
-@onready var weapon_holder = $Head/WeaponHolder
+@onready var weapon_holder = $Head/ViewmodelRoot
 @onready var world_health_bar = $WorldHealthBar
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+var movement_override: bool = false
+
 func _enter_tree():
 	var peer_id = int(name)
 	set_multiplayer_authority(peer_id)
+	
+	var sync = get_node_or_null("MultiplayerSynchronizer")
+	if sync:
+		sync.set_multiplayer_authority(peer_id)
 
 func _ready():
 	# Only the owner gets camera and input
@@ -108,9 +101,6 @@ func _unhandled_input(event):
 		var weapon = weapon_holder.get_child(0) if weapon_holder.get_child_count() > 0 else null
 		if weapon:
 			weapon.reload()
-	
-	if event.is_action_pressed("ability1"):
-		_try_dash()
 
 func _process(delta: float) -> void:
 	if not is_multiplayer_authority():
@@ -120,25 +110,16 @@ func _process(delta: float) -> void:
 func _physics_process(delta):
 	if not is_multiplayer_authority():
 		return
-	
 	if not spawn_confirmed:
-		print("spawn not confirmed for ", name)
 		return
 	
-	# Gravity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	
-	# Jump
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	
-	_tick_dash(delta)
-	
-	if is_dashing:
-		velocity.x = dash_direction.x * DASH_SPEED
-		velocity.z = dash_direction.z * DASH_SPEED
-	else:
+	if not movement_override:
 		var speed = SPEED
 		var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -151,11 +132,10 @@ func _physics_process(delta):
 				velocity.x = move_toward(velocity.x, 0, speed)
 				velocity.z = move_toward(velocity.z, 0, speed)
 		else:
-			# Air control
 			velocity.x = lerp(velocity.x, direction.x * speed, AIR_CONTROL * delta * 10)
 			velocity.z = lerp(velocity.z, direction.z * speed, AIR_CONTROL * delta * 10)
 	
-	move_and_slide()
+	# HeroBase will call move_and_slide()
 	
 	net_position = position
 	net_rotation = rotation
@@ -163,34 +143,6 @@ func _physics_process(delta):
 	
 	if multiplayer.is_server():
 		lag_buffer.record()
-
-func _try_dash():
-	if is_dashing or dash_cooldown_timer > 0:
-		return
-	
-	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	
-	# Dash in input direction or forward if no input
-	if input_dir != Vector2.ZERO:
-		dash_direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	else:
-		dash_direction = -transform.basis.z
-	
-	is_dashing = true
-	dash_timer = DASH_DURATION
-	dash_cooldown_timer = DASH_COOLDOWN
-	emit_signal("dash_cooldown_changed", dash_cooldown_timer, DASH_COOLDOWN)
-
-func _tick_dash(delta: float):
-	if is_dashing:
-		dash_timer -= delta
-		if dash_timer <= 0:
-			is_dashing = false
-	
-	if dash_cooldown_timer > 0:
-		dash_cooldown_timer -= delta
-		dash_cooldown_timer = max(0.0, dash_cooldown_timer)
-		emit_signal("dash_cooldown_changed", dash_cooldown_timer, DASH_COOLDOWN)
 
 func _setup_health_bar(peer_id: int):
 	print("_setup_health_bar called for ", peer_id, " on client ", multiplayer.get_unique_id())

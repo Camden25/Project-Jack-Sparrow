@@ -6,7 +6,7 @@ extends Node3D
 
 const MAX_WIDTH: float = 1.5
 const BAR_HEIGHT: float = 0.3
-const OFFSET: Vector3 = Vector3(0, 1.4, 0)
+const OFFSET: Vector3 = Vector3(0, 2.0, 0)
 
 var team: PlayerManager.Team = PlayerManager.Team.NONE
 var local_player_team: PlayerManager.Team = PlayerManager.Team.NONE

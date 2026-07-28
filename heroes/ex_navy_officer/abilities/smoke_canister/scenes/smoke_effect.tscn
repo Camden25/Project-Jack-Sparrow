@@ -1,3 +1,20 @@
 [gd_scene format=3 uid="uid://byc0hgpt4cwuo"]
 
+[ext_resource type="Script" uid="uid://6o5bet2oe31l" path="res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_effect.gd" id="1_78x4t"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_avlkm"]
+density = 8.0
+albedo = Color(0.4765625, 0.4765625, 0.4765625, 1)
+emission = Color(1, 1, 1, 1)
+edge_fade = 0.021022355
+
 [node name="SmokeEffect" type="Node3D" unique_id=1644058512]
+script = ExtResource("1_78x4t")
+
+[node name="Timer" type="Timer" parent="." unique_id=46401133]
+
+[node name="FogVolume" type="FogVolume" parent="." unique_id=1719563836]
+shape = 0
+material = SubResource("FogMaterial_avlkm")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

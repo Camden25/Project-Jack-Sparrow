@@ -12,9 +12,7 @@ signal cooldown_changed(remaining: float, total: float)
 signal uses_changed(remaining: int, maximum: int)
 
 func setup(player: HeroBase):
-	print("ability being setup (ability.gd)")
 	owner_player = player
-	print(data)
 	if data and data.max_uses != -1:
 		uses_remaining = data.max_uses
 
@@ -24,8 +22,9 @@ func try_activate():
 	_activate()
 	if data:
 		if data.max_uses != -1:
-			uses_remaining -= 1
-			emit_signal("uses_changed", uses_remaining, data.max_uses)
+			print("multi use not implemented yet")
+			#uses_remaining -= 1
+			#emit_signal("uses_changed", uses_remaining, data.max_uses)
 		if data.cooldown > 0:
 			_start_cooldown()
 
@@ -63,8 +62,10 @@ func _process(delta: float):
 		return
 	cooldown_timer -= delta
 	cooldown_timer = max(0.0, cooldown_timer)
-	print(cooldown_timer)
 	if data:
 		emit_signal("cooldown_changed", cooldown_timer, data.cooldown)
 	if cooldown_timer <= 0.0:
 		is_on_cooldown = false
+
+func physics_update(delta: float):
+	pass

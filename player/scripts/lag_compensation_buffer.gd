@@ -1,4 +1,5 @@
 extends Node
+class_name LagCompensationBuffer
 
 const BUFFER_DURATION = 0.6 # store 600ms of history
 const TICK_RATE = 0.016 # ~60hz

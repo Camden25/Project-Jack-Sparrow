@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://diuyhdfdcl3or"]
 
-[ext_resource type="Script" uid="uid://beve35e5xif14" path="res://hero_base/scripts/ultimate_ability.gd" id="1_px7f5"]
+[ext_resource type="Script" uid="uid://603jv55hnnkj" path="res://heroes/ex_navy_officer/abilities/volley/volley.gd" id="1_kxg5u"]
 [ext_resource type="Resource" uid="uid://2sjl6gcfc1xu" path="res://heroes/resources/ability_data/volley.tres" id="2_hon1w"]
 
 [node name="Volley" type="Node" unique_id=1800544188]
-script = ExtResource("1_px7f5")
+script = ExtResource("1_kxg5u")
 data = ExtResource("2_hon1w")
 metadata/_custom_type_script = "uid://beve35e5xif14"

@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dokpjvt54ap1l"]
+
+[ext_resource type="Script" uid="uid://m4ijgcsexyj5" path="res://core/scripts/root.gd" id="1_2i3gc"]
+[ext_resource type="PackedScene" uid="uid://cii2uxyl0lgup" path="res://ui/scenes/hud.tscn" id="2_mml73"]
+[ext_resource type="PackedScene" uid="uid://b6cdcva32msi5" path="res://ui/scenes/hero_select_overlay.tscn" id="3_1uw0t"]
+
+[node name="Root" type="Node" unique_id=1148497395]
+script = ExtResource("1_2i3gc")
+
+[node name="PersistentUI" type="CanvasLayer" parent="." unique_id=792978176]
+layer = 10
+
+[node name="HUD" parent="PersistentUI" unique_id=1709117453 instance=ExtResource("2_mml73")]
+
+[node name="HeroSelectOverlay" parent="PersistentUI" unique_id=2029581939 instance=ExtResource("3_1uw0t")]
+
+[node name="SceneContainer" type="SubViewportContainer" parent="." unique_id=1237644513]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="SceneContainer" unique_id=462706517]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4

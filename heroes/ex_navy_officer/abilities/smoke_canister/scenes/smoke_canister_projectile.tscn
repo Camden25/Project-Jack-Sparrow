@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://pa2wdfny6yvu"]
+
+[ext_resource type="Script" uid="uid://g8q2kabqxtjs" path="res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_canister_projectile.gd" id="1_mvl60"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6h167"]
+radius = 0.1
+
+[node name="SmokeCanisterProjectile" type="RigidBody3D" unique_id=823302740]
+collision_layer = 0
+script = ExtResource("1_mvl60")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1658484353]
+shape = SubResource("SphereShape3D_6h167")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="." unique_id=874789403]
+radius = 0.1

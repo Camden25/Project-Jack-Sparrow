@@ -2,14 +2,26 @@
 
 [ext_resource type="Script" uid="uid://r10xq208p2wf" path="res://heroes/ex_navy_officer/scripts/ex_navy_officer.gd" id="1_1xyps"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="2_ku7lh"]
-[ext_resource type="Script" uid="uid://cgki5vo1q2hn6" path="res://heroes/ex_navy_officer/weapons/musket/musket.gd" id="2_q50x8"]
+[ext_resource type="Script" uid="uid://cgki5vo1q2hn6" path="res://heroes/ex_navy_officer/weapons/musket.gd" id="2_q50x8"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_238cb"]
-[ext_resource type="Script" uid="uid://uonyh4wwj3w7" path="res://heroes/ex_navy_officer/weapons/flintlock/flintlock.gd" id="3_deh7o"]
-[ext_resource type="PackedScene" uid="uid://ca568eoc2nil5" path="res://heroes/ex_navy_officer/abilities/retreat/retreat.tscn" id="4_5ahsj"]
+[ext_resource type="Script" uid="uid://uonyh4wwj3w7" path="res://heroes/ex_navy_officer/weapons/flintlock.gd" id="3_deh7o"]
+[ext_resource type="Resource" uid="uid://cjl4hsny2chml" path="res://heroes/resources/weapon_data/musket.tres" id="3_ebtu4"]
+[ext_resource type="PackedScene" uid="uid://ca568eoc2nil5" path="res://heroes/ex_navy_officer/abilities/dash/dash.tscn" id="4_5ahsj"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="4_o8tqa"]
+[ext_resource type="Resource" uid="uid://beyyjfbs4gxkq" path="res://heroes/resources/weapon_data/flintlock.tres" id="5_6in74"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="5_q50x8"]
 [ext_resource type="PackedScene" uid="uid://dwakwibs0a0nd" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.tscn" id="5_xb7vd"]
 [ext_resource type="PackedScene" uid="uid://diuyhdfdcl3or" path="res://heroes/ex_navy_officer/abilities/volley/volley.tscn" id="6_ebtu4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
+albedo_color = Color(0.13757324, 0.44465637, 0.62890625, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6h167"]
+material = SubResource("StandardMaterial3D_5ahsj")
+size = Vector3(0.2, 0.2, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_whncg"]
+size = Vector3(0.2, 0.2, 0.8)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xyps"]
 radius = 0.4
@@ -19,15 +31,51 @@ height = 1.8
 radius = 0.4
 height = 1.8
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_head_rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="ExNavyOfficer" type="CharacterBody3D" unique_id=1407199022]
+collision_layer = 2
 script = ExtResource("1_1xyps")
 
 [node name="Head" type="Node3D" parent="." unique_id=1163300351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=548424471]
+cull_mask = 524287
+current = true
 
-[node name="WeaponHolder" type="Node3D" parent="Head" unique_id=734619863]
+[node name="ViewmodelCamera3D" type="Camera3D" parent="Head" unique_id=448969967]
+cull_mask = 524288
+fov = 60.0
+
+[node name="ViewmodelRoot" type="Node3D" parent="Head" unique_id=734619863]
+
+[node name="MusketViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1605365548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+layers = 524289
+mesh = SubResource("BoxMesh_6h167")
+
+[node name="MuzzlePoint" type="Marker3D" parent="Head/ViewmodelRoot" unique_id=1157625960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -1.1008494)
+
+[node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1095945479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1736886413]
+
+[node name="MusketWorldMesh" type="MeshInstance3D" parent="Skeleton3D" unique_id=914551381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+visible = false
+mesh = SubResource("BoxMesh_whncg")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=43896049]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -41,10 +89,18 @@ mesh = SubResource("CapsuleMesh_wf8xl")
 
 [node name="Musket" type="Node" parent="Abilities" unique_id=570751567]
 script = ExtResource("2_q50x8")
+muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
+data = ExtResource("3_ebtu4")
+viewmodel_path = NodePath("../../Head/ViewmodelRoot/MusketViewmodel")
+world_mesh_path = NodePath("../../Skeleton3D/MusketWorldMesh")
 metadata/_custom_type_script = "uid://cgki5vo1q2hn6"
 
 [node name="Flintlock" type="Node" parent="Abilities" unique_id=1741759279]
 script = ExtResource("3_deh7o")
+muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
+data = ExtResource("5_6in74")
+viewmodel_path = NodePath("../../Head/ViewmodelRoot/MusketViewmodel")
+world_mesh_path = NodePath("../../Skeleton3D/MusketWorldMesh")
 metadata/_custom_type_script = "uid://uonyh4wwj3w7"
 
 [node name="Retreat" parent="Abilities" unique_id=1971154756 instance=ExtResource("4_5ahsj")]
@@ -54,6 +110,7 @@ metadata/_custom_type_script = "uid://uonyh4wwj3w7"
 [node name="Volley" parent="Abilities" unique_id=1800544188 instance=ExtResource("6_ebtu4")]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
+replication_config = SubResource("SceneReplicationConfig_ebtu4")
 
 [node name="InterpolationController" type="Node" parent="." unique_id=538085759]
 script = ExtResource("2_ku7lh")

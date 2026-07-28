@@ -1,4 +1,5 @@
 extends Node
+class_name InterpolationController
 
 const INTERPOLATION_DELAY = 0.1
 const MAX_BUFFER_SIZE = 32

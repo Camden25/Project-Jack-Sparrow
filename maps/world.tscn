@@ -71,19 +71,19 @@ albedo_texture = ExtResource("4_iu4sv")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdhg2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ha2k4"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("5_41f5y")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyssw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81eie"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("5_41f5y")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vi7bc"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("7_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -92,13 +92,13 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_dsm5r"]
 size = Vector3(3, 4, 6)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_htqms"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdhg2"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("5_41f5y")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v2ylt"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vyssw"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -107,13 +107,13 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_ha2k4"]
 size = Vector3(3, 4, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxe6n"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vi7bc"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8wibs"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_htqms"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("7_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -122,19 +122,19 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_op0be"]
 size = Vector3(5, 6, 5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jwm57"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v2ylt"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("8_q1kd2")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kddec"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wxe6n"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("8_q1kd2")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rssya"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8wibs"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -143,13 +143,13 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_2rjxo"]
 size = Vector3(1, 6, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bbxr2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jwm57"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ha2k4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kddec"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -158,7 +158,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_81eie"]
 size = Vector3(2, 1, 16)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rssya"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("4_iu4sv")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -204,13 +204,13 @@ metadata/_custom_type_script = "uid://cuyiv7g74wky1"
 [node name="Players" type="Node3D" parent="." unique_id=865495217]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Players" unique_id=1434814864]
-_spawnable_scenes = PackedStringArray("uid://b3x4vl7qlg45v")
+_spawnable_scenes = PackedStringArray("uid://b3x4vl7qlg45v", "uid://cgig6n2qrnega")
 spawn_path = NodePath("..")
 
 [node name="Projectiles" type="Node3D" parent="." unique_id=473992621]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Projectiles" unique_id=1061296093]
-_spawnable_scenes = PackedStringArray("uid://pa2wdfny6yvu")
+_spawnable_scenes = PackedStringArray("uid://pa2wdfny6yvu", "uid://dfd3jker0emxc")
 spawn_path = NodePath("../..")
 
 [node name="Effects" type="Node3D" parent="." unique_id=1298785704]
@@ -327,7 +327,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D3" unique_id=1114051773 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_pdhg2")
+material = SubResource("StandardMaterial3D_ha2k4")
 block_color = 1
 
 [node name="StaticBody3D11" type="StaticBody3D" parent="Map" unique_id=1895733553]
@@ -338,7 +338,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D11" unique_id=112996642 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_vyssw")
+material = SubResource("StandardMaterial3D_81eie")
 block_color = 1
 
 [node name="StaticBody3D12" type="StaticBody3D" parent="Map" unique_id=594773103]
@@ -349,7 +349,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D12" unique_id=2009344391 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_vi7bc")
+material = SubResource("StandardMaterial3D_xqrul")
 block_color = 5
 
 [node name="StaticBody3D10" type="StaticBody3D" parent="Map" unique_id=56062128]
@@ -360,7 +360,7 @@ shape = SubResource("BoxShape3D_dsm5r")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D10" unique_id=104921570 instance=ExtResource("2_uds71")]
 size = Vector3(3, 4, 6)
-material = SubResource("StandardMaterial3D_htqms")
+material = SubResource("StandardMaterial3D_pdhg2")
 block_color = 1
 
 [node name="StaticBody3D4" type="StaticBody3D" parent="Map" unique_id=1621786155]
@@ -371,7 +371,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D4" unique_id=1872886105 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_v2ylt")
+material = SubResource("StandardMaterial3D_vyssw")
 block_color = 3
 
 [node name="StaticBody3D17" type="StaticBody3D" parent="Map" unique_id=631270102]
@@ -382,7 +382,7 @@ shape = SubResource("BoxShape3D_ha2k4")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D17" unique_id=1786638693 instance=ExtResource("2_uds71")]
 size = Vector3(3, 4, 0.5)
-material = SubResource("StandardMaterial3D_wxe6n")
+material = SubResource("StandardMaterial3D_vi7bc")
 block_color = 3
 
 [node name="StaticBody3D5" type="StaticBody3D" parent="Map" unique_id=254131007]
@@ -393,7 +393,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D5" unique_id=1713144646 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_8wibs")
+material = SubResource("StandardMaterial3D_htqms")
 block_color = 5
 
 [node name="StaticBody3D6" type="StaticBody3D" parent="Map" unique_id=1947543647]
@@ -404,7 +404,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D6" unique_id=983073050 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_jwm57")
+material = SubResource("StandardMaterial3D_v2ylt")
 block_color = 2
 
 [node name="StaticBody3D15" type="StaticBody3D" parent="Map" unique_id=733757138]
@@ -415,7 +415,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D15" unique_id=2049415498 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_kddec")
+material = SubResource("StandardMaterial3D_wxe6n")
 block_color = 2
 
 [node name="StaticBody3D16" type="StaticBody3D" parent="Map" unique_id=346116360]
@@ -426,7 +426,7 @@ shape = SubResource("BoxShape3D_op0be")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D16" unique_id=1488672695 instance=ExtResource("2_uds71")]
 size = Vector3(5, 6, 5)
-material = SubResource("StandardMaterial3D_rssya")
+material = SubResource("StandardMaterial3D_8wibs")
 block_color = 3
 
 [node name="StaticBody3D18" type="StaticBody3D" parent="Map" unique_id=2045789740]
@@ -437,7 +437,7 @@ shape = SubResource("BoxShape3D_2rjxo")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D18" unique_id=171437876 instance=ExtResource("2_uds71")]
 size = Vector3(1, 6, 1)
-material = SubResource("StandardMaterial3D_bbxr2")
+material = SubResource("StandardMaterial3D_jwm57")
 block_color = 3
 
 [node name="StaticBody3D20" type="StaticBody3D" parent="Map" unique_id=914668384]
@@ -448,7 +448,7 @@ shape = SubResource("BoxShape3D_2rjxo")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D20" unique_id=709721752 instance=ExtResource("2_uds71")]
 size = Vector3(1, 6, 1)
-material = SubResource("StandardMaterial3D_ha2k4")
+material = SubResource("StandardMaterial3D_kddec")
 block_color = 3
 
 [node name="StaticBody3D19" type="StaticBody3D" parent="Map" unique_id=1697212023]
@@ -460,7 +460,7 @@ shape = SubResource("BoxShape3D_81eie")
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D19" unique_id=1301199796 instance=ExtResource("2_uds71")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.24289131, 0)
 size = Vector3(2, 1, 16)
-material = SubResource("StandardMaterial3D_xqrul")
+material = SubResource("StandardMaterial3D_rssya")
 block_color = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map" unique_id=1923603419]

@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="AbilityData" format=3 uid="uid://882n8etq1nxu"]
-
-[ext_resource type="Script" uid="uid://dwnj3qg2y1f1w" path="res://hero_base/resources/ability_data.gd" id="1_s125o"]
-
-[resource]
-script = ExtResource("1_s125o")
-ability_name = "Dash"
-cooldown = 6.0
-metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

@@ -2,12 +2,14 @@
 
 [ext_resource type="Script" uid="uid://boq4td7r5t5c7" path="res://heroes/octopus_in_a_barrel/scripts/octopus_in_a_barrel.gd" id="1_1ysjl"]
 [ext_resource type="Script" uid="uid://f2earvj8moqy" path="res://heroes/octopus_in_a_barrel/weapons/shotgun.gd" id="2_1bncc"]
-[ext_resource type="Resource" uid="uid://lmdcyshj0jxg" path="res://heroes/resources/weapon_data/shotgun.tres" id="3_88k53"]
+[ext_resource type="Resource" uid="uid://lmdcyshj0jxg" path="res://heroes/octopus_in_a_barrel/resources/shotgun.tres" id="3_88k53"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_o7liv"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="3_p17dx"]
-[ext_resource type="Script" uid="uid://0x6btoyovj4i" path="res://heroes/octopus_in_a_barrel/abilities/grapple.gd" id="4_dqia8"]
-[ext_resource type="Resource" uid="uid://celdsrityfxpy" path="res://heroes/resources/ability_data/grapple.tres" id="5_3lchr"]
+[ext_resource type="Script" uid="uid://0x6btoyovj4i" path="res://heroes/octopus_in_a_barrel/abilities/grapple/grapple.gd" id="4_dqia8"]
+[ext_resource type="Resource" uid="uid://celdsrityfxpy" path="res://heroes/octopus_in_a_barrel/resources/grapple.tres" id="5_3lchr"]
+[ext_resource type="Script" uid="uid://41wu54hlv47a" path="res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd" id="5_8gnng"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="5_hoo6i"]
+[ext_resource type="Resource" uid="uid://rmma0m67sxyt" path="res://heroes/octopus_in_a_barrel/resources/drop_anchor.tres" id="6_8gnng"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="6_hoo6i"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
@@ -27,6 +29,9 @@ height = 1.8
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_o7liv"]
 radius = 0.4
 height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qo83i"]
+albedo_color = Color(0.390625, 0.12817383, 0.2635002, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3lchr"]
 properties/0/path = NodePath(".:net_position")
@@ -78,21 +83,28 @@ shape = SubResource("CapsuleShape3D_1bncc")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=829215856]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_o7liv")
+surface_material_override/0 = SubResource("StandardMaterial3D_qo83i")
 
 [node name="Abilities" type="Node" parent="." unique_id=121148696]
 
-[node name="Shotgun" type="Node" parent="Abilities" unique_id=416376473]
+[node name="Shotgun" type="Node" parent="Abilities" unique_id=235257377]
 script = ExtResource("2_1bncc")
 muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
 data = ExtResource("3_88k53")
 viewmodel_path = NodePath("../../Head/ViewmodelRoot/ShotgunViewmodel")
-world_mesh_path = NodePath("../../Skeleton3D/ShotgunWorldMesh")
-metadata/_custom_type_script = "uid://blshrlucknmji"
+world_mesh_path = NodePath("../../MeshInstance3D")
+metadata/_custom_type_script = "uid://f2earvj8moqy"
 
 [node name="GrappleAbility" type="Node" parent="Abilities" unique_id=405542601]
 script = ExtResource("4_dqia8")
 data = ExtResource("5_3lchr")
 metadata/_custom_type_script = "uid://0x6btoyovj4i"
+
+[node name="DropAnchorAbility" type="Node" parent="Abilities" unique_id=145290589]
+script = ExtResource("5_8gnng")
+auto_yank = true
+data = ExtResource("6_8gnng")
+metadata/_custom_type_script = "uid://41wu54hlv47a"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=95053359]
 replication_config = SubResource("SceneReplicationConfig_3lchr")

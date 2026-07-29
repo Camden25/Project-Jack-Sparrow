@@ -5,23 +5,24 @@
 [ext_resource type="Script" uid="uid://cgki5vo1q2hn6" path="res://heroes/ex_navy_officer/weapons/musket.gd" id="2_q50x8"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_238cb"]
 [ext_resource type="Script" uid="uid://uonyh4wwj3w7" path="res://heroes/ex_navy_officer/weapons/flintlock.gd" id="3_deh7o"]
-[ext_resource type="Resource" uid="uid://cjl4hsny2chml" path="res://heroes/resources/weapon_data/musket.tres" id="3_ebtu4"]
-[ext_resource type="PackedScene" uid="uid://ca568eoc2nil5" path="res://heroes/ex_navy_officer/abilities/dash/dash.tscn" id="4_5ahsj"]
+[ext_resource type="Resource" uid="uid://cjl4hsny2chml" path="res://heroes/ex_navy_officer/resources/musket.tres" id="3_ebtu4"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="4_o8tqa"]
-[ext_resource type="Resource" uid="uid://beyyjfbs4gxkq" path="res://heroes/resources/weapon_data/flintlock.tres" id="5_6in74"]
+[ext_resource type="Resource" uid="uid://beyyjfbs4gxkq" path="res://heroes/ex_navy_officer/resources/flintlock.tres" id="5_6in74"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="5_q50x8"]
-[ext_resource type="PackedScene" uid="uid://dwakwibs0a0nd" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.tscn" id="5_xb7vd"]
-[ext_resource type="PackedScene" uid="uid://diuyhdfdcl3or" path="res://heroes/ex_navy_officer/abilities/volley/volley.tscn" id="6_ebtu4"]
+[ext_resource type="Script" uid="uid://c0iddf3hmgesl" path="res://heroes/ex_navy_officer/abilities/dash/dash.gd" id="6_sdbfc"]
+[ext_resource type="Resource" uid="uid://882n8etq1nxu" path="res://heroes/ex_navy_officer/resources/dash.tres" id="7_lvr10"]
+[ext_resource type="Script" uid="uid://cyipbb5l57csg" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.gd" id="8_80i6t"]
+[ext_resource type="Resource" uid="uid://drxfoh0amthv1" path="res://heroes/ex_navy_officer/resources/smoke_canister.tres" id="9_61u06"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
-albedo_color = Color(0.13757324, 0.44465637, 0.62890625, 1)
+albedo_color = Color(0.49609375, 0.4759884, 0.17440796, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h167"]
 material = SubResource("StandardMaterial3D_5ahsj")
-size = Vector3(0.2, 0.2, 0.8)
+size = Vector3(0.2, 0.2, 1.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_whncg"]
-size = Vector3(0.2, 0.2, 0.8)
+size = Vector3(0.2, 0.2, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xyps"]
 radius = 0.4
@@ -30,6 +31,9 @@ height = 1.8
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_wf8xl"]
 radius = 0.4
 height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
+albedo_color = Color(0.071777344, 0.4032135, 0.4375, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
 properties/0/path = NodePath(".:net_position")
@@ -84,6 +88,7 @@ shape = SubResource("CapsuleShape3D_1xyps")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1630175380]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_wf8xl")
+surface_material_override/0 = SubResource("StandardMaterial3D_vjx7y")
 
 [node name="Abilities" type="Node" parent="." unique_id=1901336776]
 
@@ -103,11 +108,15 @@ viewmodel_path = NodePath("../../Head/ViewmodelRoot/MusketViewmodel")
 world_mesh_path = NodePath("../../Skeleton3D/MusketWorldMesh")
 metadata/_custom_type_script = "uid://uonyh4wwj3w7"
 
-[node name="Retreat" parent="Abilities" unique_id=1971154756 instance=ExtResource("4_5ahsj")]
+[node name="DashAbility" type="Node" parent="Abilities" unique_id=430361214]
+script = ExtResource("6_sdbfc")
+data = ExtResource("7_lvr10")
+metadata/_custom_type_script = "uid://c0iddf3hmgesl"
 
-[node name="SmokeCanister" parent="Abilities" unique_id=276487405 instance=ExtResource("5_xb7vd")]
-
-[node name="Volley" parent="Abilities" unique_id=1800544188 instance=ExtResource("6_ebtu4")]
+[node name="SmokeCanisterAbility" type="Node" parent="Abilities" unique_id=126264408]
+script = ExtResource("8_80i6t")
+data = ExtResource("9_61u06")
+metadata/_custom_type_script = "uid://cyipbb5l57csg"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
 replication_config = SubResource("SceneReplicationConfig_ebtu4")

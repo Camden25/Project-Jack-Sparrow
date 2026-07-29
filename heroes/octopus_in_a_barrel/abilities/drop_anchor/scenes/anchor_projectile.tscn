@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dfd3jker0emxc"]
+
+[ext_resource type="Script" uid="uid://br0acbmlmggog" path="res://heroes/octopus_in_a_barrel/abilities/drop_anchor/scripts/anchor_projectile.gd" id="1_qbvpo"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_dhi6c"]
+radius = 0.7
+
+[node name="AnchorProjectile" type="RigidBody3D" unique_id=1789056693]
+collision_layer = 0
+script = ExtResource("1_qbvpo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1325156253]
+shape = SubResource("SphereShape3D_dhi6c")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="." unique_id=996381418]
+radius = 0.7

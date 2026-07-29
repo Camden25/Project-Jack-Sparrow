@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://dwakwibs0a0nd"]
-
-[ext_resource type="Script" uid="uid://cyipbb5l57csg" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.gd" id="1_v243y"]
-[ext_resource type="Resource" uid="uid://drxfoh0amthv1" path="res://heroes/resources/ability_data/smoke_canister.tres" id="2_v243y"]
-
-[node name="SmokeCanister" type="Node" unique_id=276487405]
-script = ExtResource("1_v243y")
-data = ExtResource("2_v243y")
-metadata/_custom_type_script = "uid://dssyoryef8i1m"

@@ -103,5 +103,5 @@ func _spawn_projectile_func(spawn_data: Dictionary) -> Node:
 		return Node.new()
 	var projectile = scene.instantiate()
 	projectile.name = key + "_" + str(Time.get_ticks_msec())
-	projectile.init_from_data(data)  # every projectile implements this
+	projectile.init_from_data(data)
 	return projectile

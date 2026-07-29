@@ -2,7 +2,7 @@ extends Node3D
 
 @export var start_pos: Vector3
 @export var direction: Vector3
-@export var speed: float = 200.0
+@export var speed: float = 300.0
 @export var lifetime: float = 0.3
 @export var tracer_length: float = 3.0
 @export var tracer_width: float = 0.03

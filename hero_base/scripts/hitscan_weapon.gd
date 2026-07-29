@@ -29,9 +29,20 @@ func _get_fire_direction() -> Vector3:
 	return -owner_player.get_node("Head/Camera3D").global_basis.z
 
 func _spawn_tracer(origin: Vector3, direction: Vector3):
+	if not multiplayer.is_server():
+		_request_tracer.rpc_id(1, origin, direction)
+	else:
+		var effects_manager = SceneManager.get_effects_manager()
+		if effects_manager:
+			effects_manager.spawn_tracer.rpc(origin, direction)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_tracer(origin: Vector3, direction: Vector3):
+	if not multiplayer.is_server():
+		return
 	var effects_manager = SceneManager.get_effects_manager()
 	if effects_manager:
-		effects_manager.spawn_tracer(origin, direction)
+		effects_manager.spawn_tracer.rpc(origin, direction)
 
 @rpc("any_peer", "call_remote", "reliable")
 func _server_validate_shot(origin: Vector3, direction: Vector3, shooter_id: int):

@@ -23,6 +23,7 @@ func reset():
 	capture_progress = 0.5
 	controlling_team = PlayerManager.Team.NONE
 	_win_fired = false
+	_sync_progress.rpc(progress)
 	_sync_reset.rpc()
 
 func _physics_process(delta: float):
@@ -43,7 +44,7 @@ func _physics_process(delta: float):
 		elif team == PlayerManager.Team.TEAM_B:
 			team_b_count += 1
 	
-	var contested = team_a_count > 0 and team_b_count > 0
+	var contested = team_a_count > 0 and controlling_team == PlayerManager.Team.TEAM_B or team_b_count > 0 and controlling_team == PlayerManager.Team.TEAM_A
 	
 	var old_progress = progress.duplicate()
 	

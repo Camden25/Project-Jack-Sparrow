@@ -1,15 +1,15 @@
 extends Ability
 class_name DropAnchorAbility
 
-@export var auto_yank: bool = false
+@export var auto_yank: bool = true
 
-const RISE_SPEED: float = 8.0
+const RISE_SPEED: float = 14.0
 const RISE_HEIGHT: float = 2.5
 const ANCHOR_DAMAGE_BASE: int = 30
 const ANCHOR_DAMAGE_PER_METER: float = 3.0
-const ANCHOR_MAX_DAMAGE: int = 150
+const ANCHOR_MAX_DAMAGE: int = 80
 const YANK_SPEED: float = 50.0
-const YANK_DURATION: float = 0.35
+const YANK_DURATION: float = 0.3
 
 enum Phase { IDLE, RISING, DROPPING_ANCHOR, YANKING }
 var phase: Phase = Phase.IDLE
@@ -17,6 +17,8 @@ var phase: Phase = Phase.IDLE
 var rise_start_y: float = 0.0
 var rise_target_y: float = 0.0
 var anchor_spawn_pos: Vector3 = Vector3.ZERO
+
+var anchor_spawn_offset: Vector3 = Vector3(0, -1.0, 0)
 
 var anchor_landed: bool = false
 var anchor_land_position: Vector3 = Vector3.ZERO
@@ -57,7 +59,7 @@ func _do_rise(delta: float):
 		owner_player.velocity.y = 0.0
 		owner_player.global_position.y = rise_target_y
 		phase = Phase.DROPPING_ANCHOR
-		anchor_spawn_pos = owner_player.global_position
+		anchor_spawn_pos = owner_player.global_position + anchor_spawn_offset
 		_drop_anchor()
 
 func _drop_anchor():
@@ -80,14 +82,14 @@ func _spawn_anchor(spawn_pos: Vector3):
 	})
 	_notify_anchor_spawned.rpc(spawn_pos)
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func _notify_anchor_spawned(_spawn_pos: Vector3):
 	waiting_for_yank_input = not auto_yank
 
 func notify_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 	_on_anchor_landed.rpc(land_pos, victims, drop_height)
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func _on_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 	anchor_landed = true
 	anchor_land_position = land_pos
@@ -108,22 +110,26 @@ func _on_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 	
 	if auto_yank:
 		_begin_yank()
+	
+	_reset_after_yank.call_deferred()
 
-func _calculate_damage(drop_height: float) -> int:
-	var damage = ANCHOR_DAMAGE_BASE + int(drop_height * ANCHOR_DAMAGE_PER_METER)
-	return min(damage, ANCHOR_MAX_DAMAGE)
+func _reset_after_yank():
+	await owner_player.get_tree().create_timer(YANK_DURATION + 0.5).timeout
+	if phase != Phase.IDLE:
+		phase = Phase.IDLE
+		anchor_landed = false
+		if owner_player:
+			owner_player.movement_override = false
 
 func _begin_yank():
-	if not owner_player.is_multiplayer_authority():
-		return
-	if not anchor_landed:
-		return
-	
 	waiting_for_yank_input = false
 	phase = Phase.YANKING
 	yank_timer = YANK_DURATION
-	yank_direction = (anchor_land_position - owner_player.global_position).normalized()
 	
+	if not owner_player.is_multiplayer_authority():
+		return
+	
+	yank_direction = (anchor_land_position - owner_player.global_position).normalized()
 	if data and data.cooldown > 0:
 		_start_cooldown()
 
@@ -141,3 +147,7 @@ func _can_activate() -> bool:
 	if waiting_for_yank_input:
 		return true
 	return super._can_activate()
+
+func _calculate_damage(drop_height: float) -> int:
+	var damage = ANCHOR_DAMAGE_BASE + int(drop_height * ANCHOR_DAMAGE_PER_METER)
+	return min(damage, ANCHOR_MAX_DAMAGE)

@@ -43,7 +43,7 @@ func _spawn_player(peer_id: int) -> Node:
 	
 	var player = scene.instantiate()
 	player.name = str(peer_id)
-	players_node.add_child(player)
+	players_node.add_child(player, true)
 	
 	var spawn_pos = respawn_manager.get_spawn_position(peer_id)
 	player.global_position = spawn_pos

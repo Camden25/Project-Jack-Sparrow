@@ -28,10 +28,11 @@ func _on_body_entered(body: Node):
 	if has_landed:
 		return
 	if body is CharacterBody3D:
-		return  # dont land on players
+		return
 	has_landed = true
-	# Stop physics, deploy smoke
 	freeze = true
+	if not multiplayer.is_server():
+		return
 	_deploy_smoke.rpc(global_position, smoke_duration, smoke_radius)
 
 @rpc("authority", "call_local", "reliable")

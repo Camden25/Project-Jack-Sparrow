@@ -89,6 +89,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_qo83i")
 
 [node name="Shotgun" type="Node" parent="Abilities" unique_id=235257377]
 script = ExtResource("2_1bncc")
+num_bullets = 12
 muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
 data = ExtResource("3_88k53")
 viewmodel_path = NodePath("../../Head/ViewmodelRoot/ShotgunViewmodel")
@@ -102,7 +103,6 @@ metadata/_custom_type_script = "uid://0x6btoyovj4i"
 
 [node name="DropAnchorAbility" type="Node" parent="Abilities" unique_id=145290589]
 script = ExtResource("5_8gnng")
-auto_yank = true
 data = ExtResource("6_8gnng")
 metadata/_custom_type_script = "uid://41wu54hlv47a"
 

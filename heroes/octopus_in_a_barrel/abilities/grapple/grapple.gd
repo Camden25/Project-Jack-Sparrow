@@ -14,6 +14,9 @@ var rope_length := 0.0
 var _rope_mesh_instance: MeshInstance3D
 var _rope_mesh: CylinderMesh
 
+@export var net_grapple_point: Vector3 = Vector3.ZERO
+@export var net_is_grappling: bool = false
+
 func try_activate():
 	if not _can_activate():
 		return
@@ -40,8 +43,14 @@ func _activate():
 	rope_length = owner_player.global_position.distance_to(grapple_point)
 	
 	grappling = true
+	net_is_grappling = true
+	net_grapple_point = grapple_point
 
 func physics_update(delta):
+	if owner_player.is_multiplayer_authority():
+		net_is_grappling = grappling
+		net_grapple_point = grapple_point
+	
 	_update_rope_visual()
 	
 	if !grappling:
@@ -111,8 +120,6 @@ func _setup_rope() -> void:
 func _update_rope_visual():
 	if not _rope_mesh_instance:
 		_setup_rope()
-	if not owner_player.is_multiplayer_authority():
-		return
 	if not grappling:
 		_rope_mesh_instance.visible = false
 		return

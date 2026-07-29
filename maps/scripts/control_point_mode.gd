@@ -37,14 +37,17 @@ func _on_point_captured(team: int):
 	if team_wins[team] >= wins_needed:
 		end_round(team)
 	else:
-		# Start next round after short delay
 		await get_tree().create_timer(3.0).timeout
 		start_round()
 
 func _on_progress_changed(new_progress: Dictionary):
 	emit_signal("objective_progress_updated", new_progress)
 
+func on_wins_changed(new_wins: Dictionary):
+	emit_signal("wins_updated", new_wins)
+
 @rpc("authority", "call_local", "reliable")
 func _sync_wins(wins: Dictionary):
 	team_wins = wins
 	emit_signal("wins_updated", wins)
+	GameModeEvents.emit_signal("wins_updated", wins)

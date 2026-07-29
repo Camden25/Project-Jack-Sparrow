@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_aqj27")
 weapon_name = "Shotgun"
-damage = 5
+damage = 7
 max_ammo = 5
-fire_rate = 0.4
-max_range = 15.0
+fire_rate = 0.3
+max_range = 12.0
 metadata/_custom_type_script = "uid://ptpamfwbpvl6"

@@ -72,8 +72,35 @@ func _start_round():
 func _on_round_ended(winning_team: int):
 	_sync_state.rpc(State.ROUND_END)
 	await get_tree().create_timer(ROUND_END_DURATION).timeout
-	# Show hero select again for next round
+	
+	# Check if match is over
+	if current_mode is ControlPointMode:
+		var max_wins = current_mode.wins_needed
+		var wins = current_mode.team_wins
+		if wins.get(0, 0) >= max_wins or wins.get(1, 0) >= max_wins:
+			_end_match(winning_team)
+			return
+	
 	_begin_hero_select()
+
+func _end_match(winning_team: int):
+	_sync_state.rpc(State.MATCH_END)
+	_show_match_end.rpc(winning_team)
+	await get_tree().create_timer(5.0).timeout
+	_return_to_lobby.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func _return_to_lobby():
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	NetworkManager.return_to_lobby()
+
+@rpc("authority", "call_local", "reliable")
+func _show_match_end(winning_team: int):
+	# Show win/loss screen
+	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
+	if overlay:
+		pass
+	print("Match ended. Team ", winning_team, " wins!")
 
 @rpc("authority", "call_local", "reliable")
 func _sync_state(new_state: int):

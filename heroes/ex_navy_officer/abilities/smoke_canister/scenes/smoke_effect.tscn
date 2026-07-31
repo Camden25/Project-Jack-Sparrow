@@ -6,7 +6,7 @@
 density = 8.0
 albedo = Color(0.4765625, 0.4765625, 0.4765625, 1)
 emission = Color(1, 1, 1, 1)
-edge_fade = 0.021022355
+edge_fade = 0.017075418
 
 [node name="SmokeEffect" type="Node3D" unique_id=1644058512]
 script = ExtResource("1_78x4t")

@@ -10,7 +10,6 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
 		open = not open
 		visible = open
-		get_tree().paused = open
 		if open:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		else:
@@ -19,7 +18,6 @@ func _process(_delta: float) -> void:
 func _on_resume_button_pressed() -> void:
 	open = false
 	visible = false
-	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _on_quit_button_pressed() -> void:

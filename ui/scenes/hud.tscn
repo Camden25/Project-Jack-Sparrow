@@ -53,13 +53,13 @@ grow_horizontal = 2
 
 [node name="WinsLabel" type="Label" parent="ObjectiveContainer" unique_id=1777308432]
 layout_mode = 2
-text = "A: 0 | B: 0"
+text = "A: 0  |  B: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ControlPointLabel" type="Label" parent="ObjectiveContainer" unique_id=465669810]
 layout_mode = 2
-text = "A:  0%  |  B: 0%"
+text = "A: 0%  |  B: 0%"
 horizontal_alignment = 1
 vertical_alignment = 1
 

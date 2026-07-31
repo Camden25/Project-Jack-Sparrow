@@ -6,5 +6,5 @@
 script = ExtResource("1_f64xl")
 ability_name = "Smoke Canister"
 slot = 3
-cooldown = 14.0
+cooldown = 12.0
 metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

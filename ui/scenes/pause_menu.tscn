@@ -23,6 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="Control" type="Control" parent="VBoxContainer" unique_id=1013086854]
 layout_mode = 2
@@ -33,12 +34,14 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="ResumeButton" type="Button" parent="VBoxContainer" unique_id=1988886445]
+process_mode = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "Resume"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=783684491]
+process_mode = 3
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6

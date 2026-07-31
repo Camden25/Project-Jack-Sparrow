@@ -53,7 +53,6 @@ func respawn_player(peer_id: int):
 
 @rpc("authority", "call_local", "reliable")
 func _broadcast_death(peer_id: int):
-	# clients can play death effects here
 	print("Player died: " + str(peer_id))
 
 @rpc("authority", "call_local", "reliable")

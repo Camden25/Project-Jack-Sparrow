@@ -1,6 +1,6 @@
 extends Area3D
 
-const PROGRESS_RATE: float = 0.01
+const PROGRESS_RATE: float = 0.1
 const CAPTURE_RATE: float = 0.2
 const OVERTIME_THRESHOLD: float = 0.99
 

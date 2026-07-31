@@ -35,7 +35,8 @@ func _ready():
 	
 	linear_velocity = Vector3(0, -ANCHOR_FALL_SPEED, 0)
 
-func _physics_process(_delta: float):
+func _physics_process(delta: float):
+	super._physics_process(delta)
 	if not multiplayer.is_server():
 		return
 	linear_velocity.x = 0

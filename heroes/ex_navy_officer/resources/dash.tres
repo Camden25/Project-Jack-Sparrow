@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_s125o")
 ability_name = "Dash"
-cooldown = 6.0
+cooldown = 5.0
 metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

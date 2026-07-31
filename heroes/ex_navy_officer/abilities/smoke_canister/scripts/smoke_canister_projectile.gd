@@ -1,7 +1,7 @@
 extends Projectile
 class_name SmokeCanisters
 
-@export var smoke_duration: float = 6.0
+@export var smoke_duration: float = 5.0
 @export var smoke_radius: float = 4.0
 
 var pending_origin: Vector3

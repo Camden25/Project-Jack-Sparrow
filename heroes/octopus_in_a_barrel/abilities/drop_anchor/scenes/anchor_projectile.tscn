@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://br0acbmlmggog" path="res://heroes/octopus_in_a_barrel/abilities/drop_anchor/scripts/anchor_projectile.gd" id="1_qbvpo"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dhi6c"]
-radius = 0.7
+radius = 0.2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_qbvpo"]
 properties/0/path = NodePath(".:position")

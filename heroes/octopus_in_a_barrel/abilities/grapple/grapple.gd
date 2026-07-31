@@ -1,11 +1,14 @@
 extends Ability
 class_name GrappleAbility
 
-const MAX_DISTANCE := 40.0
+const MAX_DISTANCE := 30.0
 
-const PULL_FORCE := 15.0
-const AIR_ACCEL := 25.0
-const REEL_SPEED := 25.0
+const PULL_FORCE := 20.0
+const AIR_ACCEL := 20.0
+const REEL_SPEED := 35.0
+
+const LAUNCH_IMPULSE := 6.0
+const MIN_SWING_SPEED := 12.0
 
 var grappling := false
 var grapple_point := Vector3.ZERO
@@ -23,28 +26,25 @@ func try_activate():
 	_activate()
 
 func _activate():
-	var camera : Camera3D = owner_player.camera
-	
+	var camera: Camera3D = owner_player.camera
 	var from = camera.global_position
 	var to = from + (-camera.global_basis.z * MAX_DISTANCE)
-	
 	var space = owner_player.get_world_3d().direct_space_state
-	
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	
 	query.exclude = [owner_player]
-	
 	var result = space.intersect_ray(query)
-	
 	if result.is_empty():
 		return
 	
 	grapple_point = result.position
 	rope_length = owner_player.global_position.distance_to(grapple_point)
-	
 	grappling = true
 	net_is_grappling = true
 	net_grapple_point = grapple_point
+	
+	# Launch impulse
+	var launch_dir = (grapple_point - owner_player.global_position).normalized()
+	owner_player.velocity += launch_dir * LAUNCH_IMPULSE
 
 func physics_update(delta):
 	if owner_player.is_multiplayer_authority():
@@ -53,16 +53,13 @@ func physics_update(delta):
 	
 	_update_rope_visual()
 	
-	if !grappling:
+	if not grappling:
 		return
-	
-	if !owner_player.is_multiplayer_authority():
+	if not owner_player.is_multiplayer_authority():
 		return
 	
 	var player_pos = owner_player.global_position
-	
 	var offset = player_pos - grapple_point
-	
 	var distance = offset.length()
 	
 	if distance < 0.2:
@@ -74,31 +71,32 @@ func physics_update(delta):
 	# Rope constraint
 	if distance > rope_length:
 		var outward_speed = owner_player.velocity.dot(rope_dir)
-		
 		if outward_speed > 0.0:
 			owner_player.velocity -= rope_dir * outward_speed
 	
-	# Small inward pull
-	owner_player.velocity += (-rope_dir * PULL_FORCE) * delta
+	# Pull
+	var current_speed = owner_player.velocity.length()
+	var pull_multiplier = clampf(1.0 - (current_speed / 20.0), 0.3, 2.0)
+	owner_player.velocity += (-rope_dir * PULL_FORCE * pull_multiplier) * delta
 	
-	# Swing acceleration from movement
+	# Swing acceleration from input
 	var move = dir_from_input()
-	
 	move -= rope_dir * move.dot(rope_dir)
-	
 	if move.length_squared() > 0:
 		move = move.normalized()
-		
 		owner_player.velocity += move * AIR_ACCEL * delta
 	
-	# Reel in while holding jump
+	var tangent_velocity = owner_player.velocity - rope_dir * owner_player.velocity.dot(rope_dir)
+	if tangent_velocity.length() < MIN_SWING_SPEED and move.length_squared() > 0:
+		var boost_dir = tangent_velocity.normalized() if tangent_velocity.length() > 0.01 else move
+		owner_player.velocity += boost_dir * (MIN_SWING_SPEED - tangent_velocity.length()) * delta * 5.0
+	
+	# Reel in
 	if Input.is_action_pressed("jump"):
-	
 		rope_length -= REEL_SPEED * delta
-	
 		rope_length = max(4.0, rope_length)
 	
-	# Release grapple
+	# Release
 	if not Input.is_action_pressed("secondary_fire"):
 		grappling = false
 		if data.cooldown > 0:

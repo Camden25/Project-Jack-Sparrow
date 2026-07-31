@@ -22,6 +22,7 @@ func _ready():
 
 func show_hero_select(gfm: GameFlowManager):
 	game_flow_manager = gfm
+	reset_hero_select_overlay()
 	show()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	players_ready.clear()
@@ -75,6 +76,11 @@ func _force_confirm_all():
 		if not players_ready.has(peer_id):
 			players_ready[peer_id] = 0
 	_apply_and_start()
+
+func reset_hero_select_overlay() -> void:
+	for child in ready_list.get_children():
+		child.queue_free()
+		confirm_button.disabled = false
 
 @rpc("any_peer", "call_remote", "reliable")
 func _confirm_selection(hero_index: int):

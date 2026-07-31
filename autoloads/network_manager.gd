@@ -234,17 +234,53 @@ func set_game_state(state: GameState):
 
 @rpc("authority", "call_remote", "reliable")
 func _redirect_to_game():
-	SceneManager.goto_scene("res://maps/world.tscn")
-	#_client_ready_in_game.rpc_id(1)
+	await SceneManager.goto_scene("res://maps/world.tscn")
+	_client_ready_in_world.rpc_id(1)
 
-#@rpc("any_peer", "call_remote", "reliable")
-#func _client_ready_in_game():
-	#var peer_id = multiplayer.get_remote_sender_id()
-	#var world = SceneManager.get_world()
-	#if world and world.has_node("Players"):
-		#world._spawn_player(peer_id)
-		#var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
-		#world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
+@rpc("any_peer", "call_remote", "reliable")
+func _client_ready_in_world():
+	var peer_id = multiplayer.get_remote_sender_id()
+	var gfm = SceneManager.get_world().get_node_or_null("GameFlowManager") if SceneManager.get_world() else null
+	if not gfm:
+		return
+	
+	match gfm.state:
+		GameFlowManager.State.HERO_SELECT:
+			# Show hero select for this player only
+			_show_hero_select_for_peer.rpc_id(peer_id)
+		GameFlowManager.State.ACTIVE, GameFlowManager.State.COUNTDOWN:
+			# Assign default hero and spawn immediately
+			PlayerManager.hero_selections[peer_id] = 0
+			var world = SceneManager.get_world()
+			if world:
+				world._spawn_player(peer_id)
+				var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
+				world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
+
+@rpc("authority", "call_remote", "reliable")
+func _show_hero_select_for_peer():
+	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
+	if overlay:
+		overlay.show_hero_select(SceneManager.get_world().get_node_or_null("GameFlowManager"))
+
+func return_to_lobby():
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	PlayerManager.hero_selections.clear()
+	set_game_state(GameState.LOBBY)
+	SceneManager.goto_scene("res://menus/scenes/lobby_ui.tscn")
+	
+	if multiplayer.is_server():
+		PlayerManager.player_registry.clear()
+		PlayerManager.register_player(1, Steam.getSteamID(), Steam.getPersonaName())
+		_request_reregistration.rpc()
+
+@rpc("authority", "call_remote", "reliable")
+func _request_reregistration():
+	# Client re-sends their info to server
+	var my_id = multiplayer.get_unique_id()
+	PlayerManager.player_registry.clear()
+	PlayerManager.register_player(my_id, Steam.getSteamID(), Steam.getPersonaName())
+	_register_player.rpc_id(1, Steam.getSteamID(), Steam.getPersonaName())
 
 #endregion
 

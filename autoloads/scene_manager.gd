@@ -5,17 +5,29 @@ signal scene_loaded(scene: Node)
 var scene_viewport: SubViewport
 var current_scene: Node = null
 
+var _is_transitioning: bool = false
+
 func _ready():
 	scene_viewport = get_tree().get_root().get_node("Root/SceneContainer/SubViewport")
 
-func goto_scene(path: String):
+func goto_scene(path: String) -> void:
+	if _is_transitioning:
+		return
+	_is_transitioning = true
+	
 	if current_scene:
-		current_scene.queue_free()
-		await get_tree().process_frame
+		var old_scene = current_scene
+		current_scene = null
+		old_scene.queue_free()
+	
+	for child in scene_viewport.get_children():
+		if is_instance_valid(child):
+			child.queue_free()
 	
 	var new_scene = load(path).instantiate()
 	scene_viewport.add_child(new_scene)
 	current_scene = new_scene
+	_is_transitioning = false
 	emit_signal("scene_loaded", new_scene)
 
 func get_current_scene() -> Node:

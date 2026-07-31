@@ -1,11 +1,5 @@
 extends Control
 
-# client:
-# name doesnt update
-# health not visible
-# not resetting to spawn point
-# no actual lag compensation
-
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var host_button: Button = $VBoxContainer/HostButton
 @onready var join_button: Button = $VBoxContainer/JoinButton
@@ -33,7 +27,25 @@ func _ready():
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	
 	status_label.text = "Not connected"
+	
+	PlayerManager.player_registered.connect(_on_player_registered)
+	PlayerManager.team_assigned.connect(func(_id, _team): _refresh_player_list())
+	
+	if NetworkManager.steam_lobby_id != 0:
+		_restore_lobby_state()
 
+var _refresh_pending: bool = false
+
+func _on_player_registered(_id: int):
+	if _refresh_pending:
+		return
+	_refresh_pending = true
+	_deferred_refresh()
+
+func _deferred_refresh():
+	await get_tree().create_timer(0.2).timeout
+	_refresh_pending = false
+	_refresh_player_list()
 
 #region BUTTON HANDLERS
 
@@ -112,10 +124,12 @@ func _refresh_player_list():
 	
 	for peer_id in PlayerManager.player_registry:
 		var data = PlayerManager.player_registry[peer_id]
+		print("rendering player: ", peer_id, " data: ", data)  # temp debug
 		var label = Label.new()
 		var team = PlayerManager.get_team(peer_id)
 		var team_str = " [A]" if team == PlayerManager.Team.TEAM_A else " [B]" if team == PlayerManager.Team.TEAM_B else ""
-		label.text = str(data.get("name", "Unknown")) + team_str + " (" + str(peer_id) + ")"
+		var display_name = data.get("name", "Unknown")
+		label.text = display_name + team_str
 		player_list.add_child(label)
 
 #endregion
@@ -130,3 +144,13 @@ func start_game():
 	SceneManager.goto_scene("res://maps/world.tscn")
 
 #endregion
+
+func _restore_lobby_state():
+	status_label.text = "Lobby"
+	host_button.hide()
+	join_button.hide()
+	
+	if multiplayer.is_server():
+		start_button.show()
+	
+	_refresh_player_list()

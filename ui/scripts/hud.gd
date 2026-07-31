@@ -46,7 +46,12 @@ func _on_player_killed_check_local(killer_id: int, victim_id: int):
 
 func _on_scene_loaded(scene: Node):
 	if not scene.has_node("Players"):
+		hide()
+		local_player = null
+		tracked_weapon = null
 		return
+	
+	reset_hud()
 	
 	await get_tree().process_frame
 	
@@ -197,3 +202,11 @@ func _add_kill_feed_entry(killer_id: int, victim_id: int):
 
 func set_ping_label():
 	ping_label.text = str(int(NetworkManager.get_peer_ping(NetworkManager.get_my_peer_id()) * 1000)) + " ms"
+
+func reset_hud() -> void:
+	reload_label.hide()
+	death_label.hide()
+	wins_label.text = "A: 0  |  B: 0"
+	objective_label.text = "A: 0%  |  B: 0%"
+	for child in kill_feed_container.get_children():
+		child.queue_free()

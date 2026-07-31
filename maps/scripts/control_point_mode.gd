@@ -1,7 +1,7 @@
 extends GameMode
 class_name ControlPointMode
 
-@export var wins_needed: int = 3
+@export var wins_needed: int = 1
 
 var team_wins: Dictionary = { 0: 0, 1: 0 }
 

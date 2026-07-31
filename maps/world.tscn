@@ -12,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://c0x0tvmbhaqck" path="res://addons/proto-csgs/textures/orange/texture_13.png" id="6_0n1be"]
 [ext_resource type="Texture2D" uid="uid://bn66p4ar3fje4" path="res://addons/proto-csgs/textures/red/texture_13.png" id="7_0n1be"]
 [ext_resource type="Texture2D" uid="uid://cmuv3ve5x2al8" path="res://addons/proto-csgs/textures/light/texture_13.png" id="8_q1kd2"]
-[ext_resource type="PackedScene" uid="uid://cii2uxyl0lgup" path="res://ui/scenes/hud.tscn" id="9_op0be"]
 [ext_resource type="Script" uid="uid://cet5jqvmnljyy" path="res://maps/scripts/respawn_manager.gd" id="10_w3kvc"]
 [ext_resource type="PackedScene" uid="uid://b3ea6mybfr1vx" path="res://maps/scenes/control_point.tscn" id="11_dsm5r"]
 [ext_resource type="PackedScene" uid="uid://belldtp2oailc" path="res://ui/scenes/pause_menu.tscn" id="11_hnius"]
@@ -20,7 +19,7 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_dyenr"]
 size = Vector3(80, 0.5, 80)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qo83i"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c4v46"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("3_iu4sv")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -29,7 +28,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_e0ubd"]
 size = Vector3(5, 4, 5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qc5wv"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qo83i"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("4_iu4sv")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -37,6 +36,12 @@ uv1_triplanar = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w3kvc"]
 size = Vector3(2, 4, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qc5wv"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("6_0n1be")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vj61e"]
 resource_local_to_scene = true
@@ -50,14 +55,14 @@ albedo_texture = ExtResource("6_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yg8gp"]
-resource_local_to_scene = true
-albedo_texture = ExtResource("6_0n1be")
-uv1_offset = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_qc5wv"]
 size = Vector3(4, 1, 12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yg8gp"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("4_iu4sv")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x1nf7"]
 resource_local_to_scene = true
@@ -67,7 +72,7 @@ uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jeyus"]
 resource_local_to_scene = true
-albedo_texture = ExtResource("4_iu4sv")
+albedo_texture = ExtResource("5_41f5y")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
@@ -79,12 +84,6 @@ uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81eie"]
 resource_local_to_scene = true
-albedo_texture = ExtResource("5_41f5y")
-uv1_offset = Vector3(0.5, 0.5, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
-resource_local_to_scene = true
 albedo_texture = ExtResource("7_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
@@ -92,7 +91,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_qo83i"]
 size = Vector3(3, 7, 3)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8wibs"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xqrul"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("7_0n1be")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -146,7 +145,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_8wibs"]
 size = Vector3(2, 10, 5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jwm57"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8wibs"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("8_q1kd2")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -155,7 +154,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_vj61e"]
 size = Vector3(3, 5, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6hp55"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jwm57"]
 resource_local_to_scene = true
 albedo_texture = ExtResource("8_q1kd2")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
@@ -280,7 +279,7 @@ shape = SubResource("BoxShape3D_dyenr")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D" unique_id=1332485283 instance=ExtResource("2_uds71")]
 size = Vector3(80, 0.5, 80)
-material = SubResource("StandardMaterial3D_qo83i")
+material = SubResource("StandardMaterial3D_c4v46")
 
 [node name="StaticBody3D2" type="StaticBody3D" parent="Map" unique_id=682625112]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.419207, -0.052029133, 4.1234493)
@@ -290,7 +289,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D2" unique_id=518903690 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_qc5wv")
+material = SubResource("StandardMaterial3D_qo83i")
 block_color = 4
 
 [node name="StaticBody3D7" type="StaticBody3D" parent="Map" unique_id=1741458056]
@@ -301,7 +300,7 @@ shape = SubResource("BoxShape3D_w3kvc")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D7" unique_id=1747232335 instance=ExtResource("2_uds71")]
 size = Vector3(2, 4, 2)
-material = SubResource("StandardMaterial3D_vj61e")
+material = SubResource("StandardMaterial3D_qc5wv")
 block_color = 3
 
 [node name="StaticBody3D13" type="StaticBody3D" parent="Map" unique_id=1566831372]
@@ -312,7 +311,7 @@ shape = SubResource("BoxShape3D_w3kvc")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D13" unique_id=1400142530 instance=ExtResource("2_uds71")]
 size = Vector3(2, 4, 2)
-material = SubResource("StandardMaterial3D_7mbce")
+material = SubResource("StandardMaterial3D_vj61e")
 block_color = 3
 
 [node name="StaticBody3D8" type="StaticBody3D" parent="Map" unique_id=152226281]
@@ -323,7 +322,7 @@ shape = SubResource("BoxShape3D_w3kvc")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D8" unique_id=1522463489 instance=ExtResource("2_uds71")]
 size = Vector3(2, 4, 2)
-material = SubResource("StandardMaterial3D_yg8gp")
+material = SubResource("StandardMaterial3D_7mbce")
 block_color = 3
 
 [node name="StaticBody3D9" type="StaticBody3D" parent="Map" unique_id=923687112]
@@ -334,7 +333,7 @@ shape = SubResource("BoxShape3D_qc5wv")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D9" unique_id=1047914261 instance=ExtResource("2_uds71")]
 size = Vector3(4, 1, 12)
-material = SubResource("StandardMaterial3D_x1nf7")
+material = SubResource("StandardMaterial3D_yg8gp")
 block_color = 4
 
 [node name="StaticBody3D14" type="StaticBody3D" parent="Map" unique_id=1740916139]
@@ -345,7 +344,7 @@ shape = SubResource("BoxShape3D_qc5wv")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D14" unique_id=697312469 instance=ExtResource("2_uds71")]
 size = Vector3(4, 1, 12)
-material = SubResource("StandardMaterial3D_jeyus")
+material = SubResource("StandardMaterial3D_x1nf7")
 block_color = 4
 
 [node name="StaticBody3D3" type="StaticBody3D" parent="Map" unique_id=2013841226]
@@ -356,7 +355,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D3" unique_id=1114051773 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_ha2k4")
+material = SubResource("StandardMaterial3D_jeyus")
 block_color = 1
 
 [node name="StaticBody3D11" type="StaticBody3D" parent="Map" unique_id=1895733553]
@@ -367,7 +366,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D11" unique_id=112996642 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_81eie")
+material = SubResource("StandardMaterial3D_ha2k4")
 block_color = 1
 
 [node name="StaticBody3D12" type="StaticBody3D" parent="Map" unique_id=594773103]
@@ -378,7 +377,7 @@ shape = SubResource("BoxShape3D_e0ubd")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D12" unique_id=2009344391 instance=ExtResource("2_uds71")]
 size = Vector3(5, 4, 5)
-material = SubResource("StandardMaterial3D_xqrul")
+material = SubResource("StandardMaterial3D_81eie")
 block_color = 5
 
 [node name="StaticBody3D22" type="StaticBody3D" parent="Map" unique_id=1269578049]
@@ -389,7 +388,7 @@ shape = SubResource("BoxShape3D_qo83i")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D22" unique_id=1384512939 instance=ExtResource("2_uds71")]
 size = Vector3(3, 7, 3)
-material = SubResource("StandardMaterial3D_8wibs")
+material = SubResource("StandardMaterial3D_xqrul")
 block_color = 5
 
 [node name="StaticBody3D10" type="StaticBody3D" parent="Map" unique_id=56062128]
@@ -466,7 +465,7 @@ shape = SubResource("BoxShape3D_8wibs")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D21" unique_id=931088898 instance=ExtResource("2_uds71")]
 size = Vector3(2, 10, 5)
-material = SubResource("StandardMaterial3D_jwm57")
+material = SubResource("StandardMaterial3D_8wibs")
 block_color = 2
 
 [node name="StaticBody3D23" type="StaticBody3D" parent="Map" unique_id=807814310]
@@ -477,7 +476,7 @@ shape = SubResource("BoxShape3D_vj61e")
 
 [node name="ProtoCSGBox3D" parent="Map/StaticBody3D23" unique_id=1745219180 instance=ExtResource("2_uds71")]
 size = Vector3(3, 5, 1)
-material = SubResource("StandardMaterial3D_6hp55")
+material = SubResource("StandardMaterial3D_jwm57")
 block_color = 2
 
 [node name="StaticBody3D16" type="StaticBody3D" parent="Map" unique_id=346116360]
@@ -527,8 +526,6 @@ block_color = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map" unique_id=1923603419]
 transform = Transform3D(0.94278705, -0.22165883, 0.24903806, 0, 0.74697477, 0.6648524, -0.33339554, -0.6268142, 0.7042381, 0, 12.692166, 0)
-
-[node name="Hud" parent="." unique_id=1709117453 instance=ExtResource("9_op0be")]
 
 [node name="PauseMenu" parent="." unique_id=1400824456 instance=ExtResource("11_hnius")]
 

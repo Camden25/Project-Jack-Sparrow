@@ -1,0 +1,2 @@
+[[Heroes.canvas]]
+[[Gamemodes.canvas]]

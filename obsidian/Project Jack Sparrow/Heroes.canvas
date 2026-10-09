@@ -1,0 +1,10 @@
+{
+	"nodes":[
+		{"id":"75f39ef4eb9d9c57","type":"file","file":"Ex Navy Officer.md","x":-500,"y":33,"width":240,"height":50},
+		{"id":"3f2dafce9fc62336","type":"file","file":"Scout Sword Dude.md","x":-500,"y":-180,"width":280,"height":50},
+		{"id":"fd8e96d1a13a924c","type":"file","file":"Octopus in a Barrel.md","x":-500,"y":-270,"width":273,"height":50},
+		{"id":"fb3dc52ba4b77c40","type":"file","file":"The Captain.md","x":-500,"y":-360,"width":200,"height":50},
+		{"id":"fc35bdd44fed4bb4","type":"file","file":"Cannoneer.md","x":-500,"y":-80,"width":181,"height":50}
+	],
+	"edges":[]
+}

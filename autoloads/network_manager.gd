@@ -38,11 +38,11 @@ func _ready():
 	multiplayer.connected_to_server.connect(func():
 		print("CONNECTED TO SERVER OK")
 	)
-
+	
 	multiplayer.connection_failed.connect(func():
 		print("CONNECTION FAILED")
 	)
-
+	
 	multiplayer.server_disconnected.connect(func():
 		print("SERVER DISCONNECTED")
 	)
@@ -281,7 +281,6 @@ func _request_reregistration():
 	PlayerManager.player_registry.clear()
 	PlayerManager.register_player(my_id, Steam.getSteamID(), Steam.getPersonaName())
 	_register_player.rpc_id(1, Steam.getSteamID(), Steam.getPersonaName())
-
 #endregion
 
 

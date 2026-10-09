@@ -4,6 +4,8 @@ class_name AnchorProjectile
 var _ability_node: DropAnchorAbility = null
 var _pending_origin: Vector3 = Vector3.ZERO
 var _spawn_height: float = 0.0
+var _has_landed: bool = false
+var _last_contact_normal: Vector3 = Vector3.UP
 
 const ANCHOR_FALL_SPEED: float = 60.0
 
@@ -14,7 +16,6 @@ func init_from_data(data: Dictionary):
 
 func _ready():
 	global_position = _pending_origin
-	
 	contact_monitor = true
 	max_contacts_reported = 4
 	body_entered.connect(_on_body_entered)
@@ -26,31 +27,36 @@ func _ready():
 	if players_node:
 		var shooter = players_node.get_node_or_null(str(shooter_id))
 		if shooter:
-			var abilities = shooter.get_node_or_null("Abilities")
-			if abilities:
-				for child in abilities.get_children():
-					if child is DropAnchorAbility:
-						_ability_node = child
-						break
+			for child in shooter.get_node_or_null("Abilities").get_children():
+				if child is DropAnchorAbility:
+					_ability_node = child
+					break
 	
+	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	linear_velocity = Vector3(0, -ANCHOR_FALL_SPEED, 0)
 
-func _physics_process(delta: float):
-	super._physics_process(delta)
-	if not multiplayer.is_server():
+func _integrate_forces(state: PhysicsDirectBodyState3D):
+	if state.get_contact_count() > 0:
+		_last_contact_normal = state.get_contact_local_normal(0)
+
+func _physics_process(_delta: float):
+	if not multiplayer.is_server() or _has_landed:
 		return
-	linear_velocity.x = 0
-	linear_velocity.z = 0
+	linear_velocity = Vector3(0, -ANCHOR_FALL_SPEED, 0)
 
 func _on_body_entered(body: Node):
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or _has_landed:
 		return
 	if body is CharacterBody3D:
 		return
+	if _last_contact_normal.dot(Vector3.UP) < 0.3:
+		return
 	
-	var drop_height = _spawn_height - global_position.y
-	drop_height = maxf(drop_height, 0.0)
+	_has_landed = true
+	freeze = true
+	linear_velocity = Vector3.ZERO
 	
+	var drop_height = maxf(_spawn_height - global_position.y, 0.0)
 	var victims = []
 	var players_node = SceneManager.get_players_node()
 	if players_node:
@@ -63,9 +69,6 @@ func _on_body_entered(body: Node):
 				continue
 			if global_position.distance_to(player.global_position) <= 3.0:
 				victims.append(player.get_multiplayer_authority())
-	
-	freeze = true
-	linear_velocity = Vector3.ZERO
 	
 	if _ability_node:
 		_ability_node.notify_anchor_landed(global_position, victims, drop_height)

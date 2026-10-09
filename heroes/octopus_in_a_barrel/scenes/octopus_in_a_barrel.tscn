@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="3_p17dx"]
 [ext_resource type="Script" uid="uid://0x6btoyovj4i" path="res://heroes/octopus_in_a_barrel/abilities/grapple/grapple.gd" id="4_dqia8"]
 [ext_resource type="Resource" uid="uid://celdsrityfxpy" path="res://heroes/octopus_in_a_barrel/resources/grapple.tres" id="5_3lchr"]
-[ext_resource type="Script" uid="uid://41wu54hlv47a" path="res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd" id="5_8gnng"]
+[ext_resource type="Script" uid="uid://brw0verhptxhg" path="res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd" id="5_8gnng"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="5_hoo6i"]
 [ext_resource type="Resource" uid="uid://rmma0m67sxyt" path="res://heroes/octopus_in_a_barrel/resources/drop_anchor.tres" id="6_8gnng"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="6_hoo6i"]
@@ -101,10 +101,10 @@ script = ExtResource("4_dqia8")
 data = ExtResource("5_3lchr")
 metadata/_custom_type_script = "uid://0x6btoyovj4i"
 
-[node name="DropAnchorAbility" type="Node" parent="Abilities" unique_id=145290589]
+[node name="DropAnchorAbility" type="Node" parent="Abilities" unique_id=367859984]
 script = ExtResource("5_8gnng")
 data = ExtResource("6_8gnng")
-metadata/_custom_type_script = "uid://41wu54hlv47a"
+metadata/_custom_type_script = "uid://brw0verhptxhg"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=95053359]
 replication_config = SubResource("SceneReplicationConfig_3lchr")

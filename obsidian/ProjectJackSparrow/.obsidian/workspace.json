@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "81c29357d3eba37b",
+        "id": "49457004205acb26",
         "type": "tabs",
         "children": [
           {
-            "id": "9b9118217a78de9b",
+            "id": "57a86fe79ff07455",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Gamemodes/Control Point.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Control Point"
+              "title": "New tab"
             }
           }
         ]
@@ -83,7 +79,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "532084cfdf384162",
@@ -188,8 +185,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "9b9118217a78de9b",
+  "active": "57a86fe79ff07455",
   "lastOpenFiles": [
+    "file:C:/Users/camde/Downloads/survey_of_jazz_midterm_study_guide.md",
+    "Heroes/Ex Navy Officer.md",
+    "Heroes/Cannoneer.md",
+    "Gamemodes/Control Point.md",
     "Gamemodes/Claim.md",
     "Heroes/Octopus in a Barrel.md",
     "Heroes/Hook.md",
@@ -202,11 +203,8 @@
     "Systems/Game Flow.md",
     "Systems/Architecture.md",
     "Systems/Ability System.md",
-    "Heroes/Ex Navy Officer.md",
     "Heroes/Scout Sword Dude.md",
     "Heroes/Surgeon.md",
-    "Heroes/Cannoneer.md",
-    "Infrastructure/Matchmaking & Servers.md",
-    "Gamemodes/Control Point.md"
+    "Infrastructure/Matchmaking & Servers.md"
   ]
 }

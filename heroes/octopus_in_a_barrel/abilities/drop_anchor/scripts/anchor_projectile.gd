@@ -8,6 +8,7 @@ var _has_landed: bool = false
 var _last_contact_normal: Vector3 = Vector3.UP
 
 const ANCHOR_FALL_SPEED: float = 60.0
+const WORLD_COLLISION_MASK: int = 1
 
 func init_from_data(data: Dictionary):
 	shooter_id = data.get("shooter_id", -1)
@@ -18,6 +19,7 @@ func _ready():
 	global_position = _pending_origin
 	contact_monitor = true
 	max_contacts_reported = 4
+	continuous_cd = true
 	body_entered.connect(_on_body_entered)
 	
 	if not multiplayer.is_server():
@@ -39,9 +41,23 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
 		_last_contact_normal = state.get_contact_local_normal(0)
 
-func _physics_process(_delta: float):
+func _physics_process(delta: float):
 	if not multiplayer.is_server() or _has_landed:
 		return
+
+	# Sweep ahead of the fast rigid body so thin floors cannot be skipped between frames.
+	var space = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(
+		global_position,
+		global_position + Vector3.DOWN * (ANCHOR_FALL_SPEED * delta + 0.25),
+		WORLD_COLLISION_MASK,
+		[get_rid()]
+	)
+	var result = space.intersect_ray(query)
+	if not result.is_empty() and result.normal.dot(Vector3.UP) >= 0.3:
+		_land_at(result.position + result.normal * 0.2, result.normal)
+		return
+
 	linear_velocity = Vector3(0, -ANCHOR_FALL_SPEED, 0)
 
 func _on_body_entered(body: Node):
@@ -51,8 +67,14 @@ func _on_body_entered(body: Node):
 		return
 	if _last_contact_normal.dot(Vector3.UP) < 0.3:
 		return
+	_land_at(global_position, _last_contact_normal)
+
+func _land_at(land_position: Vector3, surface_normal: Vector3):
+	if _has_landed or surface_normal.dot(Vector3.UP) < 0.3:
+		return
 	
 	_has_landed = true
+	global_position = land_position
 	freeze = true
 	linear_velocity = Vector3.ZERO
 	

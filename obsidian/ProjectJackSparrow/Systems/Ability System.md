@@ -1,6 +1,6 @@
 # Ability System
 
-**Status:** 🟡 Core registration, input routing, and cooldowns are implemented. Finite-use handling is stubbed; the Ultimate base class exists, but neither playable hero scene currently includes an ultimate.
+**Status:** 🟡 Core registration, input routing, and cooldowns are implemented. Drop Anchor now uses a bounded lift/drop/pull sequence with cooldown-on-landing. Finite-use handling is stubbed; the Ultimate base class exists, but neither playable hero scene currently includes an ultimate.
 
 ---
 
@@ -58,6 +58,12 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - `cooldown_changed` signal drives HUD display.
 - `max_uses` is represented in data, but decrementing finite uses is currently commented out/stubbed in `try_activate()`.
 - **File:** `res://hero_base/scripts/ability.gd`
+
+### Drop Anchor
+- Uses bounded `LIFTING`, `DROPPING`, `WAITING_FOR_LANDING`, and `PULLING` phases.
+- Lift height is limited by an upward raycast; pull ends on arrival, collision, timeout, or respawn.
+- The server remains authoritative for anchor landing and damage. Cooldown starts once the landing notification is confirmed, not on activation.
+- **File:** `res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd`
 
 ### Weapon
 - Fire-rate timer, ammo, reload, and viewmodel/world-mesh visibility.

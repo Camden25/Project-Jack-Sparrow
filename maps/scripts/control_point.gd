@@ -1,6 +1,6 @@
 extends Area3D
 
-const PROGRESS_RATE: float = 0.1
+const PROGRESS_RATE: float = 0.01
 const CAPTURE_RATE: float = 0.2
 const OVERTIME_THRESHOLD: float = 0.99
 
@@ -31,10 +31,10 @@ func _physics_process(delta: float):
 		return
 	if _win_fired:
 		return
-
+	
 	var team_a_count = 0
 	var team_b_count = 0
-
+	
 	for player in players_in_zone:
 		if not is_instance_valid(player):
 			continue
@@ -44,21 +44,22 @@ func _physics_process(delta: float):
 		elif team == PlayerManager.Team.TEAM_B:
 			team_b_count += 1
 	
-	var contested = team_a_count > 0 and controlling_team == PlayerManager.Team.TEAM_B or team_b_count > 0 and controlling_team == PlayerManager.Team.TEAM_A
+	var ot_contest = team_a_count > 0 and controlling_team == PlayerManager.Team.TEAM_B or team_b_count > 0 and controlling_team == PlayerManager.Team.TEAM_A
+	var contested = team_a_count > 0 and team_b_count > 0
 	
 	var old_progress = progress.duplicate()
 	
 	if controlling_team == PlayerManager.Team.TEAM_A:
-		var cap = OVERTIME_THRESHOLD if contested else 1.0
+		var cap = OVERTIME_THRESHOLD if ot_contest else 1.0
 		progress[0] = minf(progress[0] + PROGRESS_RATE * delta, cap)
 	elif controlling_team == PlayerManager.Team.TEAM_B:
-		var cap = OVERTIME_THRESHOLD if contested else 1.0
+		var cap = OVERTIME_THRESHOLD if ot_contest else 1.0
 		progress[1] = minf(progress[1] + PROGRESS_RATE * delta, cap)
 	
 	if old_progress != progress:
 		_sync_progress.rpc(progress)
 	
-	if not contested and not _win_fired:
+	if not ot_contest and not _win_fired:
 		if progress[0] >= 1.0:
 			_win_fired = true
 			_sync_captured.rpc(PlayerManager.Team.TEAM_A)

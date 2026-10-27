@@ -34,8 +34,8 @@
 
 - The scene uses `drop_anchor.gd`. It can activate only while the player is airborne, zeroes velocity, waits 0.3 seconds, then asks the server to spawn an anchor about 1 m below the player's position.
 - The anchor falls under server authority. At landing, the server selects enemy players within 3 m and calculates damage as `min(30 + 3 × drop height in metres, 80)`.
-- **The current scene-bound script does not lift the player or yank them to the anchor.** Older notes describing a rise/yank phase refer to behavior not present in this script.
-- The resource specifies a 12-second cooldown, but this script overrides `try_activate()` and does not start the base cooldown. Verify/fix cooldown behavior.
+- The scene-bound script now performs a bounded lift, drops the server-owned anchor, and pulls the player toward the confirmed landing point. Low ceilings skip or shorten the lift; pull ends on collision, arrival, timeout, or respawn.
+- The resource specifies a 12-second cooldown. It starts when the server confirms that the anchor has landed, so the lift, fall, and pull are not counted against the cooldown.
 - Previously reported ceiling/floor/contact and client movement issues should be retested against this current implementation before planning a full rework.
 - **Files:**
   - `res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd`
@@ -53,7 +53,7 @@ The supplied design does not include Hide in Barrel or an ultimate. No such abil
 
 ## Pending Work
 
-- [ ] Regression-test Drop Anchor and fix confirmed issues, especially the unstarted cooldown.
+- [ ] Regression-test Drop Anchor, especially ceiling/floor/contact behavior, pull collisions, respawn cleanup, and cooldown-on-landing.
 - [ ] Decide whether anchor yank is still desired; it is absent from the current implementation.
 - [ ] Wire remote-player grapple rope rendering if needed.
 - [ ] Character model/rig, weapon viewmodel, and SFX.

@@ -2,7 +2,7 @@
 
 > A former British Navy officer turned pirate. A disciplined marksman whose current kit pairs a musket/flintlock with a dash and smoke.
 
-**Status:** 🟡 Playable scene exists; Volley is not attached to it. Smoke-vision passive is a design/pending task.
+**Status:** 🟡 Playable scene exists; ADS reveals enemies inside smoke. Volley is not attached to it.
 
 ---
 
@@ -35,13 +35,14 @@
 
 ## Abilities
 
-### Dash (Ability 1; older notes called it Retreat)
+### Dash (Ability 1)
 - Dashes based on movement input, or forward if no direction is supplied.
 - **File:** `res://heroes/ex_navy_officer/abilities/dash/dash.gd`
 
 ### Smoke Canister (Ability 2)
 - Thrown projectile; on landing it deploys a FogVolume smoke effect.
-- The ADS enemy-outline passive is not implemented.
+- While aiming the Musket, the officer sees outlines of enemy players inside active smoke.
+- Outlines are local to the officer, disappear when she stops aiming, and do not reveal allies or players outside smoke.
 - **Files:**
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.gd`
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_canister_projectile.gd`
@@ -56,11 +57,11 @@
 
 ## Pending Work
 
-- [ ] Decide/implement whether ADS reveals enemies inside smoke.
+- [x] ADS reveals enemies inside smoke.
 - [ ] Attach and test Volley as an ultimate.
 - [ ] Character model and rig.
 - [ ] Weapon viewmodels.
-- [ ] SFX — musket crack, flintlock pop, smoke hiss, dash whoosh, volley impacts.
+- [ ] SFX: musket crack, flintlock pop, smoke hiss, dash whoosh, volley impacts.
 
 ---
 

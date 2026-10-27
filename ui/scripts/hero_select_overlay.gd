@@ -11,7 +11,7 @@ var timer: float = HERO_SELECT_DURATION
 @onready var confirm_button: Button = $Panel/ConfirmButton
 @onready var ready_list: VBoxContainer = $Panel/ReadyList
 @onready var hero_name_label: Label = $Panel/HeroName
-@onready var hero_desc_label: Label = $Panel/HeroDescription
+@onready var hero_desc_label: RichTextLabel = $Panel/HeroDescription
 
 var game_flow_manager: GameFlowManager
 

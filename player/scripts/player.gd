@@ -25,16 +25,20 @@ var spawn_confirmed: bool = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var movement_override: bool = false
+var _smoke_outline: MeshInstance3D
 
 func _enter_tree():
 	var peer_id = int(name)
 	set_multiplayer_authority(peer_id)
-	
+	add_to_group("players")
+
 	var sync = get_node_or_null("MultiplayerSynchronizer")
 	if sync:
 		sync.set_multiplayer_authority(peer_id)
 
 func _ready():
+	_setup_smoke_outline()
+
 	# Only the owner gets camera and input
 	print("name: ", name, "\t\tmultiplayer authority: ", is_multiplayer_authority())
 	
@@ -80,6 +84,24 @@ func _ready():
 	
 	if multiplayer.is_server():
 		health_component.player_died.connect(_on_player_died)
+
+func _setup_smoke_outline():
+	var body_mesh := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if not body_mesh or not body_mesh.mesh:
+		return
+
+	_smoke_outline = body_mesh.duplicate() as MeshInstance3D
+	_smoke_outline.name = "SmokeOutline"
+	var outline_material := ShaderMaterial.new()
+	outline_material.shader = preload("res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_outline.gdshader")
+	_smoke_outline.material_override = outline_material
+	_smoke_outline.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_smoke_outline.visible = false
+	body_mesh.add_sibling(_smoke_outline)
+
+func set_smoke_outline_visible(is_visible: bool):
+	if is_instance_valid(_smoke_outline):
+		_smoke_outline.visible = is_visible
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():

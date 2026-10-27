@@ -53,12 +53,12 @@ text = "Hero Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HeroDescription" type="Label" parent="Panel" unique_id=394855109]
+[node name="HeroDescription" type="RichTextLabel" parent="Panel" unique_id=1239238968]
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 0
 offset_left = 777.0
 offset_top = 206.0
 offset_right = 1077.0
 offset_bottom = 406.0
+bbcode_enabled = true
 text = "This is a description of the hero that talks about who they are and what their abilities do"
-autowrap_mode = 3

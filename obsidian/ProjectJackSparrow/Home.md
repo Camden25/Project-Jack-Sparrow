@@ -34,11 +34,11 @@
 |---|---|
 | Core networking | ✅ Working |
 | Hero select | ✅ Working |
-| Control point gamemode | 🟡 Implemented; ownership recapture, zone-presence, neutral contest logic, and progress sync need fixes/testing |
+| Control point gamemode | ✅ Functional; ownership, contest, zone presence, and progress sync verified |
 | Return to lobby | ✅ Working |
 | Runtime hero roster | 🟡 2 heroes registered (Ex Navy Officer, Octopus in a Barrel) |
-| Ex Navy Officer | 🟡 Scene has musket, flintlock, dash, smoke; Volley is not attached |
-| Octopus in a Barrel | 🟡 Scene has shotgun, grapple, Drop Anchor; current Drop Anchor cooldown does not start |
+| Ex Navy Officer | 🟡 Musket, flintlock, dash, smoke, and charge-based Volley ultimate attached |
+| Octopus in a Barrel | ✅ Shotgun, grapple, and Drop Anchor working |
 | Map | 🟡 World scene is a blockout built from prototype geometry |
 | Character models | ❌ Capsule placeholders in playable hero scenes |
 | Audio | ❌ Not started |

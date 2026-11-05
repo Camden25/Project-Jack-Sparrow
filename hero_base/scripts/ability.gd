@@ -38,6 +38,9 @@ func _can_activate() -> bool:
 func _activate():
 	pass  # override in subclass
 
+func cancel():
+	pass
+
 func _start_cooldown():
 	is_on_cooldown = true
 	cooldown_timer = data.cooldown

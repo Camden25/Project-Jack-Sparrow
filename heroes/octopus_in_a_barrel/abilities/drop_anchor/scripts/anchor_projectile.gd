@@ -11,6 +11,7 @@ const ANCHOR_FALL_SPEED: float = 60.0
 const WORLD_COLLISION_MASK: int = 1
 
 func init_from_data(data: Dictionary):
+	super.init_from_data(data)
 	shooter_id = data.get("shooter_id", -1)
 	_pending_origin = data.get("origin", Vector3.ZERO)
 	_spawn_height = _pending_origin.y
@@ -36,6 +37,13 @@ func _ready():
 	
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	linear_velocity = Vector3(0, -ANCHOR_FALL_SPEED, 0)
+	broadcast_visual_launch(
+		"anchor",
+		_pending_origin,
+		Vector3(0.0, -ANCHOR_FALL_SPEED, 0.0),
+		Vector3.ZERO,
+		lifetime
+	)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if state.get_contact_count() > 0:
@@ -43,6 +51,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 
 func _physics_process(delta: float):
 	if not multiplayer.is_server() or _has_landed:
+		return
+	super._physics_process(delta)
+	if _finished:
 		return
 
 	# Sweep ahead of the fast rigid body so thin floors cannot be skipped between frames.
@@ -77,6 +88,7 @@ func _land_at(land_position: Vector3, surface_normal: Vector3):
 	global_position = land_position
 	freeze = true
 	linear_velocity = Vector3.ZERO
+	broadcast_visual_impact(global_position, surface_normal, 1.5)
 	
 	var drop_height = maxf(_spawn_height - global_position.y, 0.0)
 	var victims = []
@@ -97,4 +109,5 @@ func _land_at(land_position: Vector3, surface_normal: Vector3):
 	
 	await get_tree().create_timer(1.5).timeout
 	if is_instance_valid(self):
+		broadcast_visual_finished()
 		queue_free()

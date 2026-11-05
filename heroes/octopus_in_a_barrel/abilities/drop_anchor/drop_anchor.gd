@@ -104,16 +104,23 @@ func _drop_anchor():
 		_spawn_anchor.rpc_id(1, anchor_spawn_pos)
 
 @rpc("any_peer", "call_remote", "reliable")
-func _spawn_anchor(spawn_pos: Vector3):
+func _spawn_anchor(_requested_spawn_pos: Vector3):
 	if not multiplayer.is_server():
 		return
+	var shooter_id = owner_player.get_multiplayer_authority()
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != shooter_id:
+		push_warning("Rejected anchor request from a peer that does not own the hero")
+		return
+
 	var world = SceneManager.get_world()
 	if not world:
 		_force_reset()
 		return
+	var spawn_pos = owner_player.global_position + anchor_spawn_offset
 	world.spawn_projectile("anchor", {
 		"origin": spawn_pos,
-		"shooter_id": owner_player.get_multiplayer_authority(),
+		"shooter_id": shooter_id,
 	})
 	_notify_anchor_spawned.rpc(spawn_pos)
 
@@ -123,6 +130,9 @@ func _notify_anchor_spawned(_spawn_pos: Vector3):
 
 func _force_reset():
 	_reset_state()
+
+func cancel():
+	_force_reset()
 
 func notify_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 	if _anchor_notification_received:

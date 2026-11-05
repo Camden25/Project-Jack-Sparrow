@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dkgidqdrqtis1" path="res://maps/scripts/effects_manager.gd" id="2_c4v46"]
 [ext_resource type="Script" uid="uid://b3cnwqf2dj8gu" path="res://maps/scripts/game_flow_manager.gd" id="2_ntnhp"]
 [ext_resource type="Script" uid="uid://con6rt5tboku4" path="res://maps/scripts/projectile_registry.gd" id="2_qo83i"]
+[ext_resource type="Script" path="res://maps/scripts/projectile_events.gd" id="2_projectile_events"]
 [ext_resource type="PackedScene" uid="uid://dxw7cledbpiia" path="res://addons/proto-csgs/proto_csg_box_3d.tscn" id="2_uds71"]
 [ext_resource type="Script" uid="uid://cuyiv7g74wky1" path="res://maps/scripts/control_point_mode.gd" id="3_c4v46"]
 [ext_resource type="Texture2D" uid="uid://cej3yoosomfd2" path="res://addons/proto-csgs/textures/dark/texture_13.png" id="3_iu4sv"]
@@ -241,9 +242,10 @@ spawn_path = NodePath("..")
 
 [node name="Projectiles" type="Node3D" parent="." unique_id=473992621]
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Projectiles" unique_id=1061296093]
-_spawnable_scenes = PackedStringArray("uid://pa2wdfny6yvu", "uid://dfd3jker0emxc")
-spawn_path = NodePath("../..")
+[node name="ProjectileEvents" type="Node" parent="." unique_id=1842065471]
+script = ExtResource("2_projectile_events")
+
+[node name="ProjectileVisuals" type="Node3D" parent="ProjectileEvents" unique_id=1842065472]
 
 [node name="Effects" type="Node3D" parent="." unique_id=1298785704]
 script = ExtResource("2_c4v46")

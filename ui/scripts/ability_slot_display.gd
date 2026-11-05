@@ -23,9 +23,10 @@ func connect_to_ability(ability: Ability):
 	if ability is UltimateAbility:
 		charge_bar.show()
 		cooldown_overlay.hide()
-		cooldown_label.hide()
+		cooldown_label.show()
 		charge_bar.max_value = ability.ultimate_cost
 		charge_bar.value = ability.current_charge
+		_on_charge_changed(ability.current_charge, ability.ultimate_cost)
 		ability.charge_changed.connect(_on_charge_changed)
 	else:
 		charge_bar.hide()

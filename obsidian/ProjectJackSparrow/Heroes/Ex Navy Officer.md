@@ -2,7 +2,7 @@
 
 > A former British Navy officer turned pirate. A disciplined marksman whose current kit pairs a musket/flintlock with a dash and smoke.
 
-**Status:** 🟡 Playable scene exists; ADS reveals enemies inside smoke. Volley is not attached to it.
+**Status:** 🟡 Playable scene exists; ADS reveals enemies inside smoke. Volley is attached as a charge-based ultimate.
 
 ---
 
@@ -14,7 +14,7 @@
 | Secondary weapon | Flintlock | Hitscan | Present in scene; fired when not aiming the musket |
 | Ability 1 | Dash | Mobility | Present in scene |
 | Ability 2 | Smoke Canister | Projectile / vision denial | Present in scene |
-| Ultimate | Volley | AOE / bombardment | Script/assets exist, but no Volley node is attached to the current hero scene |
+| Ultimate | Volley | AOE / bombardment | Attached to the current hero scene; charged by damage and activated with Q |
 
 ---
 
@@ -48,9 +48,9 @@
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_canister_projectile.gd`
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_effect.gd`
 
-### Volley (planned ultimate; not wired into the current scene)
-- Design/script concept: fires a flare, then calls down an AOE musket barrage.
-- Scene assets and a script exist, but `ex_navy_officer.tscn` does not instantiate/register an ultimate node, so Volley is not currently available in the playable kit.
+### Volley (Ultimate)
+- Builds charge from damage dealt. Once full, press Q to place a flare at the aim point and call down a server-authoritative barrage.
+- The server checks teams and applies damage; the flare and impact markers are shown to all players.
 - **File:** `res://heroes/ex_navy_officer/abilities/volley/volley.gd`
 
 ---
@@ -58,7 +58,7 @@
 ## Pending Work
 
 - [x] ADS reveals enemies inside smoke.
-- [ ] Attach and test Volley as an ultimate.
+- [x] Attach Volley as a charge-based ultimate.
 - [ ] Character model and rig.
 - [ ] Weapon viewmodels.
 - [ ] SFX: musket crack, flintlock pop, smoke hiss, dash whoosh, volley impacts.

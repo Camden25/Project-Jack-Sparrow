@@ -62,3 +62,9 @@ func get_projectile_registry() -> Node:
 	if world:
 		return world.get_node_or_null("ProjectileRegistry")
 	return null
+
+func get_projectile_events() -> ProjectileEventService:
+	var world = get_world()
+	if world:
+		return world.get_node_or_null("ProjectileEvents")
+	return null

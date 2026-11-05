@@ -1,6 +1,6 @@
 # Ability System
 
-**Status:** 🟡 Core registration, input routing, and cooldowns are implemented. Drop Anchor now uses a bounded lift/drop/pull sequence with cooldown-on-landing. Finite-use handling is stubbed; the Ultimate base class exists, but neither playable hero scene currently includes an ultimate.
+**Status:** 🟡 Core registration, input routing, and cooldowns are implemented. Ex Navy Officer has a charge-based Volley ultimate attached. Drop Anchor and Grapple are working in the tested build. Finite-use handling remains stubbed.
 
 ---
 
@@ -75,10 +75,10 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 
 ### UltimateAbility (extends Ability)
 - Tracks `current_charge` up to `ultimate_cost` (default 1000; it is not normalized to 0.0–1.0).
-- Hooks `damage_dealt` / `healing_done` signals on `HeroBase` to add charge.
-- Hitscan weapons and Drop Anchor emit `damage_dealt`; the detached Volley script also emits it. `healing_done` currently has no emitters, and no playable hero scene registers an `UltimateAbility`, so there is no active ultimate charge bar or charge flow in the runtime roster.
+- Hooks server-side `damage_dealt` / `healing_done` signals on `HeroBase` to add charge, then synchronizes the charge to the owning player.
+- Hitscan weapons and Drop Anchor emit `damage_dealt`; `healing_done` currently has no emitters.
 - Base class only permits activation when charge is full. A subclass must implement `_activate()` and call `_use_ultimate()` to reset charge.
-- **No UltimateAbility node is currently attached to either playable hero scene.**
+- Volley is registered in Ex Navy Officer's `ULTIMATE` slot and shows charge in the HUD.
 - **File:** `res://hero_base/scripts/ultimate_ability.gd`
 
 ---

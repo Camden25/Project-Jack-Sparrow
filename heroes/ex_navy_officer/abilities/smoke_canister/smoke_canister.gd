@@ -15,15 +15,24 @@ func _activate():
 		_request_spawn.rpc_id(1, origin, impulse)
 
 @rpc("any_peer", "call_remote", "reliable")
-func _request_spawn(origin: Vector3, impulse: Vector3):
+func _request_spawn(_origin: Vector3, _impulse: Vector3):
 	if not multiplayer.is_server():
 		return
+	var shooter_id = owner_player.get_multiplayer_authority()
+	var sender_id = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != shooter_id:
+		push_warning("Rejected smoke canister request from a peer that does not own the hero")
+		return
+
+	var camera: Camera3D = owner_player.get_node("Head/Camera3D")
+	var origin = camera.global_position
+	var impulse = (-camera.global_basis.z + Vector3(0, 0.3, 0)) * throw_force
 	var world = SceneManager.get_world()
 	if world:
 		world.spawn_projectile("smoke_canister", {
 			"origin": origin,
 			"impulse": impulse,
-			"shooter_id": owner_player.get_multiplayer_authority(),
+			"shooter_id": shooter_id,
 			"duration": smoke_duration,
 			"radius": smoke_radius
 		})

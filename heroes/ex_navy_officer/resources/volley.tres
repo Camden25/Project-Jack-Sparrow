@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_ji7i4")
 ability_name = "Volley"
-slot = 4
+slot = 5
 metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

@@ -7,8 +7,10 @@ class_name VolleyUltimate
 @export var warning_duration: float = 1.5
 @export var shot_interval: float = 0.1
 
-const FLARE_SCENE = preload("res://heroes/ex_navy_officer/abilities/volley/scenes/flare.tscn")
-const VOLLEY_SHOT_SCENE = preload("res://heroes/ex_navy_officer/abilities/volley/scenes/volley_shot.tscn")
+var is_volley_active: bool = false
+
+func _can_activate() -> bool:
+	return not is_volley_active and super._can_activate()
 
 func _activate():
 	if not owner_player.is_multiplayer_authority():
@@ -17,8 +19,12 @@ func _activate():
 	# Target point is where the player is looking, projected onto the ground
 	var camera = owner_player.get_node("Head/Camera3D")
 	var target = _get_target_point(camera)
-	
-	_fire_volley.rpc_id(1, target)
+	is_volley_active = true
+
+	if multiplayer.is_server():
+		_fire_volley(target)
+	else:
+		_fire_volley.rpc_id(1, target)
 
 func _get_target_point(camera: Camera3D) -> Vector3:
 	var space_state = owner_player.get_world_3d().direct_space_state
@@ -35,15 +41,25 @@ func _get_target_point(camera: Camera3D) -> Vector3:
 func _fire_volley(target: Vector3):
 	if not multiplayer.is_server():
 		return
-	
-	# Spawn flare at target for warning
-	var projectiles_node = SceneManager.get_projectiles_node()
-	if not projectiles_node:
+
+	var sender_id = multiplayer.get_remote_sender_id()
+	var owner_peer_id = owner_player.get_multiplayer_authority()
+	if sender_id != 0 and sender_id != owner_peer_id:
 		return
-	
-	var flare = FLARE_SCENE.instantiate()
-	projectiles_node.add_child(flare)
-	flare.global_position = target + Vector3(0, 0.1, 0)
+	if is_volley_active and not (sender_id == 0 and owner_peer_id == 1):
+		return
+	if not is_ready():
+		_cancel_volley()
+		return
+
+	var projectile_events = SceneManager.get_projectile_events()
+	if not projectile_events:
+		push_error("VolleyUltimate: ProjectileEvents not found")
+		_cancel_volley()
+		return
+
+	is_volley_active = true
+	projectile_events.broadcast_effect("volley_flare", target + Vector3(0, 0.1, 0), warning_duration)
 	
 	# Wait for warning duration
 	await owner_player.get_tree().create_timer(warning_duration).timeout
@@ -81,17 +97,15 @@ func _fire_volley(target: Vector3):
 						owner_player.emit_signal("damage_dealt", damage_per_shot)
 		
 		# Spawn visual for each shot
-		var shot_vfx = VOLLEY_SHOT_SCENE.instantiate()
-		projectiles_node.add_child(shot_vfx)
-		if result:
-			shot_vfx.global_position = result.position
-		else:
-			shot_vfx.global_position = shot_pos
+		var impact_position = result.position if result else shot_pos
+		projectile_events.broadcast_effect("volley_shot", impact_position, maxf(shot_interval * 2.0, 0.2))
 		
 		await owner_player.get_tree().create_timer(shot_interval).timeout
 	
 	# Reset charge
 	_use_ultimate()
+	_finish_volley.rpc_id(owner_peer_id)
+	is_volley_active = false
 
 func _find_player_root(node: Node) -> Node:
 	var current = node
@@ -100,3 +114,13 @@ func _find_player_root(node: Node) -> Node:
 			return current
 		current = current.get_parent()
 	return null
+
+func _cancel_volley():
+	is_volley_active = false
+	var owner_peer_id = owner_player.get_multiplayer_authority()
+	if owner_peer_id != 1:
+		_finish_volley.rpc_id(owner_peer_id)
+
+@rpc("authority", "call_remote", "reliable")
+func _finish_volley():
+	is_volley_active = false

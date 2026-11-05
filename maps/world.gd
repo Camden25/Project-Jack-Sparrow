@@ -4,17 +4,13 @@ extends Node3D
 @onready var spawner: MultiplayerSpawner = $Players/MultiplayerSpawner
 @onready var respawn_manager: RespawnManager = $RespawnManager
 
-@onready var projectiles_node: Node3D = $Projectiles
-@onready var projectiles_spawner: MultiplayerSpawner = $Projectiles/MultiplayerSpawner
-
-@onready var projectile_registry: Node = $ProjectileRegistry
+@onready var projectile_events: ProjectileEventService = $ProjectileEvents
 
 var player_instances = []
 var _hero_select_complete: bool = false
 
 func _ready() -> void:
 	spawner.spawn_function = _spawn_player
-	projectiles_spawner.spawn_function = _spawn_projectile_func
 	
 	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
@@ -89,19 +85,8 @@ func _set_client_spawn_position(spawn_pos: Vector3):
 		else:
 			push_error("Could not find player node for peer " + str(multiplayer.get_unique_id()))
 
-func spawn_projectile(key: String, data: Dictionary):
+func spawn_projectile(key: String, data: Dictionary) -> int:
 	if not multiplayer.is_server():
-		return
-	projectiles_spawner.spawn({"key": key, "data": data})
-
-func _spawn_projectile_func(spawn_data: Dictionary) -> Node:
-	var key = spawn_data.get("key", "")
-	var data = spawn_data.get("data", {})
-	var scene = projectile_registry.get_scene(key)
-	if not scene:
-		push_error("No projectile registered for key: " + key)
-		return Node.new()
-	var projectile = scene.instantiate()
-	projectile.name = key + "_" + str(Time.get_ticks_msec())
-	projectile.init_from_data(data)
-	return projectile
+		push_error("Only the server can spawn gameplay projectiles")
+		return -1
+	return projectile_events.spawn_authoritative(key, data)

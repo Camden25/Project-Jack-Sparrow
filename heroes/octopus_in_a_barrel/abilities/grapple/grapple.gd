@@ -1,7 +1,8 @@
 extends Ability
 class_name GrappleAbility
 
-const MAX_DISTANCE := 30.0
+const MAX_DISTANCE := 18.0
+const MAX_TIME := 3.0
 
 const PULL_FORCE := 20.0
 const AIR_ACCEL := 20.0
@@ -31,6 +32,21 @@ func _activate():
 	var to = from + (-camera.global_basis.z * MAX_DISTANCE)
 	var space = owner_player.get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
+	var timer = Timer.new()
+
+	var stop_grapple = func():
+		timer.queue_free()
+		if not grappling:
+			return
+		grappling = false
+		if data.cooldown > 0:
+			_start_cooldown()
+
+	timer.one_shot = true
+	timer.autostart = false
+	add_child(timer)
+	timer.start(MAX_TIME)
+	timer.connect("timeout", stop_grapple)
 	query.exclude = [owner_player]
 	var result = space.intersect_ray(query)
 	if result.is_empty():

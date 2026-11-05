@@ -176,6 +176,15 @@ func _setup_health_bar(peer_id: int):
 	world_health_bar.update_health(health_component.health, health_component.MAX_HEALTH)
 
 func set_active(active: bool):
+	if not active:
+		movement_override = false
+		velocity = Vector3.ZERO
+		var abilities_node = get_node_or_null("Abilities")
+		if abilities_node:
+			for ability in abilities_node.get_children():
+				if ability is Ability:
+					ability.cancel()
+
 	set_physics_process(active and is_multiplayer_authority())
 	set_process_unhandled_input(active and is_multiplayer_authority())
 	$CollisionShape3D.disabled = not active

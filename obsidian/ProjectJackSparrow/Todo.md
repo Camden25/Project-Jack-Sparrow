@@ -2,10 +2,8 @@
 
 ## 🔴 Bugs
 
-- [ ] **Drop Anchor** — fix the cooldown that is never started by the current scene-bound script; regression-test older ceiling/floor/contact reports.
 - [ ] **Lobby player list** — names not always correct on join. Debounce applied, may need more work.
 - [ ] **Death UI** — respawn timer doesn't always clear properly.
-- [ ] **Control point** — fix ownership recapture, neutral-point contested logic, progress accruing with no players in-zone, and client progress sync.
 - [ ] **Client netcode** — player sync and interpolation roughness, needs more multiplayer testing.
 
 ---
@@ -16,7 +14,7 @@
 - [ ] **Map** — develop the current prototype-geometry World blockout into a proper 4v4 map with spawn rooms, control point language, cover, sightlines, and verticality for grapple/anchor.
 - [ ] **Character models and rigs** — all heroes need models. Placeholder capsules are fine for testing but needed before any playtest.
 - [ ] **Captain hero** — resolve the open kit/story choices, then implement. See [[Captain]].
-- [ ] **Ex Navy Officer — smoke vision** — decide/implement enemy outlines visible through smoke while ADS. Also attach and test the existing Volley script/assets as an ultimate. See [[Ex Navy Officer]].
+- [x] **Ex Navy Officer — smoke vision and Volley** — enemy outlines are visible while aiming through smoke; the charge-based Volley ultimate is attached to the hero scene. See [[Ex Navy Officer]].
 - [ ] **Win/loss screen** — currently just a print statement. Needs actual UI.
 - [ ] **Audio** — basic audio manager, weapon SFX, ability SFX, hit confirm, death/respawn, ambient.
 
@@ -42,8 +40,8 @@
 ## 🟡 Heroes
 
 - [ ] **Captain** — finalize/implement recon-focused kit. See [[Captain]].
-- [ ] **Octopus in a Barrel** — test/fix Drop Anchor. No Hide in Barrel is in the latest design brief. See [[Octopus in a Barrel]].
-- [ ] **Ex Navy Officer** — enemy outlines through smoke while ADS. See [[Ex Navy Officer]].
+- [ ] **Octopus in a Barrel** — No Hide in Barrel is in the latest design brief. See [[Octopus in a Barrel]].
+- [x] **Ex Navy Officer** — enemy outlines through smoke while ADS. See [[Ex Navy Officer]].
 - [ ] **Scout Sword Dude** — resolve Ability 2, ultimate, and story, then implement. See [[Scout Sword Dude]].
 - [ ] **Cannoneer** — resolve ally/ultimate rules, Ability 2, and story, then implement. See [[Cannoneer]].
 - [ ] **Hook** — define full kit and hook behavior, then implement. See [[Hook]].
@@ -93,6 +91,8 @@
 - [x] Kill feed
 - [x] Respawn manager
 - [x] Grapple ability (Octopus)
+- [x] Drop Anchor ability (Octopus)
 - [x] Dash (Ex Navy Officer)
 - [x] Smoke canister (Ex Navy Officer)
 - [x] Rope visual on grapple
+- [x] Control-point ownership, contest, zone-presence, and progress sync

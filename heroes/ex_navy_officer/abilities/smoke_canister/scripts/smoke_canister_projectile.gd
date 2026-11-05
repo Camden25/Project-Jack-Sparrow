@@ -10,6 +10,7 @@ var pending_impulse: Vector3
 var has_landed: bool = false
 
 func init_from_data(data: Dictionary):
+	super.init_from_data(data)
 	pending_origin = data.get("origin", Vector3.ZERO)
 	pending_impulse = data.get("impulse", Vector3.ZERO)
 	smoke_duration = data.get("duration", 6.0)
@@ -23,25 +24,26 @@ func _ready():
 	contact_monitor = true
 	max_contacts_reported = 1
 	body_entered.connect(_on_body_entered)
+	broadcast_visual_launch(
+		"smoke_canister",
+		pending_origin,
+		pending_impulse / maxf(mass, 0.001),
+		Vector3.DOWN * gravity_scale * float(ProjectSettings.get_setting("physics/3d/default_gravity")),
+		lifetime
+	)
 
 func _on_body_entered(body: Node):
-	if has_landed:
+	if not multiplayer.is_server() or has_landed:
 		return
 	if body is CharacterBody3D:
 		return
 	has_landed = true
 	freeze = true
-	if not multiplayer.is_server():
-		return
-	_deploy_smoke.rpc(global_position, smoke_duration, smoke_radius)
-
-@rpc("authority", "call_local", "reliable")
-func _deploy_smoke(pos: Vector3, duration: float, radius: float):
-	print("Smoke deployed at ", pos, " radius ", radius, " duration ", duration)
-	var smoke_effect = preload("res://heroes/ex_navy_officer/abilities/smoke_canister/scenes/smoke_effect.tscn").instantiate()
-	smoke_effect.duration = duration
-	smoke_effect.radius = radius
-	add_child(smoke_effect)
-	await get_tree().create_timer(duration).timeout
+	broadcast_visual_impact(global_position, Vector3.UP)
+	var events = SceneManager.get_projectile_events()
+	if events:
+		events.broadcast_smoke_deployed(global_position, smoke_duration, smoke_radius)
+	await get_tree().create_timer(smoke_duration).timeout
 	if is_instance_valid(self):
+		broadcast_visual_finished()
 		queue_free()

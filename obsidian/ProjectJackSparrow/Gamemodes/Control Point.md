@@ -1,20 +1,18 @@
-# Control Point
+ Control Point
 
 > One team captures a single point to win the round. First to X round wins takes the match.
 
-**Status:** 🟡 Implemented; client sync, neutral capture behavior, and ownership recapture need fixes/testing.
+**Status:** ✅ Functional in the tested build, including capture/recapture, contest behavior, zone presence, and client progress sync.
 
 ---
 
 ## Rules
 
 - Single control point in the center of the map
-- Teams gain **progress** (0.0–1.0) while `controlling_team` is set to them. Current code does not require players to remain on the point for this progress to accrue.
+- The controlling team gains **round progress** (0.0–1.0) over time even when nobody is in the zone. This is intentional and matches Overwatch's objective scoring.
 - **Control** is determined by `capture_progress` (0.0 = Team A, 1.0 = Team B)
 - A team captures by standing on the point long enough to move `capture_progress` to its side.
-- In code, the point is considered contested when a team other than the current controlling team is present, even if the controlling team has no players on the point; the controlling team's round progress then caps at 99%.
-- Ownership/recapture issue: when a team controls the point, any opponent presence sets `contested` and returns before capture progress can move toward the other team. The current logic therefore stalls ownership changes until the round resets.
-- Neutral-point edge case: with no controlling team and both teams present, the current `contested` expression is false; Team A's capture-progress branch wins the `if`/`elif` check.
+- Players in the zone affect capture/recapture and contesting; an empty zone does not stop the current owner's round score.
 - First team to reach 100% progress wins the round
 - First team to reach `wins_needed` round wins takes the match; the current World scene uses the script default of 1
 
@@ -26,9 +24,8 @@
 |---|---|
 | Only Team A on a neutral point | Capture progress moves toward Team A |
 | Only Team B on a neutral point | Capture progress moves toward Team B |
-| Any opponent present while a team owns the point | Treated as contested, even if the owner is absent; round progress caps at 99% and capture/recapture returns early |
-| Both teams present while no team controls the point | Current code is not considered contested; Team A capture-progress branch wins the `if`/`elif` check |
-| Nobody on point after ownership is set | Owning team's round progress still increases; capture progress is unchanged |
+| Both teams present | Capture progress is contested; the current owner can still score, capped at 99% while an opponent is present |
+| Nobody on point | The controlling team's round progress continues; capture progress stays unchanged |
 | Team controls point | That team's round progress increases |
 
 ---
@@ -61,17 +58,8 @@ res://maps/scripts/game_flow_manager.gd
 
 ---
 
-## Known Issues
-
-- Progress not always updating on client in all scenarios — needs testing
-- Neutral point with both teams present is not treated as contested; Team A's capture-progress branch wins.
-- An opponent entering an owned point freezes capture progress; the current logic does not allow ordinary recapture until reset.
-- Round progress continues for the controlling team even when no players remain in the zone.
-
----
-
 ## Balance Notes
 
-- `PROGRESS_RATE = 0.1` per second — about 10 seconds to fill from 0% while continuously controlling the point
-- `CAPTURE_RATE = 0.2` per second — a neutral point starts at 50%, so an uncontested initial capture takes about 2.5 seconds; ordinary recapture is currently blocked by the contested logic
+- `PROGRESS_RATE = 0.01` per second — about 100 seconds to fill from 0% while controlling the point; this continues while the zone is empty.
+- `CAPTURE_RATE = 0.2` per second — a neutral point starts at 50%, so an uncontested initial capture takes about 2.5 seconds.
 - Overtime threshold at 99% means matches can extend if teams trade control at the end

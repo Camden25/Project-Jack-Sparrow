@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://4x1frve2yy5n"]
+
+[ext_resource type="Script" uid="uid://ptpamfwbpvl6" path="res://hero_base/resources/weapon_data.gd" id="1_iqray"]
+
+[resource]
+script = ExtResource("1_iqray")
+weapon_name = "Cannon"
+damage = 60
+max_ammo = 2
+fire_rate = 0.4
+reload_time = 1.4
+metadata/_custom_type_script = "uid://ptpamfwbpvl6"

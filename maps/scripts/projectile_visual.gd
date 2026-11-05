@@ -41,6 +41,12 @@ func _ready():
 			sphere.radius = 0.7
 			sphere.height = 1.4
 			material.albedo_color = Color(0.24, 0.22, 0.2)
+		"cannonball":
+			sphere.radius = 0.22
+			sphere.height = 0.44
+			material.albedo_color = Color(0.13, 0.12, 0.11)
+			material.metallic = 0.55
+			material.roughness = 0.45
 	
 	mesh_instance.mesh = sphere
 	mesh_instance.material_override = material

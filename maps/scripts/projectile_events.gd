@@ -86,8 +86,8 @@ func _rpc_launch_visual(
 ):
 	if _client_projectiles.has(projectile_id):
 		return
-	if key != "smoke_canister" and key != "anchor":
-		push_error("ProjectileEvents: Unknown projectile visual key: " + key)
+	if not projectile_registry or not projectile_registry.get_scene(key):
+		push_error("ProjectileEvents: Unknown projectile key: " + key)
 		return
 
 	var visual: ProjectileVisual = PROJECTILE_VISUAL_SCRIPT.new()

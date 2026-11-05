@@ -1,0 +1,2 @@
+extends ProjectileWeaponBase
+class_name Cannon

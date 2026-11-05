@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="HeroData" format=3 uid="uid://dl6flkonieepx"]
+
+[ext_resource type="PackedScene" uid="uid://cux7byfhtl40n" path="res://heroes/cannoneer/scenes/cannoneer.tscn" id="1_ulfb2"]
+[ext_resource type="Script" uid="uid://d3o14sr872sv0" path="res://hero_base/resources/hero_data.gd" id="2_t4cy3"]
+
+[resource]
+script = ExtResource("2_t4cy3")
+hero_name = "Cannoneer"
+hero_description = "Longer-range, tankier cannon specialist who can load an ally into the cannon and steal an enemy for the ultimate."
+hero_scene = ExtResource("1_ulfb2")
+metadata/_custom_type_script = "uid://d3o14sr872sv0"

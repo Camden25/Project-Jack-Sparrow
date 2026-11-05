@@ -73,6 +73,12 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - Server-side shot validation and lag-compensated raycasts.
 - **File:** `res://hero_base/scripts/hitscan_weapon.gd`
 
+### ProjectileWeaponBase (extends Weapon)
+- Sends only the aim direction from the owning client. The server validates the shooter, aim, fire rate, ammo, and reload, derives the muzzle origin, then spawns a registered projectile through `World.spawn_projectile()`.
+- Projectile key, speed, gravity, lifetime, damage, and additional projectile data are configured on the weapon node.
+- The projectile scene handles its own server-side movement, collision, damage, and lifecycle visual events.
+- **File:** `res://hero_base/scripts/projectile_weapon.gd`
+
 ### UltimateAbility (extends Ability)
 - Tracks `current_charge` up to `ultimate_cost` (default 1000; it is not normalized to 0.0–1.0).
 - Hooks server-side `damage_dealt` / `healing_done` signals on `HeroBase` to add charge, then synchronizes the charge to the owning player.
@@ -115,6 +121,7 @@ res://hero_base/scripts/hero_base.gd
 res://hero_base/scripts/ability.gd
 res://hero_base/scripts/weapon.gd
 res://hero_base/scripts/hitscan_weapon.gd
+res://hero_base/scripts/projectile_weapon.gd
 res://hero_base/scripts/ultimate_ability.gd
 res://hero_base/resources/hero_data.gd
 res://hero_base/resources/ability_data.gd

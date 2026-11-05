@@ -1,6 +1,6 @@
 # Weapon System
 
-**Status:** ✅ Hitscan weapon base and the lightweight RPC visual path for smoke, Anchor, and Volley effects are implemented. ⚠️ Multiplayer behavior still needs host/remote testing. ❌ No reusable projectile-weapon base or projectile-primary hero is currently implemented.
+**Status:** ✅ Hitscan and projectile weapon bases, plus the cannonball prototype, are implemented. ⚠️ Multiplayer behavior still needs host/remote testing.
 
 ---
 
@@ -11,6 +11,7 @@
 | Musket | Hitscan, ADS only | Ex Navy Officer | ✅ Done |
 | Flintlock | Hitscan, hipfire | Ex Navy Officer | ✅ Done |
 | Shotgun | Hitscan spread | Octopus | ✅ Done |
+| Cannonball | Physics projectile with direct and splash damage | Cannoneer | 🟡 Prototype |
 
 ---
 
@@ -29,9 +30,19 @@ All hitscan weapons extend `HitscanWeaponBase`:
 
 ---
 
-## Projectile Weapon Framework — ❌ TODO (distinct from generic ability projectiles)
+## Projectile Weapon Base
 
-`World/ProjectileEvents` now owns server-side gameplay projectile creation and reliable lifecycle events. Clients create collision-free visual proxies; gameplay collision/damage remains server-side. Smoke canisters, Drop Anchor, and Volley presentation use this event path. The missing piece is a reusable weapon fire/validation path and projectile-primary hero such as a cannonball.
+`ProjectileWeaponBase` extends `Weapon` and sends an aim direction and monotonically increasing request ID to the server. The server verifies the sending player, request ID, aim, equipped weapon, fire rate, ammo, and reload; derives the muzzle origin; and calls `World.spawn_projectile()` with the weapon's configured projectile data. The client does not choose the projectile key, origin, damage, or velocity.
+
+Configure the weapon node with a projectile key, muzzle marker path, speed, gravity, lifetime, and optional projectile-specific data. Register the key and gameplay scene in `World/ProjectileRegistry`. The projectile scene handles server-side movement/collision/damage and should call the `Projectile` visual lifecycle helpers.
+
+`ProjectileEvents` accepts launch visuals only for keys present in the local projectile registry. Clients simulate cosmetic proxies; the server projectile remains authoritative for gameplay.
+
+**File:** `res://hero_base/scripts/projectile_weapon.gd`
+
+## Projectile Weapon Framework — 🟡 In progress
+
+`World/ProjectileEvents` owns server-side gameplay projectile creation and reliable lifecycle events. Clients create collision-free visual proxies; gameplay collision/damage remains server-side. Smoke canisters, Drop Anchor, Volley presentation, and the Cannoneer's cannonball use this event path. Host/remote testing remains outstanding.
 
 ### Lightweight RPC migration — walkthrough
 
@@ -42,7 +53,7 @@ The goal is not to send physics state every frame. Keep collision and damage on 
 - **Smoke canister:** server-simulated throw; broadcast launch, then broadcast the authoritative landing/deployment event.
 - **Drop Anchor:** server-simulated fall and landing/damage; broadcast launch and landing. The player's lift/pull ability flow remains separate from the projectile visual.
 - **Volley:** server raycasts and applies damage; broadcast a barrage-start event and per-shot impact positions for flare/impact visuals. The flare and shot VFX do not need physics replication.
-- **Future cannonball:** server-simulated projectile with direct-hit/AOE damage; broadcast launch, then impact or expiry.
+- **Cannonball:** server-simulated projectile with direct-hit and falloff splash damage; broadcast launch, then impact or expiry.
 
 Keep an inventory table of each call site, authoritative simulation, client visual, and terminal event. Migrate one type at a time; don't remove the old spawn path until every peer sees the replacement correctly.
 
@@ -51,7 +62,7 @@ Keep an inventory table of each call site, authoritative simulation, client visu
 Create a node under `World` that owns two responsibilities:
 
 - A server-only factory for gameplay projectiles. It validates a registered type key and instantiates the gameplay scene under `World/Projectiles`; it does not call `MultiplayerSpawner.spawn()`.
-- RPC endpoints that create, update, and finish client-only visuals. Clients resolve type keys through a local allow-list of visual scenes; never accept arbitrary scene paths from the network.
+- RPC endpoints that create, update, and finish client-only visuals. Clients validate type keys against the local projectile registry and create cosmetic proxies; never accept arbitrary scene paths from the network.
 
 Every peer must have the RPC service at the same scene-tree path and with matching RPC declarations. Use the server as its multiplayer authority. Send launch and terminal events reliably on the same channel so an impact cannot arrive before its launch; if you later add frequent snapshots, put those on an unreliable channel.
 
@@ -84,7 +95,7 @@ Start without periodic snapshots. If adding them, batch multiple projectiles int
 2. [x] Convert smoke canister launch, landing, smoke deployment, and cleanup.
 3. [x] Convert Drop Anchor launch/landing visuals; keep the existing server-only damage and client pull/cooldown flow.
 4. [x] Route Volley flare and impact visuals through RPCs; keep server raycasts/damage unchanged.
-5. [ ] Add the cannonball weapon using the same launch/impact contract.
+5. [x] Add the cannonball projectile scene and Cannoneer weapon using `ProjectileWeaponBase`.
 6. [x] Remove the projectile `MultiplayerSpawner` and Anchor's transform synchronizer. Host/remote, disconnect/reconnect, and latency testing remains outstanding.
 
 Late joiners currently do not receive already-active projectile proxies or smoke volumes; the current mid-match join flow is not supported. If late joining is enabled, add a server snapshot of active gameplay projectiles and smoke volumes rather than replaying old launch events.

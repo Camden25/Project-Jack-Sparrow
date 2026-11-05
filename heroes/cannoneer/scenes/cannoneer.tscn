@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://cux7byfhtl40n"]
+
+[ext_resource type="Script" uid="uid://c2nm3m8ev770b" path="res://heroes/cannoneer/scripts/cannoneer.gd" id="1_qrkcx"]
+[ext_resource type="Script" uid="uid://btvx7koewdbtq" path="res://heroes/cannoneer/weapons/cannon.gd" id="2_gnf3l"]
+[ext_resource type="Resource" uid="uid://4x1frve2yy5n" path="res://heroes/cannoneer/resources/cannon.tres" id="3_cannon_data"]
+[ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="12_nnjsn"]
+[ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="13_3xteh"]
+[ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="14_d6sdf"]
+[ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="15_mkjb1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
+albedo_color = Color(0.4573529, 0.17254901, 0.4980392, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6h167"]
+material = SubResource("StandardMaterial3D_5ahsj")
+size = Vector3(0.3, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_whncg"]
+size = Vector3(0.2, 0.2, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1xyps"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wf8xl"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
+albedo_color = Color(0.123291016, 0.39453125, 0, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
+properties/0/path = NodePath(".:net_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:net_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:net_head_rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Cannoneer" type="CharacterBody3D" unique_id=1407199022]
+collision_layer = 2
+script = ExtResource("1_qrkcx")
+
+[node name="Head" type="Node3D" parent="." unique_id=1163300351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=548424471]
+cull_mask = 524287
+current = true
+
+[node name="ViewmodelCamera3D" type="Camera3D" parent="Head" unique_id=448969967]
+cull_mask = 524288
+fov = 60.0
+
+[node name="ViewmodelRoot" type="Node3D" parent="Head" unique_id=734619863]
+
+[node name="MusketViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1605365548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+layers = 524289
+mesh = SubResource("BoxMesh_6h167")
+
+[node name="MuzzlePoint" type="Marker3D" parent="Head/ViewmodelRoot" unique_id=1157625960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -1.4147485)
+
+[node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1095945479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1736886413]
+
+[node name="MusketWorldMesh" type="MeshInstance3D" parent="Skeleton3D" unique_id=914551381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+visible = false
+mesh = SubResource("BoxMesh_whncg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=43896049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1xyps")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1630175380]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_wf8xl")
+surface_material_override/0 = SubResource("StandardMaterial3D_vjx7y")
+
+[node name="Abilities" type="Node" parent="." unique_id=1901336776]
+
+[node name="Cannon" type="Node" parent="Abilities" unique_id=702455716]
+script = ExtResource("2_gnf3l")
+projectile_key = "cannonball"
+muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
+projectile_speed = 22.0
+projectile_lifetime = 5.0
+projectile_data = {
+"splash_damage": 30,
+"splash_radius": 3.5
+}
+data = ExtResource("3_cannon_data")
+metadata/_custom_type_script = "uid://btvx7koewdbtq"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
+replication_config = SubResource("SceneReplicationConfig_ebtu4")
+
+[node name="InterpolationController" type="Node" parent="." unique_id=538085759]
+script = ExtResource("12_nnjsn")
+
+[node name="LagCompensationBuffer" type="Node" parent="." unique_id=1720481619]
+script = ExtResource("13_3xteh")
+
+[node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
+script = ExtResource("14_d6sdf")
+
+[node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("15_mkjb1")]

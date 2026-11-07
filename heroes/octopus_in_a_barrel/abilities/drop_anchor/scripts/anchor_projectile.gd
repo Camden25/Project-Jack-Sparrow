@@ -101,7 +101,7 @@ func _land_at(land_position: Vector3, surface_normal: Vector3):
 				continue
 			if PlayerManager.is_same_team(shooter_id, player.get_multiplayer_authority()):
 				continue
-			if global_position.distance_to(player.global_position) <= 3.0:
+			if global_position.distance_to(player.global_position) <= DropAnchorAbility.ANCHOR_DAMAGE_RADIUS:
 				victims.append(player.get_multiplayer_authority())
 	
 	if _ability_node:

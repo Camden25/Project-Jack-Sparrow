@@ -26,6 +26,12 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var movement_override: bool = false
 var _smoke_outline: MeshInstance3D
+var _smoke_outline_canvas_layer: CanvasLayer
+var _smoke_outline_viewport: SubViewport
+var _smoke_outline_camera: Camera3D
+
+const SMOKE_OUTLINE_RENDER_LAYER := 19
+const SMOKE_OUTLINE_RENDER_MASK := 1 << (SMOKE_OUTLINE_RENDER_LAYER - 1)
 
 func _enter_tree():
 	var peer_id = int(name)
@@ -37,6 +43,7 @@ func _enter_tree():
 		sync.set_multiplayer_authority(peer_id)
 
 func _ready():
+	_setup_smoke_outline_viewport()
 	_setup_smoke_outline()
 
 	# Only the owner gets camera and input
@@ -79,6 +86,7 @@ func _ready():
 	
 	# Local player setup
 	$Head/Camera3D.current = true
+	_enable_smoke_outline_viewport()
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	interpolation_controller.queue_free()
 	
@@ -93,11 +101,46 @@ func _setup_smoke_outline():
 	_smoke_outline = body_mesh.duplicate() as MeshInstance3D
 	_smoke_outline.name = "SmokeOutline"
 	var outline_material := ShaderMaterial.new()
-	outline_material.shader = preload("res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_outline.gdshader")
+	outline_material.shader = preload("res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_outline_mask.gdshader")
 	_smoke_outline.material_override = outline_material
+	_smoke_outline.layers = SMOKE_OUTLINE_RENDER_MASK
 	_smoke_outline.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_smoke_outline.visible = false
 	body_mesh.add_sibling(_smoke_outline)
+
+func _setup_smoke_outline_viewport():
+	_smoke_outline_canvas_layer = get_node_or_null("SmokeOutlineLayer") as CanvasLayer
+	_smoke_outline_viewport = get_node_or_null("SmokeOutlineLayer/ViewportContainer/OutlineViewport") as SubViewport
+	_smoke_outline_camera = get_node_or_null("SmokeOutlineLayer/ViewportContainer/OutlineViewport/OutlineCamera3D") as Camera3D
+	if not _smoke_outline_canvas_layer or not _smoke_outline_viewport or not _smoke_outline_camera:
+		return
+
+	_smoke_outline_canvas_layer.visible = false
+	_smoke_outline_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	_smoke_outline_viewport.world_3d = get_viewport().world_3d
+
+func _enable_smoke_outline_viewport():
+	if not _smoke_outline_canvas_layer or not _smoke_outline_viewport:
+		return
+
+	_smoke_outline_canvas_layer.visible = true
+	_smoke_outline_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_sync_smoke_outline_camera()
+
+func _sync_smoke_outline_camera():
+	if not _smoke_outline_camera:
+		return
+
+	_smoke_outline_camera.global_transform = camera.global_transform
+	_smoke_outline_camera.fov = camera.fov
+	_smoke_outline_camera.near = camera.near
+	_smoke_outline_camera.far = camera.far
+	_smoke_outline_camera.projection = camera.projection
+	_smoke_outline_camera.keep_aspect = camera.keep_aspect
+	_smoke_outline_camera.size = camera.size
+	_smoke_outline_camera.h_offset = camera.h_offset
+	_smoke_outline_camera.v_offset = camera.v_offset
+	_smoke_outline_camera.frustum_offset = camera.frustum_offset
 
 func set_smoke_outline_visible(is_visible: bool):
 	if is_instance_valid(_smoke_outline):
@@ -125,7 +168,9 @@ func _unhandled_input(event):
 			weapon.reload()
 
 func _process(delta: float) -> void:
-	if not is_multiplayer_authority():
+	if is_multiplayer_authority():
+		_sync_smoke_outline_camera()
+	else:
 		interpolation_controller.add_snapshot(net_position, net_rotation, net_head_rotation)
 		interpolation_controller.interpolate(delta)
 
@@ -162,9 +207,6 @@ func _physics_process(delta):
 	net_position = position
 	net_rotation = rotation
 	net_head_rotation = head.rotation
-	
-	if multiplayer.is_server():
-		lag_buffer.record()
 
 func _setup_health_bar(peer_id: int):
 	print("_setup_health_bar called for ", peer_id, " on client ", multiplayer.get_unique_id())

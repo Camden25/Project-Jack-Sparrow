@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_tx6mw")
 weapon_name = "Musket"
-damage = 75
+damage = 45
 max_ammo = 1
 reload_time = 1.0
 max_range = 150.0

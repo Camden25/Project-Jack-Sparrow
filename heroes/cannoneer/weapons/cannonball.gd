@@ -9,7 +9,7 @@ var _pending_origin: Vector3 = Vector3.ZERO
 var _initial_velocity: Vector3 = Vector3.ZERO
 var _gravity: Vector3 = Vector3.DOWN * 9.8
 var _splash_damage: int = 30
-var _splash_radius: float = 3.0
+var _splash_radius: float = 4.0
 var _detonated: bool = false
 
 func init_from_data(data: Dictionary):

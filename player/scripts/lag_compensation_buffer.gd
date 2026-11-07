@@ -13,6 +13,10 @@ func _enter_tree() -> void:
 func setup(player: Player):
 	owner_node = player
 
+func _physics_process(_delta: float):
+	if multiplayer.is_server():
+		record()
+
 func record():
 	if not multiplayer.is_server():
 		return
@@ -43,7 +47,7 @@ func get_position_at(timestamp: float) -> Dictionary:
 				t = (timestamp - a.time) / range_t
 			return {
 				"position": a.position.lerp(b.position, t),
-				"basis": a.basis
+				"basis": a.basis.slerp(b.basis, t)
 			}
 	
 	# Timestamp older than buffer — use oldest

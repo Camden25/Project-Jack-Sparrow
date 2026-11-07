@@ -10,7 +10,7 @@ Unstructured ideas, half-baked concepts, and things to revisit later.
 - Current seed: primary fire may heal; all details beyond that are undecided.
 
 ### Unnamed — Ghost Ship Crew Member
-- Stealth mechanics — disappear, reappear elsewhere
+- Stealth mechanics: disappear, reappear elsewhere (make  it not feel as bad as sombra did)
 - Horror angle: you hear them before you see them
 
 ---
@@ -22,16 +22,11 @@ Unstructured ideas, half-baked concepts, and things to revisit later.
 - Other team defends
 - Classic Overwatch payload but on a dock or cliff path
 
-### King of the Hill (Rotating)
-- Single point but it moves to a new location each round
-- Forces teams to reposition constantly
-- Could use existing ControlPoint code with a teleport on round win
-
 ### Artifact Recovery
 - An item spawns on the map
 - Teams fight to carry it to their base
 - Carrying player has limited abilities
-- Horror artifact — cursed chest, haunted compass, etc.
+- Horror artifact: cursed chest, haunted compass, etc.
 
 ---
 
@@ -52,7 +47,7 @@ Unstructured ideas, half-baked concepts, and things to revisit later.
 ### The Lighthouse
 - Vertical map centered on a lighthouse tower
 - Control point at the top, spawn rooms at the bottom
-- Grapple shines here — climbing the outside of the tower
+- Grapple shines here (climbing the outside of the tower)
 - Anchor drops from the top are devastating
 
 ---
@@ -62,7 +57,7 @@ Unstructured ideas, half-baked concepts, and things to revisit later.
 ### Woodblock Outline Shader
 - Hard dark outlines on all geometry and characters
 - Hatching patterns on shadows instead of smooth gradients
-- Limited color palette — 3-4 tones per object
+- Limited color palette (3-4 tones per object)
 - Woodblock print / linocut aesthetic
 - Reference: Arranger (game), old Japanese woodblock prints, ukiyo-e
 

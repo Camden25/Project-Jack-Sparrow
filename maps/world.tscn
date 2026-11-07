@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://bw0cxsqe3f1rv" path="res://maps/world.gd" id="1_dyenr"]
 [ext_resource type="Script" uid="uid://dkgidqdrqtis1" path="res://maps/scripts/effects_manager.gd" id="2_c4v46"]
 [ext_resource type="Script" uid="uid://b3cnwqf2dj8gu" path="res://maps/scripts/game_flow_manager.gd" id="2_ntnhp"]
+[ext_resource type="Script" uid="uid://ytmveyt3do78" path="res://maps/scripts/projectile_events.gd" id="2_projectile_events"]
 [ext_resource type="Script" uid="uid://con6rt5tboku4" path="res://maps/scripts/projectile_registry.gd" id="2_qo83i"]
-[ext_resource type="Script" path="res://maps/scripts/projectile_events.gd" id="2_projectile_events"]
 [ext_resource type="PackedScene" uid="uid://dxw7cledbpiia" path="res://addons/proto-csgs/proto_csg_box_3d.tscn" id="2_uds71"]
 [ext_resource type="Script" uid="uid://cuyiv7g74wky1" path="res://maps/scripts/control_point_mode.gd" id="3_c4v46"]
 [ext_resource type="Texture2D" uid="uid://cej3yoosomfd2" path="res://addons/proto-csgs/textures/dark/texture_13.png" id="3_iu4sv"]
@@ -237,7 +237,7 @@ metadata/_custom_type_script = "uid://cuyiv7g74wky1"
 [node name="Players" type="Node3D" parent="." unique_id=865495217]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Players" unique_id=1434814864]
-_spawnable_scenes = PackedStringArray("uid://b3x4vl7qlg45v", "uid://cgig6n2qrnega")
+_spawnable_scenes = PackedStringArray("uid://b3x4vl7qlg45v", "uid://cgig6n2qrnega", "uid://cux7byfhtl40n")
 spawn_path = NodePath("..")
 
 [node name="Projectiles" type="Node3D" parent="." unique_id=473992621]

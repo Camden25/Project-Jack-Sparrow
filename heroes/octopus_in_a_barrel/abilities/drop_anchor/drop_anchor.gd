@@ -4,6 +4,8 @@ class_name DropAnchorAbility
 const ANCHOR_DAMAGE_BASE: int = 30
 const ANCHOR_DAMAGE_PER_METER: float = 3.0
 const ANCHOR_MAX_DAMAGE: int = 80
+const ANCHOR_FULL_DAMAGE_RADIUS: float = 1.5
+const ANCHOR_DAMAGE_RADIUS: float = 5.5
 const LIFT_SPEED: float = 14.0
 const LIFT_HEIGHT: float = 1.5
 const LIFT_TIMEOUT: float = 0.35
@@ -69,7 +71,7 @@ func _begin_drop():
 func physics_update(delta: float):
 	if not owner_player or not owner_player.is_multiplayer_authority():
 		return
-
+	
 	match phase:
 		Phase.LIFTING:
 			phase_timer += delta
@@ -92,7 +94,11 @@ func physics_update(delta: float):
 		Phase.PULLING:
 			phase_timer -= delta
 			var to_anchor = anchor_land_position - owner_player.global_position
-			if phase_timer <= 0.0 or to_anchor.length() <= PULL_ARRIVAL_DISTANCE or owner_player.get_slide_collision_count() > 0:
+			if (
+				phase_timer <= 0.0
+				or to_anchor.length() <= PULL_ARRIVAL_DISTANCE
+				or _is_pull_blocked(to_anchor.normalized())
+			):
 				_finish_movement()
 			else:
 				owner_player.velocity = to_anchor.normalized() * PULL_SPEED
@@ -112,7 +118,8 @@ func _spawn_anchor(_requested_spawn_pos: Vector3):
 	if sender_id != 0 and sender_id != shooter_id:
 		push_warning("Rejected anchor request from a peer that does not own the hero")
 		return
-
+	
+	_anchor_notification_received = false
 	var world = SceneManager.get_world()
 	if not world:
 		_force_reset()
@@ -156,13 +163,16 @@ func _on_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 			)
 	
 	if multiplayer.is_server():
-		var damage = _calculate_damage(drop_height)
 		for peer_id in victims:
 			var players_node = SceneManager.get_players_node()
 			if not players_node:
 				continue
 			var victim = players_node.get_node_or_null(str(peer_id))
 			if not victim:
+				continue
+			var distance = land_pos.distance_to(victim.global_position)
+			var damage = _calculate_damage(drop_height, distance)
+			if damage <= 0:
 				continue
 			var health = victim.get_node_or_null("PlayerHealth")
 			if health:
@@ -175,11 +185,28 @@ func _finish_movement():
 	owner_player.velocity = Vector3.ZERO
 	owner_player.movement_override = false
 
+func _is_pull_blocked(pull_direction: Vector3) -> bool:
+	for collision_index in range(owner_player.get_slide_collision_count()):
+		var collision = owner_player.get_slide_collision(collision_index)
+		var normal = collision.get_normal()
+		if normal.dot(Vector3.UP) < 0.7 and pull_direction.dot(normal) < -0.5:
+			return true
+	return false
+
 func _can_activate() -> bool:
 	if phase != Phase.IDLE or not owner_player.spawn_confirmed or owner_player.is_on_floor():
 		return false
 	return super._can_activate()
 
-func _calculate_damage(drop_height: float) -> int:
-	var damage = ANCHOR_DAMAGE_BASE + int(drop_height * ANCHOR_DAMAGE_PER_METER)
-	return min(damage, ANCHOR_MAX_DAMAGE)
+func _calculate_damage(drop_height: float, distance: float) -> int:
+	var base_damage = min(
+		ANCHOR_DAMAGE_BASE + int(drop_height * ANCHOR_DAMAGE_PER_METER),
+		ANCHOR_MAX_DAMAGE
+	)
+	var falloff = clampf(
+		(ANCHOR_DAMAGE_RADIUS - distance) /
+		(ANCHOR_DAMAGE_RADIUS - ANCHOR_FULL_DAMAGE_RADIUS),
+		0.0,
+		1.0
+	)
+	return roundi(base_damage * falloff)

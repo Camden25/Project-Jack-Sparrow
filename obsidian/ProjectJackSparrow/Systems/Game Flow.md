@@ -12,7 +12,7 @@ WAITING → hero-select overlay → COUNTDOWN → ACTIVE → ROUND_END → MATCH
 
 Managed by `GameFlowManager` — a child of the World scene. The server drives flow and syncs state to clients via `_sync_state.rpc`.
 
-The enum also contains `HERO_SELECT`, but the initial `_sync_show_hero_select()` path does not sync that enum state. The overlay is shown separately from the synchronized flow state.
+The `HERO_SELECT` state is synchronized along with showing the overlay. Clients report when their World scene is ready so the server can deliver the current state and screen after scene transitions.
 
 ---
 
@@ -32,8 +32,9 @@ The enum also contains `HERO_SELECT`, but the initial `_sync_show_hero_select()`
 ## Flow Details
 
 ### Hero Select
-- On World load, the server calls `_begin_hero_select()` → `_sync_show_hero_select.rpc()`
-- All clients show `HeroSelectOverlay`
+- On World load, the server sets `HERO_SELECT` and shows its overlay
+- Each client retries its World-ready report until the server acknowledges it; the server syncs its current flow state and sends that client the hero-select overlay
+- The server handles duplicate readiness reports idempotently, preventing repeat player spawns
 - When all players confirm (or the 20-second selection timer expires) → selections are applied; `start_match()` is called on server
 - Overlay passes `GameFlowManager` reference so it can call `start_match()`
 

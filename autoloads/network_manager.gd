@@ -1,12 +1,14 @@
 extends Node
 
 const DEFAULT_PORT = 7777
-const MAX_PLAYERS = 6
+const MAX_PLAYERS = 8
 
 var steam_lobby_id: int = 0
 
 var peer_pings: Dictionary = {}  # peer_id: ping_seconds
 var _ping_timestamps: Dictionary = {}  # peer_id: send_time
+var _world_ready_peers: Dictionary = {}
+var _client_world_ready_acknowledged: bool = false
 
 enum GameState { LOBBY, IN_GAME }
 var game_state: GameState = GameState.LOBBY
@@ -235,32 +237,40 @@ func set_game_state(state: GameState):
 @rpc("authority", "call_remote", "reliable")
 func _redirect_to_game():
 	await SceneManager.goto_scene("res://maps/world.tscn")
-	_client_ready_in_world.rpc_id(1)
 
 @rpc("any_peer", "call_remote", "reliable")
 func _client_ready_in_world():
 	var peer_id = multiplayer.get_remote_sender_id()
+	if _world_ready_peers.has(peer_id):
+		_acknowledge_client_world_ready.rpc_id(peer_id)
+		return
+
 	var gfm = SceneManager.get_world().get_node_or_null("GameFlowManager") if SceneManager.get_world() else null
 	if not gfm:
 		return
 	
+	_world_ready_peers[peer_id] = true
+	gfm._sync_state.rpc_id(peer_id, gfm.state)
 	match gfm.state:
 		GameFlowManager.State.HERO_SELECT:
-			# Show hero select for this player only
 			_show_hero_select_for_peer.rpc_id(peer_id)
 		GameFlowManager.State.ACTIVE, GameFlowManager.State.COUNTDOWN:
-			# Assign default hero and spawn immediately
 			PlayerManager.hero_selections[peer_id] = 0
 			var world = SceneManager.get_world()
 			if world:
 				world._spawn_player(peer_id)
 				var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
 				world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
+	_acknowledge_client_world_ready.rpc_id(peer_id)
+
+@rpc("authority", "call_remote", "reliable")
+func _acknowledge_client_world_ready():
+	_client_world_ready_acknowledged = true
 
 @rpc("authority", "call_remote", "reliable")
 func _show_hero_select_for_peer():
 	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
-	if overlay:
+	if overlay and not overlay.visible:
 		overlay.show_hero_select(SceneManager.get_world().get_node_or_null("GameFlowManager"))
 
 func return_to_lobby():
@@ -308,6 +318,13 @@ func _pong():
 		var rtt = (Time.get_ticks_msec() / 1000.0) - _ping_timestamps[sender_id]
 		peer_pings[sender_id] = rtt / 2.0  # one-way latency
 		_ping_timestamps.erase(sender_id)
+		_sync_local_ping.rpc_id(sender_id, peer_pings[sender_id])
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_local_ping(ping_seconds: float):
+	if multiplayer.is_server():
+		return
+	peer_pings[multiplayer.get_unique_id()] = ping_seconds
 
 func get_peer_ping(peer_id: int) -> float:
 	return peer_pings.get(peer_id, 0.05)  # default 50ms if unknown

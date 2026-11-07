@@ -6,7 +6,7 @@
 script = ExtResource("1_uwfcy")
 weapon_name = "Flintlock"
 slot = 1
-damage = 30
+damage = 20
 max_ammo = 6
 fire_rate = 0.2
 reload_time = 1.0

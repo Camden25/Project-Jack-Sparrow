@@ -111,6 +111,8 @@ pause={
 
 [layer_names]
 
+3d_render/layer_18="Smoke Effect"
+3d_render/layer_19="Smoke Outlines"
 3d_physics/layer_1="World"
 3d_physics/layer_2="Players"
 

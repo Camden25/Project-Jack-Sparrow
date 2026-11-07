@@ -17,7 +17,7 @@ The fun should come from landing a satisfying prediction and making a clever mov
 | Slot      | Name       | Role                                                                         | Status                           |
 | --------- | ---------- | ---------------------------------------------------------------------------- | -------------------------------- |
 | Primary   | Cannon     | Slow physics projectile; direct hit plus smaller falloff splash damage       | 🟡 Graybox wired                 |
-| Ability 1 | Recoil Hop | Fire a short blast to launch yourself away from the aim point                | Design                           |
+| Ability 1 | Recoil Hop | Recoil launches the Cannoneer backward and upward                             | 🟡 Graybox wired                 |
 | Ability 2 | Crew Shot  | An ally opts in, boards the cannon, and gets launched toward a chosen area   | Design; high implementation cost |
 | Ultimate  | Press-Gang | A telegraphed harpoon shot captures and launches one enemy, displacing them  | Design; needs playtesting        |
 
@@ -36,11 +36,11 @@ No separate weapon secondary is proposed yet. In the current input routing, seco
 
 ### Recoil Hop (Ability 1)
 
-Fire a short-range blast toward the ground or a nearby surface to launch the Cannoneer in the opposite direction. It is primarily a reposition/dodge tool, not a second high-damage attack.
+Activate to recoil backward from the horizontal aim direction and launch upward. It is a movement tool with no damage.
 
-- Aim determines the recoil direction, so the player can choose a backward escape or a vertical hop.
-- Keep air control after launch; do not lock movement or require a grounded stance.
-- Make the blast readable and give it a meaningful cooldown. It should help the heavy hero keep up with the fast-movement roster without becoming a free dash.
+- The graybox adds 9 m/s of backward velocity and 6 m/s upward velocity, and briefly preserves that launch for 0.12 seconds before returning control.
+- Usable in the air as well as on the ground; the upward launch is retained even when aiming nearly straight up.
+- The current cooldown is 8 seconds. These values should be tuned in playtests.
 
 ### Crew Shot (Ability 2)
 
@@ -90,6 +90,6 @@ If these answers are poor, change the projectile or role before investing in the
 
 - The cannon uses `ProjectileWeaponBase` and the server-authoritative projectile lifecycle in [[Weapon System]]; never apply damage from a client visual.
 - The cannonball uses server-side collision and splash overlap checks; verify direct/splash tuning and impact readability in playtests.
-- Recoil Hop should use existing player movement/ability patterns and must not leave `movement_override` set.
+- Recoil Hop uses the existing movement-override pattern and clears the override on timeout or cancellation.
 - Crew Shot and Press-Gang require explicit multiplayer rules for ownership, cancellation, collision, and respawn. Treat them as separate prototypes after the cannonball passes its fun test.
 - See [[Ability System]] for ability slots, cooldowns, and current input routing.

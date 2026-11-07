@@ -23,7 +23,7 @@
 ## 🟡 Gameplay Systems
 
 - [ ] **Spectator mode** — mid-game joiners become spectators instead of getting spawned or hero-selecting into a live round.
-- [ ] **Ultimate charge** — hitscan and Drop Anchor emit damage, but there is no active `UltimateAbility` in the roster and no `healing_done` emitter; complete support/healing charge wiring and register/test an ultimate.
+- [ ] **Healing charge wiring** — add a `healing_done` emitter and verify ultimate charge when a healing hero becomes playable; damage-based charge and Ex Navy Officer's Volley are already active.
 - [ ] **Round flow** — if the design requires hero select every round, update `ControlPointMode`/`GameFlowManager`; intermediate point wins currently restart the round without reopening selection.
 - [ ] **Multi-use abilities** — `uses_remaining` is stubbed out in `ability.gd`, not implemented.
 - [ ] **Match history / score summary** — show before returning to lobby.
@@ -43,9 +43,11 @@
 - [ ] **Octopus in a Barrel** — No Hide in Barrel is in the latest design brief. See [[Octopus in a Barrel]].
 - [x] **Ex Navy Officer** — enemy outlines through smoke while ADS. See [[Ex Navy Officer]].
 - [ ] **Scout Sword Dude** — resolve Ability 2, ultimate, and story, then implement. See [[Scout Sword Dude]].
-- [ ] **Cannoneer** — resolve ally/ultimate rules, Ability 2, and story, then implement. See [[Cannoneer]].
+- [ ] **Prototype Cannoneer** — graybox a cannonball primary and a minimal kit to test leading shots, projectile counterplay, and whether a slower space-holder fits the fast-movement roster. Defer ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
 - [ ] **Hook** — define full kit and hook behavior, then implement. See [[Hook]].
-- [ ] **Surgeon** — develop the healing-primary seed into a complete kit. See [[Surgeon]].
+- [ ] **Prototype Surgeon** — graybox a healing primary plus one simple damage/defense option; test whether supporting allies is engaging and legible. Defer a complete kit, story, and final art. See [[Surgeon]].
+
+Prototype these two before expanding the full roster. Keep both prototypes intentionally small, run playtests, then decide whether to iterate, redesign, or cut before investing in full kits and polish.
 
 ---
 

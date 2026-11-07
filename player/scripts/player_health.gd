@@ -9,6 +9,9 @@ signal player_died(peer_id: int)
 
 var health: int = MAX_HEALTH
 
+func _ready() -> void:
+	health = MAX_HEALTH
+
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
 

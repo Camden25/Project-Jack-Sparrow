@@ -40,9 +40,11 @@
 - **File:** `res://heroes/ex_navy_officer/abilities/dash/dash.gd`
 
 ### Smoke Canister (Ability 2)
-- Thrown projectile; on landing it deploys a FogVolume smoke effect.
+- Thrown projectile; on landing it deploys a smoke shell made from opaque CSG spheres.
 - While aiming the Musket, the officer sees outlines of enemy players inside active smoke.
 - Outlines are local to the officer, disappear when she stops aiming, and do not reveal allies or players outside smoke.
+- Outlines use a silhouette mask in a transparent SubViewport on render layer 19; the main camera excludes that layer. The SubViewport camera tracks the player camera and renders only the mask, while the smoke shell remains fully opaque and writes to depth on layer 18.
+- Since the outline viewport is composited over the main view, outlines can appear over walls.
 - **Files:**
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_canister.gd`
   - `res://heroes/ex_navy_officer/abilities/smoke_canister/scripts/smoke_canister_projectile.gd`
@@ -69,7 +71,7 @@
 
 She was a poor British citizen who joined the military to survive, rose to officer, challenged leadership, was charged with treason, and exiled to an island. The Captain found and brought her aboard, but still distrusts her former Navy ties. She keeps her tattered uniform as a reminder of what not to become.
 
-The ADS dual-weapon system is the intended mechanical identity: the Musket rewards deliberate aim while the Flintlock is used outside ADS. Smoke/ADS synergy remains a design idea, not implemented behavior.
+The ADS dual-weapon system is the intended mechanical identity: the Musket rewards deliberate aim while the Flintlock is used outside ADS. Smoke/ADS synergy is implemented: while aiming, the Officer sees enemy outlines inside active smoke.
 
 ---
 

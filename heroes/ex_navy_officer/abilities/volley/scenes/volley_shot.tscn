@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://buechfw7ue5jm"]
 
 [sub_resource type="StandardMaterial3D" id="ImpactMaterial"]
-albedo_color = Color(1, 0.48, 0.08, 1)
 shading_mode = 0
+albedo_color = Color(1, 0.48, 0.08, 1)
 emission_enabled = true
 emission = Color(1, 0.22, 0.02, 1)
 emission_energy_multiplier = 3.0

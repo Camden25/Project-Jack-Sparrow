@@ -4,7 +4,7 @@
 [ext_resource type="Shader" uid="uid://dgvro4up10x6c" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_shell.gdshader" id="2_smoke_shell"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_smoke_shell"]
-render_priority = 0
+render_priority = -1
 shader = ExtResource("2_smoke_shell")
 shader_parameter/shell_color = Color(0.45, 0.45, 0.45, 1)
 
@@ -14,11 +14,13 @@ script = ExtResource("1_78x4t")
 [node name="Timer" type="Timer" parent="." unique_id=46401133]
 
 [node name="FogOutside" type="CSGSphere3D" parent="." unique_id=1674996794]
+layers = 131072
 radial_segments = 24
 rings = 12
 material = SubResource("ShaderMaterial_smoke_shell")
 
 [node name="FogInside" type="CSGSphere3D" parent="." unique_id=1190339773]
+layers = 131072
 flip_faces = true
 radial_segments = 24
 rings = 12

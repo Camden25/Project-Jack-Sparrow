@@ -42,8 +42,8 @@ func _ready():
 			sphere.height = 1.4
 			material.albedo_color = Color(0.24, 0.22, 0.2)
 		"cannonball":
-			sphere.radius = 0.22
-			sphere.height = 0.44
+			sphere.radius = 0.35
+			sphere.height = 0.7
 			material.albedo_color = Color(0.13, 0.12, 0.11)
 			material.metallic = 0.55
 			material.roughness = 0.45

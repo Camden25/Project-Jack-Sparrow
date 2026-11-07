@@ -2,7 +2,7 @@
 
 > Unnamed support concept. The only confirmed kit note is that the primary fire may heal.
 
-**Status:** ❌ Early concept — no hero scene/resource is registered in the project.
+**Status:** 🟡 Early concept; recommended next graybox prototype. No hero scene/resource is registered in the project.
 
 ---
 
@@ -28,4 +28,6 @@
 
 ## Implementation Status
 
-The project currently has no Surgeon scene, hero resource, or roster entry. This page records a design seed only; no healing-primary implementation should be inferred from the shared `HeroBase` signals.
+Prototype a simple healing primary and one straightforward damage or self-defense option to find out whether healing is satisfying and understandable in a team fight. Keep tuning, story, art, and the rest of the kit out of scope until playtests validate the core loop.
+
+The project currently has no Surgeon scene, hero resource, or roster entry; no healing-primary implementation should be inferred from the shared `HeroBase` signals.

@@ -14,7 +14,10 @@ signal state_changed(new_state: State)
 
 func _ready():
 	if not multiplayer.is_server():
+		_report_world_ready()
 		return
+
+	NetworkManager._world_ready_peers.clear()
 	
 	# Find and connect game mode node
 	current_mode = get_node_or_null("ControlPointMode")
@@ -25,23 +28,20 @@ func _ready():
 	_begin_hero_select()
 
 func _begin_hero_select():
+	_sync_state.rpc(State.HERO_SELECT)
 	_sync_show_hero_select.rpc()
 
 @rpc("authority", "call_local", "reliable")
 func _sync_show_hero_select():
 	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
 	if overlay:
-		overlay.show_hero_select(self)  # pass GameFlowManager so overlay can call start_match
+		overlay.show_hero_select(self)
 
-func _go_to_hero_select():
-	_sync_state.rpc(State.HERO_SELECT)
-	_show_hero_select.rpc()
-
-@rpc("authority", "call_local", "reliable")
-func _show_hero_select():
-	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
-	if overlay:
-		overlay.show_hero_select()
+func _report_world_ready() -> void:
+	NetworkManager._client_world_ready_acknowledged = false
+	while is_inside_tree() and not NetworkManager._client_world_ready_acknowledged:
+		NetworkManager._client_ready_in_world.rpc_id(1)
+		await get_tree().create_timer(0.5).timeout
 
 @rpc("authority", "call_local", "reliable")
 func _hide_hero_select():

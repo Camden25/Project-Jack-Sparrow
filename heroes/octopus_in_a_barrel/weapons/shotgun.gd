@@ -2,7 +2,7 @@ extends HitscanWeaponBase
 class_name Shotgun
 
 @export var num_bullets: int = 10
-@export var spread: float = 0.2
+@export var spread: float = 0.15
 
 func _fire():
 	for i in range(num_bullets):

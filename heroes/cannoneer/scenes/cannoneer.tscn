@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://c2nm3m8ev770b" path="res://heroes/cannoneer/scripts/cannoneer.gd" id="1_qrkcx"]
 [ext_resource type="Script" uid="uid://btvx7koewdbtq" path="res://heroes/cannoneer/weapons/cannon.gd" id="2_gnf3l"]
 [ext_resource type="Resource" uid="uid://4x1frve2yy5n" path="res://heroes/cannoneer/resources/cannon.tres" id="3_cannon_data"]
+[ext_resource type="Script" uid="uid://e1t6tn7rdqhw" path="res://heroes/cannoneer/abilities/recoil_hop/recoil_hop.gd" id="4_87qqg"]
+[ext_resource type="Resource" path="res://heroes/cannoneer/resources/recoil_hop.tres" id="5_wbtur"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="12_nnjsn"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="13_3xteh"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="14_d6sdf"]
@@ -90,7 +92,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vjx7y")
 script = ExtResource("2_gnf3l")
 projectile_key = "cannonball"
 muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
-projectile_speed = 22.0
+projectile_speed = 26.0
+projectile_gravity = Vector3(0, -13.72, 0)
 projectile_lifetime = 5.0
 projectile_data = {
 "splash_damage": 30,
@@ -98,6 +101,11 @@ projectile_data = {
 }
 data = ExtResource("3_cannon_data")
 metadata/_custom_type_script = "uid://btvx7koewdbtq"
+
+[node name="RecoilHopAbility" type="Node" parent="Abilities" unique_id=107511572]
+script = ExtResource("4_87qqg")
+data = ExtResource("5_wbtur")
+metadata/_custom_type_script = "uid://e1t6tn7rdqhw"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
 replication_config = SubResource("SceneReplicationConfig_ebtu4")
@@ -110,5 +118,6 @@ script = ExtResource("13_3xteh")
 
 [node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
 script = ExtResource("14_d6sdf")
+MAX_HEALTH = 125
 
 [node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("15_mkjb1")]

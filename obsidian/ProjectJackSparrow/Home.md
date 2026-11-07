@@ -13,7 +13,8 @@
 
 ### 🦸 Heroes
 - **In the current runtime roster:** [[Ex Navy Officer]], [[Octopus in a Barrel]]
-- **Design only / not registered:** [[Captain]], [[Scout Sword Dude]], [[Cannoneer]], [[Hook]], [[Surgeon]]
+- **Next graybox prototype candidates (not registered):** [[Cannoneer]], [[Surgeon]]
+- **Other design-only heroes (not registered):** [[Captain]], [[Scout Sword Dude]], [[Hook]]
 
 ### 🎮 Gamemodes
 - [[Control Point]]

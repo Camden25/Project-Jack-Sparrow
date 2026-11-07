@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AbilityData" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dwnj3qg2y1f1w" path="res://hero_base/resources/ability_data.gd" id="1_ability_data"]
+
+[resource]
+script = ExtResource("1_ability_data")
+ability_name = "Recoil Hop"
+slot = 2
+cooldown = 8.0
+metadata/_custom_type_script = "uid://dwnj3qg2y1f1w"

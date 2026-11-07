@@ -20,18 +20,18 @@ func spawn_authoritative(key: String, data: Dictionary) -> int:
 	if not multiplayer.is_server():
 		push_error("Only the server can spawn gameplay projectiles")
 		return -1
-
+	
 	var scene: PackedScene = projectile_registry.get_scene(key)
 	if not scene:
 		push_error("No projectile registered for key: " + key)
 		return -1
-
+	
 	var projectile = scene.instantiate()
 	if not projectile is Projectile:
 		projectile.free()
 		push_error("Registered scene is not a Projectile: " + key)
 		return -1
-
+	
 	var projectile_id = _next_projectile_id
 	_next_projectile_id += 1
 	var spawn_data = data.duplicate()
@@ -41,14 +41,7 @@ func spawn_authoritative(key: String, data: Dictionary) -> int:
 	projectiles_node.add_child(projectile)
 	return projectile_id
 
-func broadcast_launch(
-	projectile_id: int,
-	key: String,
-	origin: Vector3,
-	initial_velocity: Vector3,
-	gravity: Vector3,
-	lifetime: float
-):
+func broadcast_launch(projectile_id: int, key: String, origin: Vector3, initial_velocity: Vector3, gravity: Vector3, lifetime: float):
 	if not multiplayer.is_server():
 		return
 	_rpc_launch_visual.rpc(projectile_id, key, origin, initial_velocity, gravity, lifetime)
@@ -76,20 +69,13 @@ func broadcast_effect(key: String, position: Vector3, lifetime: float):
 	_rpc_spawn_effect.rpc(key, position, lifetime)
 
 @rpc("authority", "call_remote", "reliable")
-func _rpc_launch_visual(
-	projectile_id: int,
-	key: String,
-	origin: Vector3,
-	initial_velocity: Vector3,
-	gravity: Vector3,
-	lifetime: float
-):
+func _rpc_launch_visual(projectile_id: int, key: String, origin: Vector3, initial_velocity: Vector3, gravity: Vector3, lifetime: float):
 	if _client_projectiles.has(projectile_id):
 		return
 	if not projectile_registry or not projectile_registry.get_scene(key):
 		push_error("ProjectileEvents: Unknown projectile key: " + key)
 		return
-
+	
 	var visual: ProjectileVisual = PROJECTILE_VISUAL_SCRIPT.new()
 	visual.configure(projectile_id, key, origin, initial_velocity, gravity, lifetime)
 	visual.visual_expired.connect(_on_client_projectile_expired)

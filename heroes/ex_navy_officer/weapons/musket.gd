@@ -1,6 +1,6 @@
 extends HitscanWeaponBase
 class_name Musket
-	
+
 var is_aiming: bool = false
 var aim_fov: float = 40.0
 var default_fov: float = 75.0
@@ -18,12 +18,6 @@ func try_fire():
 	if not is_aiming:
 		return
 	super.try_fire()
-
-func _get_fire_direction() -> Vector3:
-	var camera = owner_player.get_node("Head/Camera3D")
-	var base_direction = -camera.global_basis.z
-	
-	return base_direction
 
 func start_aim():
 	if not owner_player.is_multiplayer_authority():

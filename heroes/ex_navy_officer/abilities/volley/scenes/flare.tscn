@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://br4iny7ol00cg"]
 
 [sub_resource type="StandardMaterial3D" id="FlareMaterial"]
-albedo_color = Color(1, 0.25, 0.03, 1)
 shading_mode = 0
+albedo_color = Color(1, 0.25, 0.03, 1)
 emission_enabled = true
 emission = Color(1, 0.12, 0.01, 1)
 emission_energy_multiplier = 4.0
@@ -10,7 +10,6 @@ emission_energy_multiplier = 4.0
 [sub_resource type="CylinderMesh" id="FlareBeam"]
 top_radius = 0.04
 bottom_radius = 0.14
-height = 2.0
 
 [sub_resource type="SphereMesh" id="FlareCore"]
 radius = 0.2

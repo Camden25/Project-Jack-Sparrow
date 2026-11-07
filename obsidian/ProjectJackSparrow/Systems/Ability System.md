@@ -62,6 +62,7 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 ### Drop Anchor
 - Uses bounded `LIFTING`, `DROPPING`, `WAITING_FOR_LANDING`, and `PULLING` phases.
 - Lift height is limited by an upward raycast; pull ends on arrival, collision, timeout, or respawn.
+- Deals full damage within 1 m of impact, with linear falloff to zero at 4 m.
 - The server remains authoritative for anchor landing and damage. Cooldown starts once the landing notification is confirmed, not on activation.
 - **File:** `res://heroes/octopus_in_a_barrel/abilities/drop_anchor/drop_anchor.gd`
 
@@ -71,6 +72,7 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 
 ### HitscanWeaponBase (extends Weapon)
 - Server-side shot validation and lag-compensated raycasts.
+- The server records every player's transform history on physics ticks and interpolates between snapshots when rewinding targets.
 - **File:** `res://hero_base/scripts/hitscan_weapon.gd`
 
 ### ProjectileWeaponBase (extends Weapon)
@@ -78,6 +80,11 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - Projectile key, speed, gravity, lifetime, damage, and additional projectile data are configured on the weapon node.
 - The projectile scene handles its own server-side movement, collision, damage, and lifecycle visual events.
 - **File:** `res://hero_base/scripts/projectile_weapon.gd`
+
+### Recoil Hop (Cannoneer Ability 1)
+- Adds backward horizontal and upward velocity from the player's aim, preserving the launch against ordinary movement input for a short window.
+- Does not deal damage; activation is blocked while another ability has movement control. Cancellation restores `movement_override`.
+- **Files:** `res://heroes/cannoneer/abilities/recoil_hop/recoil_hop.gd`, `res://heroes/cannoneer/resources/recoil_hop.tres`
 
 ### UltimateAbility (extends Ability)
 - Tracks `current_charge` up to `ultimate_cost` (default 1000; it is not normalized to 0.0–1.0).
@@ -109,7 +116,7 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 
 - `AbilitySlotDisplay` is spawned dynamically per registered ability in the HUD.
 - Cooldown overlay shrinks the `anchor_top` of a `ColorRect`.
-- Ultimate display supports a charge bar, but no Ultimate is currently registered by the playable heroes.
+- Ultimate display supports a charge bar; Ex Navy Officer's Volley is registered and displays charge.
 - **File:** `res://ui/scripts/ability_slot_display.gd`
 
 ---

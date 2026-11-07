@@ -1,5 +1,7 @@
 extends Node3D
 
+@export var local_practice: bool = false
+
 @onready var players_node: Node3D = $Players
 @onready var spawner: MultiplayerSpawner = $Players/MultiplayerSpawner
 @onready var respawn_manager: RespawnManager = $RespawnManager

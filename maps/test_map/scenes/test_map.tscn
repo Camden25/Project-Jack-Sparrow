@@ -1,3 +1,887 @@
 [gd_scene format=3 uid="uid://dg08gbgryrrvh"]
 
-[node name="TestMap" type="Node3D" unique_id=862290856]
+[ext_resource type="Script" uid="uid://bw0cxsqe3f1rv" path="res://maps/world.gd" id="1_8fg3s"]
+[ext_resource type="Script" uid="uid://con6rt5tboku4" path="res://maps/scripts/projectile_registry.gd" id="2_gwkju"]
+[ext_resource type="Script" uid="uid://b3cnwqf2dj8gu" path="res://maps/scripts/game_flow_manager.gd" id="3_p2tdi"]
+[ext_resource type="Script" uid="uid://cuyiv7g74wky1" path="res://maps/scripts/control_point_mode.gd" id="4_8g8xk"]
+[ext_resource type="Script" uid="uid://ytmveyt3do78" path="res://maps/scripts/projectile_events.gd" id="5_ud1fv"]
+[ext_resource type="Script" uid="uid://dkgidqdrqtis1" path="res://maps/scripts/effects_manager.gd" id="6_rn6wp"]
+[ext_resource type="Script" uid="uid://cet5jqvmnljyy" path="res://maps/scripts/respawn_manager.gd" id="7_6u5qf"]
+[ext_resource type="PackedScene" uid="uid://b3ea6mybfr1vx" path="res://maps/scenes/control_point.tscn" id="8_ig8t8"]
+[ext_resource type="PackedScene" uid="uid://dxw7cledbpiia" path="res://addons/proto-csgs/proto_csg_box_3d.tscn" id="9_cwhbw"]
+[ext_resource type="Texture2D" uid="uid://cej3yoosomfd2" path="res://addons/proto-csgs/textures/dark/texture_13.png" id="10_1veu1"]
+[ext_resource type="PackedScene" uid="uid://dilcl7aco8lba" path="res://addons/proto-csgs/proto_csg_cylinder_3d.tscn" id="11_1veu1"]
+[ext_resource type="PackedScene" uid="uid://belldtp2oailc" path="res://ui/scenes/pause_menu.tscn" id="11_2gwk1"]
+[ext_resource type="Texture2D" uid="uid://8dayc4yaukur" path="res://maps/assets/sky_11_2k/sky_11_2k.png" id="12_i0u5e"]
+[ext_resource type="PackedScene" uid="uid://hcs1k41pp446" path="res://addons/proto-csgs/proto_csg_polygon_3d.tscn" id="13_i0u5e"]
+[ext_resource type="PackedScene" uid="uid://caibwh64o8vmp" path="res://maps/scenes/health_pack.tscn" id="14_2gwk1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idifb"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6h167"]
+size = Vector3(1, 31, 101)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6u5qf"]
+size = Vector3(69, 31, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2gwk1"]
+size = Vector3(69, 1, 101)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig8t8"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6u5qf"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cwhbw"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_upkf1"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_theic"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_22dy4"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1veu1"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gwk1"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i0u5e"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1dduu"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_np77v"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hfyj7"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8cps8"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sgfiq"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fh3dt"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oivt6"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gu8i"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_464kf"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ibnby"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e3s44"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7eitd"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4hx1m"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_moom7"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxalj"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r48q7"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_euce5"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tgcmm"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlq10"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p37va"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vstwv"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vwqg"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_34qtf"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ml7r4"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wdr4i"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6pn0a"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_opd71"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n84ks"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nlkr2"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iir4n"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_taw6g"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_70bt6"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyh5p"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h4ohk"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n7bgw"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j6m8h"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0mfv4"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x3555"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mdkm6"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ly74m"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v520h"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k6li6"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mjrbx"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uggtb"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a4rch"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgao8"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sive3"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wc71a"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cg4ox"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7a5um"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_48wgp"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rkyox"]
+resource_local_to_scene = true
+albedo_texture = ExtResource("10_1veu1")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_np77v"]
+panorama = ExtResource("12_i0u5e")
+
+[sub_resource type="Sky" id="Sky_htqms"]
+sky_material = SubResource("PanoramaSkyMaterial_np77v")
+
+[sub_resource type="Environment" id="Environment_fh3dt"]
+background_mode = 2
+background_color = Color(1, 1, 1, 1)
+sky = SubResource("Sky_htqms")
+ambient_light_source = 3
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
+volumetric_fog_albedo = Color(0.609375, 0.04522705, 0.40222692, 1)
+volumetric_fog_emission = Color(0.508245, 0.38067627, 0.515625, 1)
+volumetric_fog_emission_energy = 0.2
+adjustment_enabled = true
+adjustment_brightness = 0.6
+adjustment_contrast = 1.05
+adjustment_saturation = 1.11
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_vlq10"]
+
+[node name="World" type="Node3D" unique_id=862290856]
+script = ExtResource("1_8fg3s")
+
+[node name="ProjectileRegistry" type="Node" parent="." unique_id=1981586111]
+script = ExtResource("2_gwkju")
+
+[node name="GameFlowManager" type="Node" parent="." unique_id=1105010496]
+script = ExtResource("3_p2tdi")
+metadata/_custom_type_script = "uid://b3cnwqf2dj8gu"
+
+[node name="ControlPointMode" type="Node" parent="GameFlowManager" unique_id=1920926166]
+script = ExtResource("4_8g8xk")
+metadata/_custom_type_script = "uid://cuyiv7g74wky1"
+
+[node name="Players" type="Node3D" parent="." unique_id=1070572582]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Players" unique_id=490970611]
+_spawnable_scenes = PackedStringArray("uid://b3x4vl7qlg45v", "uid://cgig6n2qrnega", "uid://cux7byfhtl40n")
+spawn_path = NodePath("..")
+
+[node name="Projectiles" type="Node3D" parent="." unique_id=1008441466]
+
+[node name="ProjectileEvents" type="Node" parent="." unique_id=663382577]
+script = ExtResource("5_ud1fv")
+
+[node name="ProjectileVisuals" type="Node3D" parent="ProjectileEvents" unique_id=479582040]
+
+[node name="Effects" type="Node3D" parent="." unique_id=475323203]
+script = ExtResource("6_rn6wp")
+
+[node name="SpawnPoints" type="Node3D" parent="." unique_id=61430851]
+
+[node name="TeamA" type="Node3D" parent="SpawnPoints" unique_id=1894139993]
+
+[node name="SpawnPoint1" type="Marker3D" parent="SpawnPoints/TeamA" unique_id=133676630]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1, 45)
+
+[node name="SpawnPoint2" type="Marker3D" parent="SpawnPoints/TeamA" unique_id=1123997422]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, 45)
+
+[node name="SpawnPoint3" type="Marker3D" parent="SpawnPoints/TeamA" unique_id=1509626565]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, 45)
+
+[node name="SpawnPoint4" type="Marker3D" parent="SpawnPoints/TeamA" unique_id=316142356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1, 45)
+
+[node name="TeamB" type="Node3D" parent="SpawnPoints" unique_id=244371641]
+
+[node name="SpawnPoint1" type="Marker3D" parent="SpawnPoints/TeamB" unique_id=1279807964]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 1, -45)
+
+[node name="SpawnPoint2" type="Marker3D" parent="SpawnPoints/TeamB" unique_id=447413317]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1, -45)
+
+[node name="SpawnPoint3" type="Marker3D" parent="SpawnPoints/TeamB" unique_id=1147815146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1, -45)
+
+[node name="SpawnPoint4" type="Marker3D" parent="SpawnPoints/TeamB" unique_id=17071513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 1, -45)
+
+[node name="RespawnManager" type="Node" parent="." unique_id=595058034]
+script = ExtResource("7_6u5qf")
+
+[node name="ControlPoint" parent="." unique_id=533367154 instance=ExtResource("8_ig8t8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="Map" type="Node3D" parent="." unique_id=744258438]
+
+[node name="Border" type="StaticBody3D" parent="Map" unique_id=1974574448]
+
+[node name="Floor" parent="Map/Border" unique_id=1332485283 instance=ExtResource("9_cwhbw")]
+size = Vector3(69, 1, 101)
+material = SubResource("StandardMaterial3D_idifb")
+
+[node name="LeftWall" type="CollisionShape3D" parent="Map/Border" unique_id=587829140]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 16, 0)
+shape = SubResource("BoxShape3D_6h167")
+
+[node name="RightWall" type="CollisionShape3D" parent="Map/Border" unique_id=1121519421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 16, 0)
+shape = SubResource("BoxShape3D_6h167")
+
+[node name="BackWall" type="CollisionShape3D" parent="Map/Border" unique_id=522981811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16, 50)
+shape = SubResource("BoxShape3D_6u5qf")
+
+[node name="FrontWall" type="CollisionShape3D" parent="Map/Border" unique_id=241466241]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16, -50)
+shape = SubResource("BoxShape3D_6u5qf")
+
+[node name="Roof" type="CollisionShape3D" parent="Map/Border" unique_id=2114370132]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 32, 0)
+shape = SubResource("BoxShape3D_2gwk1")
+
+[node name="Left" type="StaticBody3D" parent="Map" unique_id=1764808238]
+
+[node name="ProtoCSGBox3D" parent="Map/Left" unique_id=597101505 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5, 1, 0.050000012)
+size = Vector3(22, 1, 31)
+material = SubResource("StandardMaterial3D_ig8t8")
+
+[node name="ProtoCSGBox3D9" parent="Map/Left" unique_id=458396288 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 2.5, 0.05000019)
+size = Vector3(13, 2, 9)
+material = SubResource("StandardMaterial3D_6u5qf")
+
+[node name="ProtoCSGBox3D7" parent="Map/Left" unique_id=1703925229 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.5, 12)
+size = Vector3(5, 2, 5)
+material = SubResource("StandardMaterial3D_cwhbw")
+
+[node name="ProtoCSGBox3D13" parent="Map/Left" unique_id=508345946 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 9, 14.05)
+size = Vector3(5, 1, 7)
+material = SubResource("StandardMaterial3D_upkf1")
+
+[node name="ProtoCSGBox3D14" parent="Map/Left" unique_id=121453696 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 9, -13.950001)
+size = Vector3(5, 1, 7)
+material = SubResource("StandardMaterial3D_theic")
+
+[node name="ProtoCSGBox3D11" parent="Map/Left" unique_id=1173205027 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.5, -12)
+size = Vector3(5, 2, 5)
+material = SubResource("StandardMaterial3D_22dy4")
+
+[node name="ProtoCSGBox3D2" parent="Map/Left" unique_id=1277413170 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 5, 0)
+size = Vector3(1, 7, 9)
+material = SubResource("StandardMaterial3D_1veu1")
+
+[node name="ProtoCSGBox3D3" parent="Map/Left" unique_id=224898583 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 3.5, -12)
+size = Vector3(1, 4, 5)
+material = SubResource("StandardMaterial3D_2gwk1")
+
+[node name="ProtoCSGBox3D4" parent="Map/Left" unique_id=629753946 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 3.5, 12)
+size = Vector3(1, 4, 5)
+material = SubResource("StandardMaterial3D_i0u5e")
+
+[node name="ProtoCSGBox3D5" parent="Map/Left" unique_id=845841378 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 9, 0)
+size = Vector3(8, 11, 3)
+material = SubResource("StandardMaterial3D_1dduu")
+
+[node name="ProtoCSGBox3D6" parent="Map/Left" unique_id=1638745596 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 5, 15)
+size = Vector3(6, 7, 1)
+material = SubResource("StandardMaterial3D_np77v")
+
+[node name="ProtoCSGBox3D12" parent="Map/Left" unique_id=1876204645 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 5, -15)
+size = Vector3(6, 7, 1)
+material = SubResource("StandardMaterial3D_hfyj7")
+
+[node name="ProtoCSGPolygon3D" parent="Map/Left" unique_id=549894116 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 9.5, 4.5)
+polygon = PackedVector2Array(0, 0, 0, -6, -8, -6)
+depth = 3.0
+material = SubResource("StandardMaterial3D_8cps8")
+block_style = 12
+
+[node name="ProtoCSGPolygon3D2" parent="Map/Left" unique_id=1011915094 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 9.5, -1.5)
+polygon = PackedVector2Array(0, 0, 0, -6, -8, -6)
+depth = 3.0
+material = SubResource("StandardMaterial3D_sgfiq")
+block_style = 12
+
+[node name="Mid" type="StaticBody3D" parent="Map" unique_id=1860655143]
+
+[node name="ProtoCSGBox3D" parent="Map/Mid" unique_id=2125278104 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 4.5, 15)
+size = Vector3(6, 8, 1)
+material = SubResource("StandardMaterial3D_fh3dt")
+
+[node name="ProtoCSGBox3D13" parent="Map/Mid" unique_id=1308680743 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 12, 15)
+size = Vector3(19, 5, 1)
+material = SubResource("StandardMaterial3D_oivt6")
+
+[node name="ProtoCSGBox3D14" parent="Map/Mid" unique_id=1948698661 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 12, -15)
+size = Vector3(19, 5, 1)
+material = SubResource("StandardMaterial3D_3gu8i")
+
+[node name="ProtoCSGBox3D15" parent="Map/Mid" unique_id=1286437816 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.5, 5)
+size = Vector3(9, 2, 1)
+material = SubResource("StandardMaterial3D_464kf")
+
+[node name="ProtoCSGBox3D21" parent="Map/Mid" unique_id=1708923995 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 7, 0)
+size = Vector3(1, 5, 17)
+material = SubResource("StandardMaterial3D_ibnby")
+
+[node name="ProtoCSGBox3D30" parent="Map/Mid" unique_id=1607353915 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 10.5, 5)
+size = Vector3(1, 2, 7)
+material = SubResource("StandardMaterial3D_e3s44")
+
+[node name="ProtoCSGBox3D31" parent="Map/Mid" unique_id=1285794765 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 10.5, -5)
+size = Vector3(1, 2, 7)
+material = SubResource("StandardMaterial3D_7eitd")
+
+[node name="ProtoCSGBox3D22" parent="Map/Mid" unique_id=1311368076 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 6, -14)
+size = Vector3(1, 11, 3)
+material = SubResource("StandardMaterial3D_4hx1m")
+
+[node name="ProtoCSGBox3D23" parent="Map/Mid" unique_id=583149963 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 6, 14)
+size = Vector3(1, 11, 3)
+material = SubResource("StandardMaterial3D_moom7")
+
+[node name="ProtoCSGBox3D24" parent="Map/Mid" unique_id=1223730922 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 2.5, 6)
+size = Vector3(1, 4, 5)
+material = SubResource("StandardMaterial3D_mxalj")
+
+[node name="ProtoCSGBox3D25" parent="Map/Mid" unique_id=1181579677 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 2.5, -6)
+size = Vector3(1, 4, 5)
+material = SubResource("StandardMaterial3D_r48q7")
+
+[node name="ProtoCSGBox3D16" parent="Map/Mid" unique_id=243610937 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.5, -5)
+size = Vector3(9, 2, 1)
+material = SubResource("StandardMaterial3D_euce5")
+
+[node name="ProtoCSGBox3D10" parent="Map/Mid" unique_id=879700091 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 4.5, -15)
+size = Vector3(6, 8, 1)
+material = SubResource("StandardMaterial3D_tgcmm")
+
+[node name="ProtoCSGBox3D2" parent="Map/Mid" unique_id=1983418528 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.5, 15)
+size = Vector3(6, 8, 1)
+material = SubResource("StandardMaterial3D_vlq10")
+
+[node name="ProtoCSGBox3D12" parent="Map/Mid" unique_id=92926667 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 4.5, -15)
+size = Vector3(6, 8, 1)
+material = SubResource("StandardMaterial3D_p37va")
+
+[node name="ProtoCSGBox3D28" parent="Map/Mid" unique_id=114164718 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 7.5, -15)
+size = Vector3(3, 2, 1)
+material = SubResource("StandardMaterial3D_vstwv")
+
+[node name="ProtoCSGBox3D29" parent="Map/Mid" unique_id=688729023 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 7.5, 15)
+size = Vector3(3, 2, 1)
+material = SubResource("StandardMaterial3D_5vwqg")
+
+[node name="ProtoCSGBox3D3" parent="Map/Mid" unique_id=869808310 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.5, 12.5)
+size = Vector3(3, 2, 4)
+material = SubResource("StandardMaterial3D_34qtf")
+
+[node name="ProtoCSGBox3D9" parent="Map/Mid" unique_id=1535740743 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.5, -12.5)
+size = Vector3(3, 2, 4)
+material = SubResource("StandardMaterial3D_ml7r4")
+
+[node name="ProtoCSGBox3D4" parent="Map/Mid" unique_id=1838607354 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 12.5)
+size = Vector3(3, 1, 4)
+material = SubResource("StandardMaterial3D_wdr4i")
+
+[node name="ProtoCSGBox3D11" parent="Map/Mid" unique_id=156268318 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, -12.5)
+size = Vector3(3, 1, 4)
+material = SubResource("StandardMaterial3D_6pn0a")
+
+[node name="ProtoCSGBox3D5" parent="Map/Mid" unique_id=254908025 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 9, 0)
+size = Vector3(8, 1, 31)
+material = SubResource("StandardMaterial3D_opd71")
+
+[node name="ProtoCSGBox3D6" parent="Map/Mid" unique_id=1256641439 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 9, 0)
+size = Vector3(6, 1, 31)
+material = SubResource("StandardMaterial3D_n84ks")
+
+[node name="ProtoCSGBox3D7" parent="Map/Mid" unique_id=4517911 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 10)
+size = Vector3(9, 1, 11)
+material = SubResource("StandardMaterial3D_nlkr2")
+
+[node name="ProtoCSGBox3D8" parent="Map/Mid" unique_id=869827352 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, -10)
+size = Vector3(9, 1, 11)
+material = SubResource("StandardMaterial3D_iir4n")
+
+[node name="ProtoCSGBox3D17" parent="Map/Mid" unique_id=434207928 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, 7.5)
+size = Vector3(1, 5, 6)
+material = SubResource("StandardMaterial3D_taw6g")
+
+[node name="ProtoCSGBox3D18" parent="Map/Mid" unique_id=120348406 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, -7.5)
+size = Vector3(1, 5, 6)
+material = SubResource("StandardMaterial3D_70bt6")
+
+[node name="ProtoCSGCylinder3D" parent="Map/Mid" unique_id=457475205 instance=ExtResource("11_1veu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.75, 0)
+radius = 2.0
+height = 15.0
+sides = 16
+material = SubResource("StandardMaterial3D_gyh5p")
+block_style = 12
+
+[node name="ProtoCSGCylinder3D2" parent="Map/Mid" unique_id=459141184 instance=ExtResource("11_1veu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.75, 0)
+radius = 7.0
+height = 1.0
+sides = 32
+material = SubResource("StandardMaterial3D_h4ohk")
+block_style = 12
+
+[node name="ProtoCSGCylinder3D3" parent="Map/Mid" unique_id=460826781 instance=ExtResource("11_1veu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 4.625, 22)
+radius = 3.0
+height = 8.25
+sides = 16
+material = SubResource("StandardMaterial3D_n7bgw")
+block_style = 12
+
+[node name="ProtoCSGCylinder3D4" parent="Map/Mid" unique_id=2022353229 instance=ExtResource("11_1veu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 4.625, -22)
+radius = 3.0
+height = 8.25
+sides = 16
+material = SubResource("StandardMaterial3D_j6m8h")
+block_style = 12
+
+[node name="ProtoCSGPolygon3D3" parent="Map/Mid" unique_id=1073624458 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 10.5, 9.5, -15.5)
+polygon = PackedVector2Array(0, 0, 0, -3, 16, -12, 16, -9)
+depth = 4.0
+material = SubResource("StandardMaterial3D_0mfv4")
+block_style = 12
+
+[node name="ProtoCSGPolygon3D4" parent="Map/Mid" unique_id=996596538 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 10.5, 9.5, 15.5)
+polygon = PackedVector2Array(0, 0, 0, -3, -16, -12, -16, -9)
+depth = 4.0
+material = SubResource("StandardMaterial3D_x3555")
+block_style = 12
+
+[node name="Right" type="StaticBody3D" parent="Map" unique_id=2032967249]
+
+[node name="ProtoCSGBox3D" parent="Map/Right" unique_id=582737780 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.5, 12)
+size = Vector3(5, 4, 7)
+material = SubResource("StandardMaterial3D_mdkm6")
+
+[node name="ProtoCSGBox3D2" parent="Map/Right" unique_id=1102744909 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.5, -12)
+size = Vector3(5, 4, 7)
+material = SubResource("StandardMaterial3D_ly74m")
+
+[node name="ProtoCSGBox3D3" parent="Map/Right" unique_id=72551513 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 1.5, 0)
+size = Vector3(4, 2, 31)
+material = SubResource("StandardMaterial3D_v520h")
+
+[node name="ProtoCSGBox3D10" parent="Map/Right" unique_id=1300597301 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, 1.5, 5)
+size = Vector3(8, 2, 7)
+material = SubResource("StandardMaterial3D_k6li6")
+
+[node name="ProtoCSGBox3D11" parent="Map/Right" unique_id=1789606008 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, 1.5, -5)
+size = Vector3(8, 2, 7)
+material = SubResource("StandardMaterial3D_mjrbx")
+
+[node name="ProtoCSGBox3D9" parent="Map/Right" unique_id=572152166 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 2, 0)
+size = Vector3(5, 3, 17)
+material = SubResource("StandardMaterial3D_uggtb")
+
+[node name="ProtoCSGBox3D4" parent="Map/Right" unique_id=1380857947 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, 2, 0)
+size = Vector3(8, 3, 3)
+material = SubResource("StandardMaterial3D_a4rch")
+
+[node name="ProtoCSGBox3D7" parent="Map/Right" unique_id=120815719 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, 9)
+size = Vector3(9, 7, 1)
+material = SubResource("StandardMaterial3D_fgao8")
+
+[node name="ProtoCSGBox3D8" parent="Map/Right" unique_id=292397026 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 4, -9)
+size = Vector3(9, 7, 1)
+material = SubResource("StandardMaterial3D_sive3")
+
+[node name="ProtoCSGBox3D5" parent="Map/Right" unique_id=1883177326 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 6, 0)
+size = Vector3(4, 7, 3)
+material = SubResource("StandardMaterial3D_wc71a")
+
+[node name="ProtoCSGBox3D6" parent="Map/Right" unique_id=505784210 instance=ExtResource("9_cwhbw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 7, 0)
+size = Vector3(5, 5, 3)
+material = SubResource("StandardMaterial3D_cg4ox")
+
+[node name="ProtoCSGPolygon3D" parent="Map/Right" unique_id=796292497 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 9.5, 1.5)
+polygon = PackedVector2Array(0, 0, 0, -6, 8, -6)
+depth = 3.0
+material = SubResource("StandardMaterial3D_7a5um")
+block_style = 12
+
+[node name="ProtoCSGPolygon3D2" parent="Map/Right" unique_id=1345846060 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.5, 12.5)
+polygon = PackedVector2Array(0, 0, 0, -4, -5, -4)
+depth = 4.0
+material = SubResource("StandardMaterial3D_48wgp")
+block_style = 12
+
+[node name="ProtoCSGPolygon3D3" parent="Map/Right" unique_id=993343713 instance=ExtResource("13_i0u5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 4.5, -8.5)
+polygon = PackedVector2Array(0, 0, 0, -4, -5, -4)
+depth = 4.0
+material = SubResource("StandardMaterial3D_rkyox")
+block_style = 12
+
+[node name="A" type="StaticBody3D" parent="Map" unique_id=1529481014]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map" unique_id=726425626]
+transform = Transform3D(0.94278705, -0.22165883, 0.24903806, 0, 0.74697477, 0.6648524, -0.33339554, -0.6268142, 0.7042381, 0, 12.692166, 0)
+
+[node name="HealthPacks" type="Node3D" parent="Map" unique_id=145059186]
+
+[node name="HealthPack" parent="Map/HealthPacks" unique_id=861951875 instance=ExtResource("14_2gwk1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 4, 0)
+
+[node name="HealthPack2" parent="Map/HealthPacks" unique_id=814446600 instance=ExtResource("14_2gwk1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 4, 0)
+
+[node name="HealthPack3" parent="Map/HealthPacks" unique_id=55451796 instance=ExtResource("14_2gwk1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17, 0)
+
+[node name="HealthPack4" parent="Map/HealthPacks" unique_id=16163165 instance=ExtResource("14_2gwk1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 9, 22)
+
+[node name="HealthPack5" parent="Map/HealthPacks" unique_id=149459798 instance=ExtResource("14_2gwk1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 9, -22)
+
+[node name="PauseMenu" parent="." unique_id=1400824456 instance=ExtResource("11_2gwk1")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=512048931]
+environment = SubResource("Environment_fh3dt")
+camera_attributes = SubResource("CameraAttributesPractical_vlq10")

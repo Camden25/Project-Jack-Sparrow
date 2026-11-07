@@ -3,9 +3,15 @@ extends Control
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var host_button: Button = $VBoxContainer/HostButton
 @onready var join_button: Button = $VBoxContainer/JoinButton
+@onready var practice_button: Button = $VBoxContainer/PracticeButton
 @onready var invite_button: Button = $VBoxContainer/InviteButton
 @onready var start_button: Button = $VBoxContainer/StartButton
 @onready var player_list: VBoxContainer = $VBoxContainer/PlayerList
+@onready var switch_map_button: Button = $VBoxContainer/SwitchMap
+@onready var map_label: Label = $VBoxContainer/SelectedMap
+
+@export var available_maps: Array[String]
+var selected_map_index: int = 0
 
 func _ready():
 	invite_button.hide()
@@ -21,8 +27,10 @@ func _ready():
 	# Button signals
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
+	practice_button.pressed.connect(_on_practice_pressed)
 	invite_button.pressed.connect(_on_invite_pressed)
 	start_button.pressed.connect(_on_start_pressed)
+	switch_map_button.pressed.connect(_on_switch_map_pressed)
 	
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	
@@ -64,11 +72,24 @@ func _on_join_pressed():
 	Steam.addRequestLobbyListStringFilter("game", "camden_projectjacksparrow", Steam.LOBBY_COMPARISON_EQUAL)
 	Steam.requestLobbyList()
 
+func _on_practice_pressed():
+	var error := NetworkManager.start_local_practice()
+	if error != OK:
+		status_label.text = "Could not start local practice: " + error_string(error)
+		return
+
+	SceneManager.goto_scene("res://maps/scenes/practice_range.tscn")
+
 func _on_invite_pressed():
 	Steam.activateGameOverlayInviteDialog(NetworkManager.steam_lobby_id)
 
 func _on_start_pressed():
 	start_game.rpc()
+
+func _on_switch_map_pressed():
+	selected_map_index += 1
+	selected_map_index %= available_maps.size()
+	map_label.text = "Map " + str(selected_map_index)
 
 #endregion
 
@@ -141,7 +162,8 @@ func _refresh_player_list():
 func start_game():
 	print("starting game")
 	NetworkManager.set_game_state(NetworkManager.GameState.IN_GAME)
-	SceneManager.goto_scene("res://maps/world.tscn")
+	#SceneManager.goto_scene("res://maps/world.tscn")
+	SceneManager.goto_scene(available_maps[selected_map_index])
 
 #endregion
 

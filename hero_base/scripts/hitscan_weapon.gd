@@ -71,7 +71,10 @@ func _run_validation(origin: Vector3, direction: Vector3, shooter_id: int):
 		if player:
 			var health_component = player.get_node_or_null("PlayerHealth")
 			if health_component:
-				if PlayerManager.is_same_team(shooter_id, player.get_multiplayer_authority()):
+				if not player.is_in_group("practice_dummies") and PlayerManager.is_same_team(
+					shooter_id,
+					player.get_multiplayer_authority()
+				):
 					return
 				var damage_to_deal = _calculate_damage(result)
 				health_component.apply_damage(damage_to_deal, shooter_id)
@@ -79,7 +82,7 @@ func _run_validation(origin: Vector3, direction: Vector3, shooter_id: int):
 				var shooter_node = _get_player_node(shooter_id)
 				if shooter_node:
 					shooter_node.emit_signal("damage_dealt", damage_to_deal)
-				MatchEvents.confirm_hit.rpc(shooter_id, int(player.name))
+				MatchEvents.confirm_hit.rpc(shooter_id, player.get_multiplayer_authority())
 
 func _do_raycast(space_state: PhysicsDirectSpaceState3D, origin: Vector3, direction: Vector3, shooter_id: int) -> Dictionary:
 	var query = PhysicsRayQueryParameters3D.create(

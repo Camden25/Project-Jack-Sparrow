@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://caibwh64o8vmp"]
+
+[ext_resource type="Script" uid="uid://g2fxrjl2qvu2" path="res://maps/scripts/health_pack.gd" id="1_health_pack"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_pack"]
+size = Vector3(0.55, 0.32, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pack"]
+albedo_color = Color(0.92, 0.88, 0.78, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_vertical"]
+size = Vector3(0.1, 0.23, 0.035)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cross"]
+albedo_color = Color(0.78, 0.08, 0.07, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_horizontal"]
+size = Vector3(0.23, 0.1, 0.035)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup"]
+radius = 1.0
+
+[node name="HealthPack" type="Area3D" unique_id=861951875]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_health_pack")
+
+[node name="Visuals" type="Node3D" parent="." unique_id=1724038580]
+
+[node name="Pack" type="MeshInstance3D" parent="Visuals" unique_id=2047611291]
+mesh = SubResource("BoxMesh_pack")
+surface_material_override/0 = SubResource("StandardMaterial3D_pack")
+
+[node name="CrossVertical" type="MeshInstance3D" parent="Visuals" unique_id=803911207]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.115)
+mesh = SubResource("BoxMesh_cross_vertical")
+surface_material_override/0 = SubResource("StandardMaterial3D_cross")
+
+[node name="CrossHorizontal" type="MeshInstance3D" parent="Visuals" unique_id=646088278]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.115)
+mesh = SubResource("BoxMesh_cross_horizontal")
+surface_material_override/0 = SubResource("StandardMaterial3D_cross")
+
+[node name="CrossVertical2" type="MeshInstance3D" parent="Visuals" unique_id=1088596683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.115)
+mesh = SubResource("BoxMesh_cross_vertical")
+surface_material_override/0 = SubResource("StandardMaterial3D_cross")
+
+[node name="CrossHorizontal2" type="MeshInstance3D" parent="Visuals" unique_id=606896020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.115)
+mesh = SubResource("BoxMesh_cross_horizontal")
+surface_material_override/0 = SubResource("StandardMaterial3D_cross")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=663950788]
+shape = SubResource("SphereShape3D_pickup")

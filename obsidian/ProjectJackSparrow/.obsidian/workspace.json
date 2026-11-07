@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Heroes/Surgeon.md",
+                "file": "Systems/Ability System.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Surgeon"
+              "title": "Ability System"
             }
           }
         ]
@@ -188,8 +188,11 @@
       "bases:Create new base": false
     }
   },
-  "active": "1cae633058b39adc",
+  "active": "57a86fe79ff07455",
   "lastOpenFiles": [
+    "Systems/Architecture.md",
+    "Gamemodes/Control Point.md",
+    "Heroes/Surgeon.md",
     "Heroes/Scout Sword Dude.md",
     "Heroes/Octopus in a Barrel.md",
     "Heroes/Hook.md",
@@ -197,16 +200,13 @@
     "Gamemodes/Claim.md",
     "Systems/Ability System.md",
     "Home.md",
-    "Systems/Architecture.md",
     "Systems/Game Flow.md",
     "Systems/Networking.md",
     "Systems/Weapon System.md",
     "Ideas & Backlog.md",
     "Heroes/Captain.md",
-    "Heroes/Surgeon.md",
     "Heroes/Cannoneer.md",
     "Infrastructure/Matchmaking & Servers.md",
-    "Gamemodes/Control Point.md",
     "file:C:/Users/camde/Downloads/survey_of_jazz_midterm_study_guide.md",
     "Todo.md"
   ]

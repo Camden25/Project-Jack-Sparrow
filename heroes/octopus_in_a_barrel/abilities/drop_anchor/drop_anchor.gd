@@ -178,6 +178,25 @@ func _on_anchor_landed(land_pos: Vector3, victims: Array, drop_height: float):
 			if health:
 				health.apply_damage(damage, owner_player.get_multiplayer_authority())
 				owner_player.emit_signal("damage_dealt", damage)
+		_apply_practice_dummy_damage(land_pos, drop_height)
+
+func _apply_practice_dummy_damage(land_pos: Vector3, drop_height: float) -> void:
+	for dummy in get_tree().get_nodes_in_group("practice_dummies"):
+		if not dummy is Node3D:
+			continue
+
+		var distance := land_pos.distance_to(dummy.global_position)
+		var damage := _calculate_damage(drop_height, distance)
+		if damage <= 0:
+			continue
+
+		var health = dummy.get_node_or_null("PlayerHealth")
+		if health:
+			var health_before: int = health.health
+			health.apply_damage(damage, owner_player.get_multiplayer_authority())
+			var actual_damage: int = health_before - health.health
+			if actual_damage > 0:
+				owner_player.emit_signal("damage_dealt", actual_damage)
 
 func _finish_movement():
 	phase = Phase.IDLE

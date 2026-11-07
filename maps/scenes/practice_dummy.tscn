@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://maps/scripts/practice_dummy.gd" id="1_dummy"]
+[ext_resource type="Script" path="res://maps/scripts/practice_dummy_health.gd" id="2_health"]
+[ext_resource type="PackedScene" path="res://ui/scenes/world_health_bar.tscn" id="3_health_bar"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_dummy"]
+radius = 0.45
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dummy"]
+albedo_color = Color(0.58, 0.27, 0.12, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dummy"]
+radius = 0.45
+height = 1.8
+
+[node name="PracticeDummy" type="CharacterBody3D" groups=["practice_dummies"]]
+collision_layer = 2
+script = ExtResource("1_dummy")
+
+[node name="BodyMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+material_override = SubResource("StandardMaterial3D_dummy")
+mesh = SubResource("CapsuleMesh_dummy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_dummy")
+
+[node name="PlayerHealth" type="Node" parent="."]
+script = ExtResource("2_health")
+
+[node name="WorldHealthBar" parent="." instance=ExtResource("3_health_bar")]

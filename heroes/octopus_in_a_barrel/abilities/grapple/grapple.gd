@@ -1,8 +1,8 @@
 extends Ability
 class_name GrappleAbility
 
-const MAX_DISTANCE := 18.0
-const MAX_TIME := 3.0
+const MAX_DISTANCE := 17.5
+const MAX_TIME := 2.0
 
 const PULL_FORCE := 20.0
 const AIR_ACCEL := 20.0

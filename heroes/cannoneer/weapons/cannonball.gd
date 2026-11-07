@@ -76,9 +76,12 @@ func _detonate(direct_hit: Node):
 
 func _apply_direct_damage(body: Node):
 	var target := _find_player_root(body)
-	if not target or target.get_multiplayer_authority() == shooter_id:
+	if not target:
 		return
-	if PlayerManager.is_same_team(shooter_id, target.get_multiplayer_authority()):
+	if not target.is_in_group("practice_dummies") and (
+		target.get_multiplayer_authority() == shooter_id
+		or PlayerManager.is_same_team(shooter_id, target.get_multiplayer_authority())
+	):
 		return
 	_damage_player(target, damage)
 
@@ -108,7 +111,10 @@ func _apply_splash_damage(direct_hit: Node):
 		var target := _find_player_root(collider) if collider else null
 		if not target or target.get_instance_id() == direct_hit_instance_id:
 			continue
-		if PlayerManager.is_same_team(shooter_id, target.get_multiplayer_authority()):
+		if not target.is_in_group("practice_dummies") and PlayerManager.is_same_team(
+			shooter_id,
+			target.get_multiplayer_authority()
+		):
 			continue
 
 		var distance := global_position.distance_to(target.global_position)

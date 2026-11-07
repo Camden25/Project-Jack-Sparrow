@@ -222,7 +222,23 @@ func disconnect_game():
 		Steam.leaveLobby(steam_lobby_id)
 	multiplayer.multiplayer_peer = null
 	steam_lobby_id = 0
+	is_host = false
+	set_game_state(GameState.LOBBY)
 	PlayerManager.player_registry.clear()
+
+func start_local_practice() -> Error:
+	disconnect_game()
+
+	var peer := ENetMultiplayerPeer.new()
+	var error := peer.create_server(0, 1)
+	if error != OK:
+		push_error("Could not start local practice server: " + error_string(error))
+		return error
+
+	multiplayer.multiplayer_peer = peer
+	set_game_state(GameState.IN_GAME)
+	PlayerManager.register_player(1, 0, "Local Player")
+	return OK
 
 func _on_lobby_match_list(lobbies: Array):
 	for lobby_id in lobbies:

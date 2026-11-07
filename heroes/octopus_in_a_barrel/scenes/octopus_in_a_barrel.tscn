@@ -89,7 +89,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_qo83i")
 
 [node name="Shotgun" type="Node" parent="Abilities" unique_id=235257377]
 script = ExtResource("2_1bncc")
-num_bullets = 12
+num_bullets = 15
 muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
 data = ExtResource("3_88k53")
 viewmodel_path = NodePath("../../Head/ViewmodelRoot/ShotgunViewmodel")

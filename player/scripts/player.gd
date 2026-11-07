@@ -2,9 +2,10 @@ extends CharacterBody3D
 class_name Player
 
 var SPEED = 10.0
-var JUMP_VELOCITY = 6.0
+var JUMP_VELOCITY = 8.0
 var SENSITIVITY = 0.003
 var AIR_CONTROL = 0.3
+var GRAVITY_MULTIPLIER = 1.35
 
 var spawn_confirmed: bool = false
 
@@ -29,9 +30,16 @@ var _smoke_outline: MeshInstance3D
 var _smoke_outline_canvas_layer: CanvasLayer
 var _smoke_outline_viewport: SubViewport
 var _smoke_outline_camera: Camera3D
+var _team_outline: MeshInstance3D
+var _team_outline_material: ShaderMaterial
+var _is_active: bool = true
 
 const SMOKE_OUTLINE_RENDER_LAYER := 19
 const SMOKE_OUTLINE_RENDER_MASK := 1 << (SMOKE_OUTLINE_RENDER_LAYER - 1)
+const VISIBLE_OUTLINE_SHADER = preload("res://player/shaders/visible_outline.gdshader")
+const XRAY_OUTLINE_SHADER = preload("res://player/shaders/xray_outline.gdshader")
+const ENEMY_OUTLINE_COLOR := Color(1.0, 0.08, 0.08)
+const TEAMMATE_OUTLINE_COLOR := Color(0.08, 0.35, 1.0)
 
 func _enter_tree():
 	var peer_id = int(name)
@@ -45,6 +53,9 @@ func _enter_tree():
 func _ready():
 	_setup_smoke_outline_viewport()
 	_setup_smoke_outline()
+	_setup_team_outline()
+	PlayerManager.team_assigned.connect(_on_team_assigned)
+	_update_team_outline()
 
 	# Only the owner gets camera and input
 	print("name: ", name, "\t\tmultiplayer authority: ", is_multiplayer_authority())
@@ -108,6 +119,47 @@ func _setup_smoke_outline():
 	_smoke_outline.visible = false
 	body_mesh.add_sibling(_smoke_outline)
 
+func _setup_team_outline():
+	var body_mesh := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if not body_mesh or not body_mesh.mesh:
+		return
+
+	_team_outline = body_mesh.duplicate() as MeshInstance3D
+	_team_outline.name = "TeamOutline"
+	_team_outline_material = ShaderMaterial.new()
+	_team_outline_material.shader = VISIBLE_OUTLINE_SHADER
+	_team_outline_material.set_shader_parameter("outline_width", 0.045)
+	_team_outline.material_override = _team_outline_material
+	_team_outline.layers = body_mesh.layers
+	_team_outline.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_team_outline.visible = false
+	body_mesh.add_sibling(_team_outline)
+
+func _on_team_assigned(peer_id: int, _team: int):
+	if peer_id == get_multiplayer_authority() or peer_id == multiplayer.get_unique_id():
+		_update_team_outline()
+
+func _update_team_outline():
+	if not is_instance_valid(_team_outline) or not is_instance_valid(_team_outline_material):
+		return
+
+	var player_id := get_multiplayer_authority()
+	var local_player_id := multiplayer.get_unique_id()
+	var player_team := PlayerManager.get_team(player_id)
+	var local_team := PlayerManager.get_team(local_player_id)
+
+	if player_id == local_player_id or player_team < 0 or local_team < 0:
+		_team_outline.visible = false
+		return
+
+	var is_teammate := player_team == local_team
+	_team_outline_material.shader = XRAY_OUTLINE_SHADER if is_teammate else VISIBLE_OUTLINE_SHADER
+	_team_outline_material.set_shader_parameter(
+		"outline_color",
+		TEAMMATE_OUTLINE_COLOR if is_teammate else ENEMY_OUTLINE_COLOR
+	)
+	_team_outline.visible = _is_active
+
 func _setup_smoke_outline_viewport():
 	_smoke_outline_canvas_layer = get_node_or_null("SmokeOutlineLayer") as CanvasLayer
 	_smoke_outline_viewport = get_node_or_null("SmokeOutlineLayer/ViewportContainer/OutlineViewport") as SubViewport
@@ -170,7 +222,10 @@ func _unhandled_input(event):
 func _process(delta: float) -> void:
 	if is_multiplayer_authority():
 		_sync_smoke_outline_camera()
-	else:
+	elif (
+		is_instance_valid(interpolation_controller)
+		and not interpolation_controller.is_queued_for_deletion()
+	):
 		interpolation_controller.add_snapshot(net_position, net_rotation, net_head_rotation)
 		interpolation_controller.interpolate(delta)
 
@@ -181,7 +236,7 @@ func _physics_process(delta):
 		return
 	
 	if not is_on_floor():
-		velocity.y -= gravity * delta
+		velocity.y -= gravity * GRAVITY_MULTIPLIER * delta
 	
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
@@ -218,6 +273,7 @@ func _setup_health_bar(peer_id: int):
 	world_health_bar.update_health(health_component.health, health_component.MAX_HEALTH)
 
 func set_active(active: bool):
+	_is_active = active
 	if not active:
 		movement_override = false
 		velocity = Vector3.ZERO
@@ -231,6 +287,7 @@ func set_active(active: bool):
 	set_process_unhandled_input(active and is_multiplayer_authority())
 	$CollisionShape3D.disabled = not active
 	$MeshInstance3D.visible = active
+	_update_team_outline()
 	if world_health_bar:
 		world_health_bar.visible = active
 

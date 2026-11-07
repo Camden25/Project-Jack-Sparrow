@@ -119,6 +119,12 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - Ultimate display supports a charge bar; Ex Navy Officer's Volley is registered and displays charge.
 - **File:** `res://ui/scripts/ability_slot_display.gd`
 
+## Health Packs
+
+- `res://maps/scenes/health_pack.tscn` is a reusable world pickup. Configure its healing amount and respawn delay in the Inspector, then instance it in a map.
+- The server handles pickup collisions and healing; the pack disappears and respawns consistently for all peers.
+- Packs do not heal players at full health or revive defeated players. Actual health restored emits `HeroBase.healing_done`.
+
 ---
 
 ## File Paths

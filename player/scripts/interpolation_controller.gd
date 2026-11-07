@@ -25,6 +25,14 @@ func add_snapshot(pos: Vector3, rot: Vector3, head_rot: Vector3):
 		buffer.pop_front()
 
 func interpolate(_delta: float):
+	if (
+		not is_instance_valid(target_node)
+		or target_node.is_queued_for_deletion()
+		or not is_instance_valid(head_node)
+		or head_node.is_queued_for_deletion()
+	):
+		return
+
 	if buffer.size() < 2:
 		return
 	

@@ -21,4 +21,7 @@ func _on_resume_button_pressed() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _on_quit_button_pressed() -> void:
-	get_tree().quit()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	NetworkManager.disconnect_game()
+	PlayerManager.hero_selections.clear()
+	SceneManager.goto_scene("res://menus/scenes/lobby_ui.tscn")

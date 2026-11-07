@@ -26,11 +26,22 @@ func apply_damage(amount: int, attacker_peer_id: int):
 		emit_signal("player_died", get_parent().get_multiplayer_authority())
 		MatchEvents.confirm_kill.rpc(attacker_peer_id, get_parent().get_multiplayer_authority())
 
-func apply_healing(amount: int, _healer_peer_id: int):
+func apply_healing(amount: int, _healer_peer_id: int) -> int:
 	if not multiplayer.is_server():
-		return
-	health = min(MAX_HEALTH, health + amount)
+		return 0
+	if health <= 0 or amount <= 0:
+		return 0
+
+	var healed_amount := mini(amount, MAX_HEALTH - health)
+	if healed_amount <= 0:
+		return 0
+
+	health += healed_amount
 	_sync_health.rpc(health)
+	var player := get_parent()
+	if player.has_signal("healing_done"):
+		player.emit_signal("healing_done", healed_amount)
+	return healed_amount
 
 func set_health(amount: int):
 	health = amount

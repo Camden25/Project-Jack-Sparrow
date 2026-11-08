@@ -27,6 +27,8 @@ func reset():
 	_sync_reset.rpc()
 
 func _physics_process(delta: float):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
 	if not multiplayer.is_server():
 		return
 	if _win_fired:

@@ -36,6 +36,8 @@ var _is_active: bool = true
 
 const SMOKE_OUTLINE_RENDER_LAYER := 19
 const SMOKE_OUTLINE_RENDER_MASK := 1 << (SMOKE_OUTLINE_RENDER_LAYER - 1)
+const TEAM_A_GATE_LAYER := 3
+const TEAM_B_GATE_LAYER := 4
 const VISIBLE_OUTLINE_SHADER = preload("res://player/shaders/visible_outline.gdshader")
 const XRAY_OUTLINE_SHADER = preload("res://player/shaders/xray_outline.gdshader")
 const ENEMY_OUTLINE_COLOR := Color(1.0, 0.08, 0.08)
@@ -55,6 +57,7 @@ func _ready():
 	_setup_smoke_outline()
 	_setup_team_outline()
 	PlayerManager.team_assigned.connect(_on_team_assigned)
+	_update_gate_collision_mask()
 	_update_team_outline()
 
 	# Only the owner gets camera and input
@@ -136,8 +139,21 @@ func _setup_team_outline():
 	body_mesh.add_sibling(_team_outline)
 
 func _on_team_assigned(peer_id: int, _team: int):
+	if peer_id == get_multiplayer_authority():
+		_update_gate_collision_mask()
 	if peer_id == get_multiplayer_authority() or peer_id == multiplayer.get_unique_id():
 		_update_team_outline()
+
+func _update_gate_collision_mask() -> void:
+	var team := PlayerManager.get_team(get_multiplayer_authority())
+	set_collision_mask_value(
+		TEAM_A_GATE_LAYER,
+		team == PlayerManager.Team.TEAM_A or team == PlayerManager.Team.NONE
+	)
+	set_collision_mask_value(
+		TEAM_B_GATE_LAYER,
+		team == PlayerManager.Team.TEAM_B or team == PlayerManager.Team.NONE
+	)
 
 func _update_team_outline():
 	if not is_instance_valid(_team_outline) or not is_instance_valid(_team_outline_material):
@@ -220,6 +236,8 @@ func _unhandled_input(event):
 			weapon.reload()
 
 func _process(delta: float) -> void:
+	if multiplayer.has_multiplayer_peer() == false:
+		return
 	if is_multiplayer_authority():
 		_sync_smoke_outline_camera()
 	elif (
@@ -230,6 +248,8 @@ func _process(delta: float) -> void:
 		interpolation_controller.interpolate(delta)
 
 func _physics_process(delta):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
 	if not is_multiplayer_authority():
 		return
 	if not spawn_confirmed:

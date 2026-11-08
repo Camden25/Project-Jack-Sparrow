@@ -11,4 +11,5 @@ max_ammo = 6
 fire_rate = 0.2
 reload_time = 1.0
 max_range = 40.0
+hit_radius = 0.1
 metadata/_custom_type_script = "uid://ptpamfwbpvl6"

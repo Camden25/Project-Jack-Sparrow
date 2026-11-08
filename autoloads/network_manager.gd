@@ -289,16 +289,15 @@ func _show_hero_select_for_peer():
 	if overlay and not overlay.visible:
 		overlay.show_hero_select(SceneManager.get_world().get_node_or_null("GameFlowManager"))
 
-func return_to_lobby():
+func return_to_main_menu():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	disconnect_game()
 	PlayerManager.hero_selections.clear()
-	set_game_state(GameState.LOBBY)
+	peer_pings.clear()
+	_ping_timestamps.clear()
+	_world_ready_peers.clear()
+	_client_world_ready_acknowledged = false
 	SceneManager.goto_scene("res://menus/scenes/lobby_ui.tscn")
-	
-	if multiplayer.is_server():
-		PlayerManager.player_registry.clear()
-		PlayerManager.register_player(1, Steam.getSteamID(), Steam.getPersonaName())
-		_request_reregistration.rpc()
 
 @rpc("authority", "call_remote", "reliable")
 func _request_reregistration():
@@ -314,6 +313,8 @@ func _request_reregistration():
 func _ping_loop():
 	while true:
 		await get_tree().create_timer(1.0).timeout
+		if multiplayer.has_multiplayer_peer() == false:
+			break
 		if not multiplayer.is_server():
 			break
 		for peer_id in PlayerManager.player_registry.keys():

@@ -42,6 +42,7 @@
 ### Smoke Canister (Ability 2)
 - Thrown projectile; on landing it deploys a smoke shell made from opaque CSG spheres.
 - While aiming the Musket, the officer sees outlines of enemy players inside active smoke.
+- Smoke-revealed enemies are outlined in red.
 - Outlines are local to the officer, disappear when she stops aiming, and do not reveal allies or players outside smoke.
 - Outlines use a silhouette mask in a transparent SubViewport on render layer 19; the main camera excludes that layer. The SubViewport camera tracks the player camera and renders only the mask, while the smoke shell remains fully opaque and writes to depth on layer 18.
 - Since the outline viewport is composited over the main view, outlines can appear over walls.

@@ -66,9 +66,12 @@ func _run_validation(origin: Vector3, direction: Vector3, shooter_id: int):
 	
 	_restore_players(rewound_positions)
 	
-	if result and result.collider:
-		var player = _find_player_root(result.collider)
+	var hit_collider := result.get("collider") as Node
+	if is_instance_valid(hit_collider):
+		var player = _find_player_root(hit_collider)
 		if player:
+			if player is PracticeDummy and player.is_ally:
+				return
 			var health_component = player.get_node_or_null("PlayerHealth")
 			if health_component:
 				if not player.is_in_group("practice_dummies") and PlayerManager.is_same_team(
@@ -85,14 +88,38 @@ func _run_validation(origin: Vector3, direction: Vector3, shooter_id: int):
 				MatchEvents.confirm_hit.rpc(shooter_id, player.get_multiplayer_authority())
 
 func _do_raycast(space_state: PhysicsDirectSpaceState3D, origin: Vector3, direction: Vector3, shooter_id: int) -> Dictionary:
-	var query = PhysicsRayQueryParameters3D.create(
-		origin,
-		origin + direction * data.max_range
-	)
 	var shooter_node = _get_player_node(shooter_id)
+	var exclusions: Array[RID] = []
 	if shooter_node:
-		query.exclude = [shooter_node.get_rid()]
-	return space_state.intersect_ray(query)
+		exclusions.append(shooter_node.get_rid())
+
+	if data.hit_radius <= 0.0:
+		var ray_query := PhysicsRayQueryParameters3D.create(
+			origin,
+			origin + direction * data.max_range
+		)
+		ray_query.exclude = exclusions
+		return space_state.intersect_ray(ray_query)
+
+	var sphere := SphereShape3D.new()
+	sphere.radius = data.hit_radius
+	var shape_query := PhysicsShapeQueryParameters3D.new()
+	shape_query.shape = sphere
+	shape_query.transform = Transform3D(Basis.IDENTITY, origin)
+	shape_query.motion = direction * data.max_range
+	shape_query.exclude = exclusions
+
+	var cast_fractions := space_state.cast_motion(shape_query)
+	if cast_fractions.size() < 2 or cast_fractions[0] >= 1.0:
+		return {}
+
+	shape_query.transform.origin += shape_query.motion * cast_fractions[1]
+	var result := space_state.get_rest_info(shape_query)
+	if result.has("collider_id"):
+		var collider := instance_from_id(result["collider_id"]) as Node
+		if is_instance_valid(collider):
+			result["collider"] = collider
+	return result
 
 @warning_ignore("unused_parameter")
 func _calculate_damage(result: Dictionary) -> int:

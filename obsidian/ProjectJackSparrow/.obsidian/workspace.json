@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Systems/Ability System.md",
+                "file": "Heroes/Scout Sword Dude.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Ability System"
+              "title": "Scout Sword Dude"
             }
           }
         ]
@@ -190,6 +190,8 @@
   },
   "active": "57a86fe79ff07455",
   "lastOpenFiles": [
+    "Heroes/Captain.md",
+    "Systems/Ability System.md",
     "Systems/Architecture.md",
     "Gamemodes/Control Point.md",
     "Heroes/Surgeon.md",
@@ -198,13 +200,11 @@
     "Heroes/Hook.md",
     "Heroes/Ex Navy Officer.md",
     "Gamemodes/Claim.md",
-    "Systems/Ability System.md",
     "Home.md",
     "Systems/Game Flow.md",
     "Systems/Networking.md",
     "Systems/Weapon System.md",
     "Ideas & Backlog.md",
-    "Heroes/Captain.md",
     "Heroes/Cannoneer.md",
     "Infrastructure/Matchmaking & Servers.md",
     "file:C:/Users/camde/Downloads/survey_of_jazz_midterm_study_guide.md",

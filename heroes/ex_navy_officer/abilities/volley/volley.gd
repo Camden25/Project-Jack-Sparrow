@@ -86,7 +86,7 @@ func _fire_volley(target: Vector3):
 		
 		if result and result.collider:
 			var player = _find_player_root(result.collider)
-			if player and (
+			if player and not (player is PracticeDummy and player.is_ally) and (
 				player.is_in_group("practice_dummies")
 				or player.get_multiplayer_authority() != owner_player.get_multiplayer_authority()
 			):

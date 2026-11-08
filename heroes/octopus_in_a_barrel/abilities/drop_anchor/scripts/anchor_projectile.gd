@@ -50,6 +50,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 		_last_contact_normal = state.get_contact_local_normal(0)
 
 func _physics_process(delta: float):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
+	
 	if not multiplayer.is_server() or _has_landed:
 		return
 	super._physics_process(delta)

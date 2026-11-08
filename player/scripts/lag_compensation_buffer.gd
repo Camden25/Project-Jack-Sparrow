@@ -14,6 +14,9 @@ func setup(player: Player):
 	owner_node = player
 
 func _physics_process(_delta: float):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
+	
 	if multiplayer.is_server():
 		record()
 
@@ -47,7 +50,10 @@ func get_position_at(timestamp: float) -> Dictionary:
 				t = (timestamp - a.time) / range_t
 			return {
 				"position": a.position.lerp(b.position, t),
-				"basis": a.basis.slerp(b.basis, t)
+				"basis": a.basis.orthonormalized().slerp(
+					b.basis.orthonormalized(),
+					t
+				)
 			}
 	
 	# Timestamp older than buffer — use oldest

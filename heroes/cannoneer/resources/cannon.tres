@@ -5,7 +5,8 @@
 [resource]
 script = ExtResource("1_iqray")
 weapon_name = "Cannon"
-damage = 60
+damage = 45
 max_ammo = 2
 fire_rate = 0.3
+reload_time = 1.4
 metadata/_custom_type_script = "uid://ptpamfwbpvl6"

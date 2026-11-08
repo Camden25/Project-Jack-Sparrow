@@ -6,6 +6,7 @@ const ANCHOR_DAMAGE_PER_METER: float = 3.0
 const ANCHOR_MAX_DAMAGE: int = 80
 const ANCHOR_FULL_DAMAGE_RADIUS: float = 1.5
 const ANCHOR_DAMAGE_RADIUS: float = 5.5
+const MINIMUM_JUMP_CLEARANCE_MARGIN: float = 0.5
 const LIFT_SPEED: float = 14.0
 const LIFT_HEIGHT: float = 1.5
 const LIFT_TIMEOUT: float = 0.35
@@ -215,7 +216,21 @@ func _is_pull_blocked(pull_direction: Vector3) -> bool:
 func _can_activate() -> bool:
 	if phase != Phase.IDLE or not owner_player.spawn_confirmed or owner_player.is_on_floor():
 		return false
+	if not _has_minimum_ground_clearance():
+		return false
 	return super._can_activate()
+
+func _has_minimum_ground_clearance() -> bool:
+	var effective_gravity: float = owner_player.gravity * owner_player.GRAVITY_MULTIPLIER
+	var jump_height: float = owner_player.JUMP_VELOCITY * owner_player.JUMP_VELOCITY / (2.0 * effective_gravity)
+	var minimum_clearance: float = jump_height + MINIMUM_JUMP_CLEARANCE_MARGIN
+	var query := PhysicsRayQueryParameters3D.create(
+		owner_player.global_position,
+		owner_player.global_position + Vector3.DOWN * minimum_clearance
+	)
+	query.exclude = [owner_player.get_rid()]
+	var result := owner_player.get_world_3d().direct_space_state.intersect_ray(query)
+	return result.is_empty() or owner_player.global_position.y - result.position.y >= minimum_clearance
 
 func _calculate_damage(drop_height: float, distance: float) -> int:
 	var base_damage = min(

@@ -11,4 +11,5 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 @export var fire_rate: float = 0.1
 @export var reload_time: float = 1.5
 @export var max_range: float = 100.0
+@export_range(0.0, 1.0, 0.01) var hit_radius: float = 0.0
 @export var custom_stats: Dictionary = {}

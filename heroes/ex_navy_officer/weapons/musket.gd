@@ -34,6 +34,9 @@ func stop_aim():
 func _process(delta: float):
 	super._process(delta)
 	
+	if multiplayer.has_multiplayer_peer() == false:
+		return
+	
 	if not owner_player or not owner_player.is_multiplayer_authority():
 		return
 	
@@ -54,23 +57,33 @@ func _process(delta: float):
 
 func _update_smoke_outlines():
 	var owner_team := PlayerManager.get_team(owner_player.get_multiplayer_authority())
-	for player_node in get_tree().get_nodes_in_group("players"):
-		var candidate := player_node as Player
+	var targets := get_tree().get_nodes_in_group("players")
+	targets.append_array(get_tree().get_nodes_in_group("practice_dummies"))
+	for target in targets:
+		var candidate := target as Node3D
 		if not candidate or candidate == owner_player:
 			continue
 		
 		var should_reveal := false
-		var candidate_team := PlayerManager.get_team(candidate.get_multiplayer_authority())
-		if (
-			is_aiming
-			and owner_team != PlayerManager.Team.NONE
-			and candidate_team != PlayerManager.Team.NONE
-			and candidate_team != owner_team
-		):
+		var is_enemy := false
+		if target is Player:
+			var candidate_team := PlayerManager.get_team(target.get_multiplayer_authority())
+			is_enemy = (
+				owner_team != PlayerManager.Team.NONE
+				and candidate_team != PlayerManager.Team.NONE
+				and candidate_team != owner_team
+			)
+		elif target is PracticeDummy:
+			is_enemy = not target.is_ally
+
+		if is_aiming and is_enemy:
 			for smoke_node in get_tree().get_nodes_in_group("smoke_effects"):
 				var smoke: SmokeEffect = smoke_node as SmokeEffect
 				if smoke and smoke.contains_position(candidate.global_position):
 					should_reveal = true
 					break
 		
-		candidate.set_smoke_outline_visible(should_reveal)
+		if target is Player:
+			target.set_smoke_outline_visible(should_reveal)
+		elif target is PracticeDummy:
+			target.set_smoke_outline_visible(should_reveal)

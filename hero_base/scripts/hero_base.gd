@@ -129,6 +129,9 @@ func get_hud_abilities() -> Array:
 func _physics_process(delta):
 	super._physics_process(delta)
 	
+	if multiplayer.has_multiplayer_peer() == false:
+		return
+	
 	if !is_multiplayer_authority():
 		return
 	

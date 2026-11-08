@@ -87,12 +87,14 @@ func _end_match(winning_team: int):
 	_sync_state.rpc(State.MATCH_END)
 	_show_match_end.rpc(winning_team)
 	await get_tree().create_timer(5.0).timeout
-	_return_to_lobby.rpc()
+	_return_clients_to_main_menu.rpc()
+	await get_tree().create_timer(1.0).timeout
+	NetworkManager.return_to_main_menu()
 
-@rpc("authority", "call_local", "reliable")
-func _return_to_lobby():
+@rpc("authority", "call_remote", "reliable")
+func _return_clients_to_main_menu():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	NetworkManager.return_to_lobby()
+	NetworkManager.return_to_main_menu()
 
 @rpc("authority", "call_local", "reliable")
 func _show_match_end(winning_team: int):

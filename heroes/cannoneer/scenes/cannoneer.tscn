@@ -92,14 +92,16 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vjx7y")
 script = ExtResource("2_gnf3l")
 projectile_key = "cannonball"
 muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
-projectile_speed = 26.0
-projectile_gravity = Vector3(0, -13.72, 0)
+projectile_speed = 36.0
+projectile_gravity = Vector3(0, -19.6, 0)
 projectile_lifetime = 5.0
 projectile_data = {
-"splash_damage": 30,
+"splash_damage": 40,
 "splash_radius": 3.5
 }
 data = ExtResource("3_cannon_data")
+viewmodel_path = NodePath("../../Head/ViewmodelRoot/MusketViewmodel")
+world_mesh_path = NodePath("../../Skeleton3D/MusketWorldMesh")
 metadata/_custom_type_script = "uid://btvx7koewdbtq"
 
 [node name="RecoilHopAbility" type="Node" parent="Abilities" unique_id=107511572]

@@ -37,6 +37,7 @@ Only Ex Navy Officer and Octopus in a Barrel are currently in the runtime roster
 - `fire_rate: float`
 - `reload_time: float`
 - `max_range: float`
+- `hit_radius: float` (0 = ray; greater values use a sphere sweep for a wider hitscan)
 - `custom_stats: Dictionary`
 
 ---
@@ -61,6 +62,7 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 
 ### Drop Anchor
 - Uses bounded `LIFTING`, `DROPPING`, `WAITING_FOR_LANDING`, and `PULLING` phases.
+- Activation requires ground clearance greater than the player's jump height by 0.5 m, calculated from the current jump speed and effective gravity.
 - Lift height is limited by an upward raycast; pull ends on arrival, collision, timeout, or respawn.
 - Deals full damage within 1 m of impact, with linear falloff to zero at 4 m.
 - The server remains authoritative for anchor landing and damage. Cooldown starts once the landing notification is confirmed, not on activation.
@@ -71,7 +73,8 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - **File:** `res://hero_base/scripts/weapon.gd`
 
 ### HitscanWeaponBase (extends Weapon)
-- Server-side shot validation and lag-compensated raycasts.
+- Server-side shot validation and lag-compensated raycasts or sphere sweeps.
+- `WeaponData.hit_radius` controls the sweep radius per weapon; zero preserves a standard ray.
 - The server records every player's transform history on physics ticks and interpolates between snapshots when rewinding targets.
 - **File:** `res://hero_base/scripts/hitscan_weapon.gd`
 
@@ -124,6 +127,14 @@ enum WeaponSlot { PRIMARY, SECONDARY }
 - `res://maps/scenes/health_pack.tscn` is a reusable world pickup. Configure its healing amount and respawn delay in the Inspector, then instance it in a map.
 - The server handles pickup collisions and healing; the pack disappears and respawns consistently for all peers.
 - Packs do not heal players at full health or revive defeated players. Actual health restored emits `HeroBase.healing_done`.
+
+## Practice Dummies, Healing Zones, and Team Walls
+
+- `res://maps/scenes/practice_dummy.tscn` can be configured as an ally with `is_ally`; ally dummies use a friendly outline when visible and a through-wall silhouette when occluded. The practice range includes one in a healing zone.
+- `res://maps/scenes/healing_zone.tscn` heals living players and practice dummies continuously while they stay inside. Set its healing rate in the Inspector and place its root at floor level in a spawn room.
+- Aiming the Musket at an enemy practice dummy inside Ex Navy Officer smoke reveals it with an outline, like an enemy player.
+- `res://maps/scenes/team_wall.tscn` is a solid barrier. Set `Pass Team` to choose which team can pass; the other team's player collision mask includes that barrier layer.
+- Team A barriers use physics layer 3, and Team B barriers use layer 4. Player collision masks update when teams are assigned.
 
 ---
 

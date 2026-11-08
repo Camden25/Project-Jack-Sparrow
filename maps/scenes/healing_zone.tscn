@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://maps/scripts/healing_zone.gd" id="1_healing_zone"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_zone"]
+radius = 3.0
+height = 3.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_zone"]
+top_radius = 3.0
+bottom_radius = 3.0
+height = 0.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_zone"]
+transparency = 1
+albedo_color = Color(0.12, 0.8, 0.28, 0.22)
+
+[node name="HealingZone" type="Area3D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_healing_zone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.5, 0)
+shape = SubResource("CylinderShape3D_zone")
+
+[node name="ZoneVisual" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.04, 0)
+mesh = SubResource("CylinderMesh_zone")
+surface_material_override/0 = SubResource("StandardMaterial3D_zone")

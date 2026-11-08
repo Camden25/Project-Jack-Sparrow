@@ -3,11 +3,8 @@
 [ext_resource type="Script" uid="uid://b5tc4g5scpjfa" path="res://heroes/cannoneer/weapons/cannonball.gd" id="1_cannonball"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_cannonball"]
-radius = 0.35
 
 [sub_resource type="SphereMesh" id="SphereMesh_cannonball"]
-radius = 0.35
-height = 0.7
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cannonball"]
 albedo_color = Color(0.13, 0.12, 0.11, 1)

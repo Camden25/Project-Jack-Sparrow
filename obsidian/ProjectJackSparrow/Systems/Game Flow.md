@@ -7,7 +7,7 @@
 ## State Machine
 
 ```
-WAITING → hero-select overlay → COUNTDOWN → ACTIVE → ROUND_END → MATCH_END → lobby
+WAITING → hero-select overlay → COUNTDOWN → ACTIVE → ROUND_END → MATCH_END → main menu
 ```
 
 Managed by `GameFlowManager` — a child of the World scene. The server drives flow and syncs state to clients via `_sync_state.rpc`.
@@ -21,7 +21,7 @@ The `HERO_SELECT` state is synchronized along with showing the overlay. Clients 
 | State | What happens |
 |---|---|
 | `WAITING` | Initial state on world load |
-| `HERO_SELECT` | Enum value exists; current overlay display path does not sync this state |
+| `HERO_SELECT` | Hero-select overlay is shown to all players |
 | `COUNTDOWN` | Players spawned, 5 second countdown |
 | `ACTIVE` | Round running, game mode active |
 | `ROUND_END` | Synced when `GameFlowManager` receives `round_ended`; current ControlPointMode emits this only when the win threshold is reached |
@@ -48,15 +48,13 @@ The `HERO_SELECT` state is synchronized along with showing the overlay. Clients 
 - `ControlPointMode` detects win → emits `round_ended(winning_team)`
 - `GameFlowManager._on_round_ended` → check if match is over
 - If not match over: `GameFlowManager` calls `_begin_hero_select()`; however, the current `ControlPointMode` does not emit `round_ended` for intermediate round wins. It waits 3 seconds and starts the next round itself. With the current `wins_needed = 1` default, a single point capture ends the match, so hero select does not currently repeat between rounds.
-- If match over: `_end_match()` → wait 5s → `_return_to_lobby.rpc()`
+- If match over: `_end_match()` → wait 5s → notify clients, then the host disconnects after a short delay
 
-### Return to Lobby
-- `_return_to_lobby` RPC fires on all clients
-- Calls `NetworkManager.return_to_lobby()`
-- Mouse unlocked, hero selections cleared, scene changes to lobby
-- Steam lobby stays alive — same host/connection
-- Server re-registers itself, sends `_request_reregistration` to clients
-- Lobby UI detects `steam_lobby_id != 0` → `_restore_lobby_state()`
+### Return to Main Menu
+- The server sends `_return_clients_to_main_menu` to clients before disconnecting itself
+- Each client returns immediately; after a one-second delay, the host also returns
+- Each peer leaves the Steam lobby, disconnects its multiplayer peer, clears match state, and loads the lobby UI
+- Players must create or join a lobby again before starting another match
 
 ---
 

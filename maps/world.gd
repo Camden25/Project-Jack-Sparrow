@@ -38,13 +38,13 @@ func _spawn_player(peer_id: int) -> Node:
 	var hero_data = PlayerManager.get_hero_for_peer(peer_id)
 	print(hero_data.hero_name)
 	var scene = hero_data.hero_scene if hero_data else preload("res://player/scenes/player.tscn")
+	var spawn_pos = respawn_manager.get_spawn_position(peer_id)
 	
 	var player = scene.instantiate()
 	player.name = str(peer_id)
+	player.position = players_node.to_local(spawn_pos)
+	player.net_position = player.position
 	players_node.add_child(player, true)
-	
-	var spawn_pos = respawn_manager.get_spawn_position(peer_id)
-	player.global_position = spawn_pos
 	
 	if peer_id == 1:
 		player.confirm_spawn(spawn_pos)

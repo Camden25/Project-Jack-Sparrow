@@ -19,8 +19,8 @@ func configure(id: int, key: String, origin: Vector3, initial_velocity: Vector3,
 	gravity = gravity_vector
 	lifetime = max_lifetime
 
-func stop_at(position: Vector3, linger_seconds: float):
-	global_position = position
+func stop_at(pos: Vector3, linger_seconds: float):
+	global_position = pos
 	velocity = Vector3.ZERO
 	gravity = Vector3.ZERO
 	lifetime = linger_seconds

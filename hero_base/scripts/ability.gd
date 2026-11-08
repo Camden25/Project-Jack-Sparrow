@@ -9,6 +9,7 @@ var uses_remaining: int = -1
 var is_on_cooldown: bool = false
 
 signal cooldown_changed(remaining: float, total: float)
+@warning_ignore("unused_signal")
 signal uses_changed(remaining: int, maximum: int)
 
 func setup(player: HeroBase):
@@ -70,5 +71,5 @@ func _process(delta: float):
 	if cooldown_timer <= 0.0:
 		is_on_cooldown = false
 
-func physics_update(delta: float):
+func physics_update(_delta: float):
 	pass

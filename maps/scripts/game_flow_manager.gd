@@ -38,9 +38,9 @@ func _sync_show_hero_select():
 		overlay.show_hero_select(self)
 
 func _report_world_ready() -> void:
-	NetworkManager._client_world_ready_acknowledged = false
-	while is_inside_tree() and not NetworkManager._client_world_ready_acknowledged:
-		NetworkManager._client_ready_in_world.rpc_id(1)
+	var world_ready_token := Time.get_ticks_usec()
+	while is_inside_tree() and NetworkManager._acknowledged_world_ready_token != world_ready_token:
+		NetworkManager._client_ready_in_world.rpc_id(1, world_ready_token)
 		await get_tree().create_timer(0.5).timeout
 
 @rpc("authority", "call_local", "reliable")
@@ -87,13 +87,8 @@ func _end_match(winning_team: int):
 	_sync_state.rpc(State.MATCH_END)
 	_show_match_end.rpc(winning_team)
 	await get_tree().create_timer(5.0).timeout
-	_return_clients_to_main_menu.rpc()
+	NetworkManager._return_clients_to_main_menu.rpc()
 	await get_tree().create_timer(1.0).timeout
-	NetworkManager.return_to_main_menu()
-
-@rpc("authority", "call_remote", "reliable")
-func _return_clients_to_main_menu():
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	NetworkManager.return_to_main_menu()
 
 @rpc("authority", "call_local", "reliable")

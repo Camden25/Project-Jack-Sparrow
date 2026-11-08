@@ -9,6 +9,8 @@ extends Control
 @onready var player_list: VBoxContainer = $VBoxContainer/PlayerList
 @onready var switch_map_button: Button = $VBoxContainer/SwitchMap
 @onready var map_label: Label = $VBoxContainer/SelectedMap
+@onready var lobby_list: ItemList = $VBoxContainer/LobbyList
+@onready var join_selected_button: Button = $VBoxContainer/JoinSelectedButton
 
 @export var available_maps: Array[String]
 var selected_map_index: int = 0
@@ -23,18 +25,21 @@ func _ready():
 	NetworkManager.player_connected.connect(_on_player_connected)
 	NetworkManager.player_disconnected.connect(_on_player_disconnected)
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
+	NetworkManager.lobby_join_failed.connect(_on_lobby_join_failed)
+	NetworkManager.lobby_list_updated.connect(_on_lobby_match_list)
 	
 	# Button signals
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
+	join_selected_button.pressed.connect(_on_join_selected_pressed)
+	lobby_list.item_selected.connect(_on_lobby_selected)
 	practice_button.pressed.connect(_on_practice_pressed)
 	invite_button.pressed.connect(_on_invite_pressed)
 	start_button.pressed.connect(_on_start_pressed)
 	switch_map_button.pressed.connect(_on_switch_map_pressed)
 	
-	Steam.lobby_match_list.connect(_on_lobby_match_list)
-	
 	status_label.text = "Not connected"
+	join_selected_button.disabled = true
 	
 	PlayerManager.player_registered.connect(_on_player_registered)
 	PlayerManager.team_assigned.connect(func(_id, _team): _refresh_player_list())
@@ -62,15 +67,32 @@ func _on_host_pressed():
 	print("HOST BUTTON PRESSED")
 	host_button.disabled = true
 	join_button.disabled = true
+	practice_button.hide()
 	NetworkManager.host_game()
 
 func _on_join_pressed():
 	status_label.text = "Searching..."
 	join_button.disabled = true
 	host_button.disabled = true
-	#NetworkManager.join_game(109775242069591879)
-	Steam.addRequestLobbyListStringFilter("game", "camden_projectjacksparrow", Steam.LOBBY_COMPARISON_EQUAL)
-	Steam.requestLobbyList()
+	join_selected_button.disabled = true
+	lobby_list.clear()
+	practice_button.hide()
+	NetworkManager.request_lobby_list()
+
+func _on_join_selected_pressed():
+	var selected_items = lobby_list.get_selected_items()
+	if selected_items.is_empty():
+		return
+
+	var lobby_id := int(lobby_list.get_item_metadata(selected_items[0]))
+	status_label.text = "Joining lobby..."
+	join_selected_button.disabled = true
+	join_button.disabled = true
+	host_button.disabled = true
+	NetworkManager.join_game(lobby_id)
+
+func _on_lobby_selected(_index: int):
+	join_selected_button.disabled = false
 
 func _on_practice_pressed():
 	var error := NetworkManager.start_local_practice()
@@ -98,12 +120,19 @@ func _on_switch_map_pressed():
 
 func _on_lobby_created(_lobby_id: int):
 	status_label.text = "Lobby created"
-	#invite_button.show()
+	host_button.hide()
+	join_button.hide()
+	lobby_list.hide()
+	join_selected_button.hide()
 	start_button.show()
 	_refresh_player_list()
 
 func _on_lobby_joined(_lobby_id: int):
 	status_label.text = "Joined lobby"
+	host_button.hide()
+	join_button.hide()
+	lobby_list.hide()
+	join_selected_button.hide()
 	_refresh_player_list()
 
 func _on_player_connected(peer_id: int):
@@ -116,23 +145,49 @@ func _on_player_disconnected(_peer_id: int):
 func _on_server_disconnected():
 	status_label.text = "Disconnected from server"
 	_refresh_player_list()
+	host_button.show()
+	join_button.show()
 	host_button.disabled = false
 	join_button.disabled = false
+	lobby_list.show()
+	join_selected_button.show()
 	invite_button.hide()
 	start_button.hide()
 
 func _on_lobby_match_list(lobbies: Array):
-	if lobbies.is_empty():
-		print("No lobbies found")
-		host_button.disabled = false
-		join_button.disabled = false
-		invite_button.hide()
-		start_button.hide()
-		status_label.text = "No lobbies found"
-		return
-	
-	var lobby_id = lobbies[0]
-	Steam.joinLobby(lobby_id)
+	lobby_list.clear()
+
+	for lobby_id in lobbies:
+		if Steam.getLobbyData(lobby_id, "state") != "lobby":
+			continue
+
+		var member_count = Steam.getNumLobbyMembers(lobby_id)
+		var member_limit = Steam.getLobbyMemberLimit(lobby_id)
+		if member_count >= member_limit:
+			continue
+
+		var lobby_name: String = Steam.getLobbyData(lobby_id, "name")
+		if lobby_name.is_empty():
+			lobby_name = "Lobby " + str(lobby_id)
+
+		var index = lobby_list.add_item(lobby_name + " (" + str(member_count) + "/" + str(member_limit) + ")")
+		lobby_list.set_item_metadata(index, lobby_id)
+
+	host_button.disabled = false
+	join_button.disabled = false
+
+	if lobby_list.item_count == 0:
+		status_label.text = "No open lobbies found"
+	else:
+		status_label.text = "Select a lobby to join"
+
+	join_selected_button.disabled = true
+
+func _on_lobby_join_failed(reason: String):
+	status_label.text = reason
+	host_button.disabled = false
+	join_button.disabled = false
+	join_selected_button.disabled = lobby_list.get_selected_items().is_empty()
 
 #endregion
 
@@ -171,6 +226,8 @@ func _restore_lobby_state():
 	status_label.text = "Lobby"
 	host_button.hide()
 	join_button.hide()
+	lobby_list.hide()
+	join_selected_button.hide()
 	
 	if multiplayer.is_server():
 		start_button.show()

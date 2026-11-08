@@ -1,6 +1,7 @@
 extends Node
 
 signal objective_progress_updated(data: Dictionary)
+@warning_ignore("unused_signal")
 signal objective_state_changed(data: Dictionary)
 signal round_started
 signal round_ended(winning_team: int)

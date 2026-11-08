@@ -210,9 +210,9 @@ func _sync_smoke_outline_camera():
 	_smoke_outline_camera.v_offset = camera.v_offset
 	_smoke_outline_camera.frustum_offset = camera.frustum_offset
 
-func set_smoke_outline_visible(is_visible: bool):
+func set_smoke_outline_visible(smoke_visible: bool):
 	if is_instance_valid(_smoke_outline):
-		_smoke_outline.visible = is_visible
+		_smoke_outline.visible = smoke_visible
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():

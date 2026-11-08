@@ -11,9 +11,9 @@ func _ready() -> void:
 	$FogOutside.radius = radius / 2
 	$FogInside.radius = radius / 2
 
-func contains_position(position: Vector3) -> bool:
+func contains_position(pos: Vector3) -> bool:
 	var smoke_radius := radius / 2.0
-	return global_position.distance_squared_to(position) <= smoke_radius * smoke_radius
+	return global_position.distance_squared_to(pos) <= smoke_radius * smoke_radius
 
 func _on_timer_timeout() -> void:
 	queue_free()

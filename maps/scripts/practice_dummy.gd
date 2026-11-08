@@ -94,10 +94,10 @@ func _is_visible_to_local_camera() -> bool:
 
 	return false
 
-func set_smoke_outline_visible(is_visible: bool) -> void:
-	_smoke_outline_visible = is_visible
+func set_smoke_outline_visible(visible_smoke: bool) -> void:
+	_smoke_outline_visible = visible_smoke
 	if is_instance_valid(_smoke_outline_mesh):
-		_smoke_outline_mesh.visible = is_visible and _is_active and not is_ally
+		_smoke_outline_mesh.visible = visible_smoke and _is_active and not is_ally
 
 func _on_health_changed(new_health: int) -> void:
 	world_health_bar.call("update_health", new_health, health_component.MAX_HEALTH)

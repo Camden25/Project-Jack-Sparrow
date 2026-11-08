@@ -146,8 +146,8 @@ func _process(delta: float):
 
 func _on_health_changed(new_health: int):
 	print("HUD health changed: ", new_health, " is_dead: ", is_dead)
-	health_bar.value = new_health
 	health_bar.max_value = local_player.health_component.MAX_HEALTH if local_player else 100
+	health_bar.value = new_health
 	health_label.text = str(new_health) + " HP"
 	
 	if new_health > 0 and is_dead:

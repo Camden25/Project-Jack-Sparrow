@@ -11,6 +11,6 @@ func _get_fire_direction() -> Vector3:
 	var right = camera.global_basis.x
 	var up = camera.global_basis.y
 	
-	var up_amount: float = 0.18
+	var up_amount: float = 0.15
 	
 	return (forward + right * 0 + up * up_amount).normalized()

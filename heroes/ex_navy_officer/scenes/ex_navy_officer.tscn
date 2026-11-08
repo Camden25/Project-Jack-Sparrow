@@ -142,6 +142,7 @@ script = ExtResource("3_238cb")
 
 [node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
 script = ExtResource("4_o8tqa")
+MAX_HEALTH = 125
 
 [node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("5_q50x8")]
 

@@ -2,13 +2,18 @@ extends Node
 
 const DEFAULT_PORT = 7777
 const MAX_PLAYERS = 8
+const GAME_LOBBY_KEY = "game"
+const LOBBY_NAME_KEY = "name"
+const LOBBY_STATE_KEY = "state"
+const LOBBY_STATE_OPEN = "lobby"
+const LOBBY_STATE_IN_GAME = "in_game"
 
 var steam_lobby_id: int = 0
 
 var peer_pings: Dictionary = {}  # peer_id: ping_seconds
 var _ping_timestamps: Dictionary = {}  # peer_id: send_time
 var _world_ready_peers: Dictionary = {}
-var _client_world_ready_acknowledged: bool = false
+var _acknowledged_world_ready_token: int = 0
 
 enum GameState { LOBBY, IN_GAME }
 var game_state: GameState = GameState.LOBBY
@@ -20,6 +25,8 @@ signal player_disconnected(peer_id: int)
 signal server_disconnected
 signal lobby_created(lobby_id: int)
 signal lobby_joined(lobby_id: int)
+signal lobby_join_failed(reason: String)
+signal lobby_list_updated(lobbies: Array)
 
 func _ready():
 	var init = Steam.steamInitEx()
@@ -79,12 +86,15 @@ func _on_steam_lobby_created(result: int, lobby_id: int):
 	
 	if result != Steam.RESULT_OK:
 		push_error("Lobby failed")
+		lobby_join_failed.emit("Could not create a lobby.")
 		return
 	
 	steam_lobby_id = lobby_id
 	
-	# IMPORTANT: set lobby metadata so others know game type
-	Steam.setLobbyData(lobby_id, "game", "camden_projectjacksparrow")
+	Steam.setLobbyData(lobby_id, GAME_LOBBY_KEY, "camden_projectjacksparrow")
+	Steam.setLobbyData(lobby_id, LOBBY_NAME_KEY, Steam.getPersonaName() + "'s lobby")
+	Steam.setLobbyData(lobby_id, LOBBY_STATE_KEY, LOBBY_STATE_OPEN)
+	Steam.setLobbyJoinable(lobby_id, true)
 	
 	# NOW create peer
 	var peer = SteamMultiplayerPeer.new()
@@ -92,6 +102,9 @@ func _on_steam_lobby_created(result: int, lobby_id: int):
 	
 	if err != OK:
 		push_error("Host peer failed: " + str(err))
+		Steam.leaveLobby(lobby_id)
+		steam_lobby_id = 0
+		lobby_join_failed.emit("Could not start hosting the lobby.")
 		return
 	
 	multiplayer.multiplayer_peer = peer
@@ -115,12 +128,19 @@ func join_game(lobby_id: int):
 func _on_steam_lobby_joined(lobby_id: int, _p, _l, response: int):
 	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
 		push_error("Lobby join failed")
+		lobby_join_failed.emit("Could not join that lobby.")
 		return
 	
 	if is_host:
 		print("Ignoring lobby_joined on host")
 		return
 	
+	if Steam.getLobbyData(lobby_id, LOBBY_STATE_KEY) == LOBBY_STATE_IN_GAME:
+		Steam.leaveLobby(lobby_id)
+		steam_lobby_id = 0
+		lobby_join_failed.emit("That match is already in progress.")
+		return
+
 	steam_lobby_id = lobby_id
 	
 	await get_tree().process_frame
@@ -129,6 +149,9 @@ func _on_steam_lobby_joined(lobby_id: int, _p, _l, response: int):
 	
 	if host_id == 0:
 		push_error("Invalid host")
+		Steam.leaveLobby(lobby_id)
+		steam_lobby_id = 0
+		lobby_join_failed.emit("Could not find the lobby host.")
 		return
 	
 	var peer = SteamMultiplayerPeer.new()
@@ -136,6 +159,9 @@ func _on_steam_lobby_joined(lobby_id: int, _p, _l, response: int):
 	
 	if err != OK:
 		push_error("Client failed: " + str(err))
+		Steam.leaveLobby(lobby_id)
+		steam_lobby_id = 0
+		lobby_join_failed.emit("Could not connect to the lobby host.")
 		return
 	
 	multiplayer.multiplayer_peer = peer
@@ -169,6 +195,11 @@ func join_dedicated_server(ip: String, port: int = DEFAULT_PORT):
 
 func _on_peer_connected(peer_id: int):
 	print("Peer connected: " + str(peer_id))
+
+	if multiplayer.is_server() and game_state == GameState.IN_GAME:
+		multiplayer.multiplayer_peer.disconnect_peer(peer_id, true)
+		return
+
 	emit_signal("player_connected", peer_id)
 	
 	if multiplayer.is_server():
@@ -176,8 +207,6 @@ func _on_peer_connected(peer_id: int):
 			var data = PlayerManager.player_registry[existing_id]
 			_sync_existing_player.rpc_id(peer_id, existing_id, data.steam_id, data.name)
 		
-		if game_state == GameState.IN_GAME:
-			_redirect_to_game.rpc_id(peer_id)
 
 @rpc("authority", "call_remote", "reliable")
 func _sync_existing_player(existing_peer_id: int, steam_id: int, player_name: String):
@@ -194,7 +223,13 @@ func _on_connected_to_server():
 	_register_player.rpc_id(1, Steam.getSteamID(), Steam.getPersonaName())
 
 func _on_server_disconnected():
+	if steam_lobby_id != 0:
+		Steam.leaveLobby(steam_lobby_id)
+	steam_lobby_id = 0
 	multiplayer.multiplayer_peer = null
+	is_host = false
+	game_state = GameState.LOBBY
+	PlayerManager.player_registry.clear()
 	emit_signal("server_disconnected")
 
 func _on_p2p_session_request(remote_steam_id: int):
@@ -243,29 +278,34 @@ func start_local_practice() -> Error:
 func _on_lobby_match_list(lobbies: Array):
 	for lobby_id in lobbies:
 		var _lobby_name = Steam.getLobbyData(lobby_id, "game")
-		var _owner = Steam.getLobbyOwner(lobby_id)
 		var members = Steam.getNumLobbyMembers(lobby_id)
-		print("Lobby: " + str(lobby_id) + " owner: " + str(_owner) + " players: " + str(members))
+		print("Lobby: " + str(lobby_id) + " players: " + str(members))
+	lobby_list_updated.emit(lobbies)
+
+func request_lobby_list():
+	Steam.addRequestLobbyListStringFilter(GAME_LOBBY_KEY, "camden_projectjacksparrow", Steam.LOBBY_COMPARISON_EQUAL)
+	Steam.addRequestLobbyListStringFilter(LOBBY_STATE_KEY, LOBBY_STATE_OPEN, Steam.LOBBY_COMPARISON_EQUAL)
+	Steam.requestLobbyList()
 
 func set_game_state(state: GameState):
 	game_state = state
-
-@rpc("authority", "call_remote", "reliable")
-func _redirect_to_game():
-	await SceneManager.goto_scene("res://maps/world.tscn")
+	if is_host and steam_lobby_id != 0:
+		var lobby_state = LOBBY_STATE_IN_GAME if state == GameState.IN_GAME else LOBBY_STATE_OPEN
+		Steam.setLobbyData(steam_lobby_id, LOBBY_STATE_KEY, lobby_state)
+		Steam.setLobbyJoinable(steam_lobby_id, state == GameState.LOBBY)
 
 @rpc("any_peer", "call_remote", "reliable")
-func _client_ready_in_world():
+func _client_ready_in_world(world_ready_token: int):
 	var peer_id = multiplayer.get_remote_sender_id()
-	if _world_ready_peers.has(peer_id):
-		_acknowledge_client_world_ready.rpc_id(peer_id)
+	if _world_ready_peers.get(peer_id, 0) == world_ready_token:
+		_acknowledge_client_world_ready.rpc_id(peer_id, world_ready_token)
 		return
 
 	var gfm = SceneManager.get_world().get_node_or_null("GameFlowManager") if SceneManager.get_world() else null
 	if not gfm:
 		return
 	
-	_world_ready_peers[peer_id] = true
+	_world_ready_peers[peer_id] = world_ready_token
 	gfm._sync_state.rpc_id(peer_id, gfm.state)
 	match gfm.state:
 		GameFlowManager.State.HERO_SELECT:
@@ -277,17 +317,19 @@ func _client_ready_in_world():
 				world._spawn_player(peer_id)
 				var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
 				world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
-	_acknowledge_client_world_ready.rpc_id(peer_id)
+	_acknowledge_client_world_ready.rpc_id(peer_id, world_ready_token)
 
 @rpc("authority", "call_remote", "reliable")
-func _acknowledge_client_world_ready():
-	_client_world_ready_acknowledged = true
+func _acknowledge_client_world_ready(world_ready_token: int):
+	_acknowledged_world_ready_token = world_ready_token
 
 @rpc("authority", "call_remote", "reliable")
 func _show_hero_select_for_peer():
 	var overlay = get_tree().get_root().get_node_or_null("Root/PersistentUI/HeroSelectOverlay")
-	if overlay and not overlay.visible:
-		overlay.show_hero_select(SceneManager.get_world().get_node_or_null("GameFlowManager"))
+	var world = SceneManager.get_world()
+	var gfm = world.get_node_or_null("GameFlowManager") if world else null
+	if overlay and gfm:
+		overlay.show_hero_select(gfm)
 
 func return_to_main_menu():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -296,8 +338,12 @@ func return_to_main_menu():
 	peer_pings.clear()
 	_ping_timestamps.clear()
 	_world_ready_peers.clear()
-	_client_world_ready_acknowledged = false
+	_acknowledged_world_ready_token = 0
 	SceneManager.goto_scene("res://menus/scenes/lobby_ui.tscn")
+
+@rpc("authority", "call_remote", "reliable")
+func _return_clients_to_main_menu():
+	return_to_main_menu()
 
 @rpc("authority", "call_remote", "reliable")
 func _request_reregistration():

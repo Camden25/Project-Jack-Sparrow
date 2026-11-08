@@ -32,25 +32,19 @@ func _activate():
 	var to = from + (-camera.global_basis.z * MAX_DISTANCE)
 	var space = owner_player.get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
-	var timer = Timer.new()
-
-	var stop_grapple = func():
-		timer.queue_free()
-		if not grappling:
-			return
-		grappling = false
-		if data.cooldown > 0:
-			_start_cooldown()
-
-	timer.one_shot = true
-	timer.autostart = false
-	add_child(timer)
-	timer.start(MAX_TIME)
-	timer.connect("timeout", stop_grapple)
 	query.exclude = [owner_player]
 	var result = space.intersect_ray(query)
 	if result.is_empty():
 		return
+
+	var timer := Timer.new()
+	timer.one_shot = true
+	add_child(timer)
+	timer.timeout.connect(func():
+		timer.queue_free()
+		_end_grapple()
+	)
+	timer.start(MAX_TIME)
 	
 	grapple_point = result.position
 	rope_length = owner_player.global_position.distance_to(grapple_point)
@@ -67,8 +61,6 @@ func physics_update(delta):
 		net_is_grappling = grappling
 		net_grapple_point = grapple_point
 	
-	_update_rope_visual()
-	
 	if not grappling:
 		return
 	if not owner_player.is_multiplayer_authority():
@@ -79,7 +71,7 @@ func physics_update(delta):
 	var distance = offset.length()
 	
 	if distance < 0.2:
-		grappling = false
+		_end_grapple()
 		return
 	
 	var rope_dir = offset.normalized()
@@ -114,9 +106,19 @@ func physics_update(delta):
 	
 	# Release
 	if not Input.is_action_pressed("secondary_fire"):
-		grappling = false
-		if data.cooldown > 0:
-			_start_cooldown()
+		_end_grapple()
+
+func _end_grapple() -> void:
+	if not grappling:
+		return
+	grappling = false
+	net_is_grappling = false
+	if data and data.cooldown > 0:
+		_start_cooldown()
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	_update_rope_visual()
 
 func _setup_rope() -> void:
 	_rope_mesh = CylinderMesh.new()
@@ -134,21 +136,25 @@ func _setup_rope() -> void:
 func _update_rope_visual():
 	if not _rope_mesh_instance:
 		_setup_rope()
-	if not grappling:
+	
+	if multiplayer.has_multiplayer_peer() == false:
+		return
+	var is_local_authority := owner_player.is_multiplayer_authority()
+	var should_show := grappling if is_local_authority else net_is_grappling
+	if not should_show:
 		_rope_mesh_instance.visible = false
 		return
 	
 	var camera: Camera3D = owner_player.get_node("Head/Camera3D")
+	var visual_grapple_point := grapple_point if is_local_authority else net_grapple_point
 	var hand_pos: Vector3 = camera.global_position
 	hand_pos += camera.global_basis.x * 0.25
 	hand_pos += -camera.global_basis.y * 0.2
 	
-	_rope_mesh.height = hand_pos.distance_to(grapple_point)
+	_rope_mesh.height = hand_pos.distance_to(visual_grapple_point)
 	
-	var dir = hand_pos.direction_to(grapple_point)
-	
-	_rope_mesh_instance.global_position = (hand_pos + grapple_point) * 0.5
-	_rope_mesh_instance.look_at(grapple_point, Vector3.UP)
+	_rope_mesh_instance.global_position = (hand_pos + visual_grapple_point) * 0.5
+	_rope_mesh_instance.look_at(visual_grapple_point, Vector3.UP)
 	_rope_mesh_instance.rotate_object_local(Vector3.RIGHT, PI / 2)
 	
 	_rope_mesh_instance.visible = true

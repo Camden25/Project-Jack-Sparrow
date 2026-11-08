@@ -49,10 +49,14 @@ func _ready():
 	)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
 	if multiplayer.is_server() and not _detonated:
 		state.linear_velocity += _gravity * state.step
 
 func _physics_process(delta: float):
+	if multiplayer.has_multiplayer_peer() == false:
+		return
 	if _detonated or not multiplayer.is_server():
 		return
 	super._physics_process(delta)

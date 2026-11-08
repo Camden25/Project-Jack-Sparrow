@@ -8,7 +8,9 @@ var weapon_slots: Dictionary = {}   # WeaponData.WeaponSlot: Weapon
 # Set active_abilities_node to switch which Abilities node is registered
 var active_abilities_node: Node = null
 
+@warning_ignore("unused_signal")
 signal damage_dealt(amount: int)
+@warning_ignore("unused_signal")
 signal healing_done(amount: int)
 
 func _ready():

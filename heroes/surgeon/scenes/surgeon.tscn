@@ -1,17 +1,17 @@
 [gd_scene format=3 uid="uid://bpo3p8idc2ag"]
 
-[ext_resource type="Script" uid="uid://r10xq208p2wf" path="res://heroes/ex_navy_officer/scripts/ex_navy_officer.gd" id="1_w6lbg"]
+[ext_resource type="Script" uid="uid://hd2ofoknejrt" path="res://heroes/surgeon/scripts/surgeon.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="2_sqp5f"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_hijy6"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="4_7e7vx"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="5_nak7h"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
-albedo_color = Color(0.4573529, 0.17254901, 0.4980392, 1)
+albedo_color = Color(0.2899773, 0.5703125, 0.17599487, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h167"]
 material = SubResource("StandardMaterial3D_5ahsj")
-size = Vector3(0.2, 0.2, 1.4)
+size = Vector3(0.2, 0.2, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_whncg"]
 size = Vector3(0.2, 0.2, 1)
@@ -25,7 +25,7 @@ radius = 0.4
 height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
-albedo_color = Color(0.123291016, 0.39453125, 0, 1)
+albedo_color = Color(0.52958584, 0.5703125, 0.16931152, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
 properties/0/path = NodePath(".:net_position")
@@ -38,9 +38,9 @@ properties/2/path = NodePath(".:net_head_rotation")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Cannoneer" type="CharacterBody3D" unique_id=1407199022]
+[node name="Surgeon" type="CharacterBody3D" unique_id=1407199022]
 collision_layer = 2
-script = ExtResource("1_w6lbg")
+script = ExtResource("1_script")
 
 [node name="Head" type="Node3D" parent="." unique_id=1163300351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
@@ -56,12 +56,12 @@ fov = 60.0
 [node name="ViewmodelRoot" type="Node3D" parent="Head" unique_id=734619863]
 
 [node name="MusketViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1605365548]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.5)
 layers = 524289
 mesh = SubResource("BoxMesh_6h167")
 
 [node name="MuzzlePoint" type="Marker3D" parent="Head/ViewmodelRoot" unique_id=1157625960]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -1.1008494)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -0.99838614)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1095945479]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
@@ -95,6 +95,6 @@ script = ExtResource("3_hijy6")
 
 [node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
 script = ExtResource("4_7e7vx")
-MAX_HEALTH = 150
+MAX_HEALTH = 125
 
 [node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("5_nak7h")]

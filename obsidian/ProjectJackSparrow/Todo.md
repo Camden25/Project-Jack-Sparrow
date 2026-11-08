@@ -3,18 +3,14 @@
 ## 🔴 Bugs
 
 - [ ] **Lobby player list** — names not always correct on join. Debounce applied, may need more work.
-- [ ] **Death UI** — respawn timer doesn't always clear properly.
-- [ ] **Client netcode** — player sync and interpolation roughness, needs more multiplayer testing.
 
 ---
 
 ## 🟠 Priority — Do These First
 
-- [ ] **Projectile weapon framework** — generic server-authoritative ability projectiles already exist; add reusable weapon firing/validation for a physics-based projectile primary. See [[Weapon System]].
-- [ ] **Map** — develop the current prototype-geometry World blockout into a proper 4v4 map with spawn rooms, control point language, cover, sightlines, and verticality for grapple/anchor.
 - [ ] **Character models and rigs** — all heroes need models. Placeholder capsules are fine for testing but needed before any playtest.
 - [ ] **Captain hero** — resolve the open kit/story choices, then implement. See [[Captain]].
-- [x] **Ex Navy Officer — smoke vision and Volley** — enemy outlines are visible while aiming through smoke; the charge-based Volley ultimate is attached to the hero scene. See [[Ex Navy Officer]].
+- [x] **Ex Navy Officer Volley** — the charge-based Volley ultimate is attached to the hero scene. See [[Ex Navy Officer]].
 - [ ] **Win/loss screen** — currently just a print statement. Needs actual UI.
 - [ ] **Audio** — basic audio manager, weapon SFX, ability SFX, hit confirm, death/respawn, ambient.
 
@@ -28,22 +24,20 @@
 - [ ] **Multi-use abilities** — `uses_remaining` is stubbed out in `ability.gd`, not implemented.
 - [ ] **Match history / score summary** — show before returning to lobby.
 - [ ] **Claim gamemode** — multiple rotating control points. See [[Claim]].
-- [ ] **Escape menu** — quit, disconnect, settings.
 - [ ] **Settings menu** — sensitivity, audio, graphics.
 - [ ] **Round win/loss announcement** — visual/audio moment when a round ends.
 - [ ] **Countdown timer** — visible to players before round starts.
 - [ ] **Hero select polish** — currently very bare.
-- [ ] **Roster capacity** — reconcile the 4v4 target with `NetworkManager.MAX_PLAYERS = 6` (8 players needed for 4v4).
 
 ---
 
 ## 🟡 Heroes
 
-- [ ] **Captain** — finalize/implement recon-focused kit. See [[Captain]].
-- [ ] **Octopus in a Barrel** — No Hide in Barrel is in the latest design brief. See [[Octopus in a Barrel]].
-- [x] **Ex Navy Officer** — enemy outlines through smoke while ADS. See [[Ex Navy Officer]].
+- [ ] **Captain** — implement recon-focused kit. See [[Captain]].
+- [ ] **Octopus in a Barrel** — implement ultimate. See [[Octopus in a Barrel]].
+- [x] **Ex Navy Officer**
 - [ ] **Scout Sword Dude** — resolve Ability 2, ultimate, and story, then implement. See [[Scout Sword Dude]].
-- [ ] **Prototype Cannoneer** — graybox a cannonball primary and a minimal kit to test leading shots, projectile counterplay, and whether a slower space-holder fits the fast-movement roster. Defer ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
+- [x] **Prototype Cannoneer** — Defer ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
 - [ ] **Hook** — define full kit and hook behavior, then implement. See [[Hook]].
 - [ ] **Prototype Surgeon** — graybox a healing primary plus one simple damage/defense option; test whether supporting allies is engaging and legible. Defer a complete kit, story, and final art. See [[Surgeon]].
 
@@ -55,7 +49,7 @@ Prototype these two before expanding the full roster. Keep both prototypes inten
 
 - [ ] **Woodblock outline + hatching shader** — core visual identity. Low priority until gameplay is solid.
 - [ ] **Bullet tracer stylization** — fit woodblock aesthetic.
-- [ ] **Smoke effect visual** — currently just a FogVolume placeholder.
+- [ ] **Smoke effect visual** — currently just a placeholder.
 - [ ] **Weapon viewmodels** — all heroes.
 - [ ] **Hit marker polish**.
 - [ ] **Anchor chain visual**.

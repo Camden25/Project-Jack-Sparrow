@@ -65,7 +65,7 @@ layers = 524289
 mesh = SubResource("BoxMesh_6h167")
 
 [node name="MuzzlePoint" type="Marker3D" parent="Head/ViewmodelRoot" unique_id=1157625960]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.50600076, -1.4147485)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -1.5)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1095945479]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
@@ -120,6 +120,6 @@ script = ExtResource("13_3xteh")
 
 [node name="PlayerHealth" type="Node" parent="." unique_id=727741071]
 script = ExtResource("14_d6sdf")
-MAX_HEALTH = 125
+MAX_HEALTH = 150
 
 [node name="WorldHealthBar" parent="." unique_id=1504346951 instance=ExtResource("15_mkjb1")]

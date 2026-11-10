@@ -8,6 +8,7 @@ const ENEMY_OUTLINE_COLOR := Color(1.0, 0.08, 0.08)
 const ALLY_OUTLINE_COLOR := Color(0.08, 0.35, 1.0)
 
 @export var is_ally: bool = false
+@export var stay_damaged: bool = false
 @onready var body_mesh: MeshInstance3D = $BodyMesh
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var health_component: PracticeDummyHealth = $PlayerHealth
@@ -16,27 +17,137 @@ const ALLY_OUTLINE_COLOR := Color(0.08, 0.35, 1.0)
 var _outline_mesh: MeshInstance3D
 var _outline_material: ShaderMaterial
 var _smoke_outline_mesh: MeshInstance3D
+var _crew_shot_ghost: MeshInstance3D
 var _smoke_outline_visible := false
 var _is_active := true
+var _crew_shot_carrier_id := -1
+var _crew_shot_is_held := false
 
 func _ready() -> void:
 	_setup_outline()
+	_setup_crew_shot_ghost()
 	health_component.health_changed.connect(_on_health_changed)
 	health_component.dummy_defeated.connect(_on_dummy_defeated)
 	var dummy_name := "Ally Practice Dummy" if is_ally else "Practice Dummy"
-	var dummy_team := PlayerManager.get_team(multiplayer.get_unique_id()) if is_ally else PlayerManager.Team.NONE
+	var dummy_team := (
+		PlayerManager.get_team(multiplayer.get_unique_id())
+		if is_ally
+		else PlayerManager.Team.NONE
+	)
 	world_health_bar.call("setup", dummy_name, dummy_team)
 	_on_health_changed(health_component.health)
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _crew_shot_is_held:
+		_follow_crew_shot_carrier()
+
 	if not is_ally or not _is_active or not is_instance_valid(_outline_material):
 		return
+
+	if is_ally and stay_damaged and health_component.health > 10:
+		@warning_ignore("narrowing_conversion")
+		health_component.apply_forced_damage(10 * delta, 1)
 
 	var outline_shader := VISIBLE_OUTLINE_SHADER
 	if not _is_visible_to_local_camera():
 		outline_shader = XRAY_OUTLINE_SHADER
 	if _outline_material.shader != outline_shader:
 		_outline_material.shader = outline_shader
+
+func _physics_process(delta: float) -> void:
+	if not is_ally or _crew_shot_is_held or not _is_active:
+		return
+
+	if not is_on_floor():
+		velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
+	else:
+		if velocity.y <= 0.0:
+			velocity.y = 0.0
+		velocity.x = move_toward(velocity.x, 0.0, 18.0 * delta)
+		velocity.z = move_toward(velocity.z, 0.0, 18.0 * delta)
+	move_and_slide()
+
+func can_accept_crew_shot() -> bool:
+	return (
+		is_ally
+		and _is_active
+		and not _crew_shot_is_held
+		and health_component.health > 0
+	)
+
+func is_crew_shot_target_valid() -> bool:
+	return is_ally and _is_active and _crew_shot_is_held and health_component.health > 0
+
+func set_crew_shot_held_from_server(
+	cannoneer_id: int,
+	is_held: bool,
+	launch_velocity: Vector3
+) -> void:
+	if not multiplayer.is_server():
+		return
+	_rpc_set_crew_shot_held.rpc(cannoneer_id, is_held, launch_velocity)
+
+@rpc("authority", "call_local", "reliable")
+func _rpc_set_crew_shot_held(
+	cannoneer_id: int,
+	is_held: bool,
+	launch_velocity: Vector3
+) -> void:
+	if not is_ally:
+		return
+
+	if is_held:
+		_crew_shot_carrier_id = cannoneer_id
+		_crew_shot_is_held = true
+		velocity = Vector3.ZERO
+		collision_shape.set_deferred("disabled", true)
+		_follow_crew_shot_carrier()
+		_update_crew_shot_visibility()
+		return
+
+	if not _crew_shot_is_held or _crew_shot_carrier_id != cannoneer_id:
+		return
+	_follow_crew_shot_carrier()
+	_crew_shot_is_held = false
+	_crew_shot_carrier_id = -1
+	collision_shape.set_deferred("disabled", not _is_active)
+	velocity = launch_velocity
+	_update_crew_shot_visibility()
+
+func _update_crew_shot_visibility() -> void:
+	var held_by_local_carrier := (
+		_crew_shot_is_held
+		and multiplayer.get_unique_id() == _crew_shot_carrier_id
+	)
+	body_mesh.visible = _is_active and not held_by_local_carrier
+	if is_instance_valid(_outline_mesh):
+		_outline_mesh.visible = _is_active and not held_by_local_carrier
+	if is_instance_valid(_smoke_outline_mesh):
+		_smoke_outline_mesh.visible = (
+			_is_active
+			and _smoke_outline_visible
+			and not is_ally
+			and not held_by_local_carrier
+		)
+	if is_instance_valid(_crew_shot_ghost):
+		_crew_shot_ghost.visible = _is_active and held_by_local_carrier
+	if is_instance_valid(world_health_bar):
+		world_health_bar.visible = _is_active and not held_by_local_carrier
+
+func _follow_crew_shot_carrier() -> void:
+	var players_node := SceneManager.get_players_node()
+	var carrier := (
+		players_node.get_node_or_null(str(_crew_shot_carrier_id)) as Node3D
+		if players_node
+		else null
+	)
+	if not carrier:
+		return
+	var seat := carrier.get_node_or_null("CrewShotSeat") as Marker3D
+	if seat:
+		global_position = seat.global_position
+	else:
+		global_position = carrier.global_position + carrier.global_basis * Vector3(0.0, 0.9, -1.0)
 
 func _setup_outline() -> void:
 	_outline_mesh = body_mesh.duplicate() as MeshInstance3D
@@ -61,6 +172,19 @@ func _setup_outline() -> void:
 	_smoke_outline_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_smoke_outline_mesh.visible = false
 	body_mesh.add_sibling(_smoke_outline_mesh)
+
+func _setup_crew_shot_ghost() -> void:
+	_crew_shot_ghost = body_mesh.duplicate() as MeshInstance3D
+	_crew_shot_ghost.name = "CrewShotGhost"
+	var ghost_material := StandardMaterial3D.new()
+	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ghost_material.albedo_color = Color(0.35, 0.8, 1.0, 0.35)
+	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ghost_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_crew_shot_ghost.material_override = ghost_material
+	_crew_shot_ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_crew_shot_ghost.visible = false
+	body_mesh.add_sibling(_crew_shot_ghost)
 
 func _is_visible_to_local_camera() -> bool:
 	var local_camera := get_viewport().get_camera_3d()
@@ -117,8 +241,5 @@ func _on_dummy_defeated() -> void:
 @rpc("authority", "call_local", "reliable")
 func _set_active(active: bool) -> void:
 	_is_active = active
-	body_mesh.visible = active
-	_outline_mesh.visible = active
-	_smoke_outline_mesh.visible = active and _smoke_outline_visible and not is_ally
 	collision_shape.disabled = not active
-	world_health_bar.visible = active
+	_update_crew_shot_visibility()

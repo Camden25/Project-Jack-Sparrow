@@ -7,7 +7,8 @@ var player_registry: Dictionary = {} # peer_id: { steam_id, name, team }
 const HEROES: Array = [
 	preload("res://heroes/resources/ex_navy_officer.tres"),
 	preload("res://heroes/resources/octopus_in_a_barrel.tres"),
-	preload("res://heroes/resources/cannoneer.tres")
+	preload("res://heroes/resources/cannoneer.tres"),
+	preload("res://heroes/resources/surgeon.tres")
 ]
 
 var hero_selections: Dictionary = {} # peer_id: hero_index

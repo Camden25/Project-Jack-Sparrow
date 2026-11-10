@@ -26,13 +26,22 @@ var spawn_confirmed: bool = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var movement_override: bool = false
+var movement_speed_multiplier: float = 1.0
+var crew_shot_speed_multiplier: float = 1.0
 var _smoke_outline: MeshInstance3D
 var _smoke_outline_canvas_layer: CanvasLayer
 var _smoke_outline_viewport: SubViewport
 var _smoke_outline_camera: Camera3D
 var _team_outline: MeshInstance3D
 var _team_outline_material: ShaderMaterial
+var _crew_shot_ghost: MeshInstance3D
 var _is_active: bool = true
+var _crew_shot_invitation_cannoneer_id: int = -1
+var _crew_shot_invitation_id: int = -1
+var _crew_shot_carrier_id: int = -1
+var _crew_shot_is_held: bool = false
+var _crew_shot_carrier_missing_time: float = 0.0
+var _smoke_outline_is_visible: bool = false
 
 const SMOKE_OUTLINE_RENDER_LAYER := 19
 const SMOKE_OUTLINE_RENDER_MASK := 1 << (SMOKE_OUTLINE_RENDER_LAYER - 1)
@@ -56,6 +65,7 @@ func _ready():
 	_setup_smoke_outline_viewport()
 	_setup_smoke_outline()
 	_setup_team_outline()
+	_setup_crew_shot_ghost()
 	PlayerManager.team_assigned.connect(_on_team_assigned)
 	_update_gate_collision_mask()
 	_update_team_outline()
@@ -174,7 +184,11 @@ func _update_team_outline():
 		"outline_color",
 		TEAMMATE_OUTLINE_COLOR if is_teammate else ENEMY_OUTLINE_COLOR
 	)
-	_team_outline.visible = _is_active
+	var hidden_from_carrier := (
+		_crew_shot_is_held
+		and local_player_id == _crew_shot_carrier_id
+	)
+	_team_outline.visible = _is_active and not hidden_from_carrier
 
 func _setup_smoke_outline_viewport():
 	_smoke_outline_canvas_layer = get_node_or_null("SmokeOutlineLayer") as CanvasLayer
@@ -211,11 +225,186 @@ func _sync_smoke_outline_camera():
 	_smoke_outline_camera.frustum_offset = camera.frustum_offset
 
 func set_smoke_outline_visible(smoke_visible: bool):
+	_smoke_outline_is_visible = smoke_visible
+	_update_crew_shot_visibility()
+
+func handle_crew_shot_input(event: InputEvent) -> bool:
+	if not is_multiplayer_authority():
+		return false
+
+	if _crew_shot_invitation_id >= 0:
+		if event.is_action_pressed("crew_shot_interact"):
+			_request_crew_shot_invitation(true)
+			return true
+		if event.is_action_pressed("crew_shot_decline"):
+			_request_crew_shot_invitation(false)
+			return true
+
+	if _crew_shot_is_held:
+		if event.is_action_pressed("crew_shot_interact"):
+			_request_crew_shot_cancel()
+			return true
+		return not event is InputEventMouseMotion
+	return false
+
+func _request_crew_shot_invitation(accept: bool):
+	var cannoneer := _get_crew_shot_cannoneer()
+	var crew_shot = cannoneer.get_node_or_null("Abilities/CrewShot") if cannoneer else null
+	if not crew_shot:
+		_clear_crew_shot_invitation()
+		return
+
+	if accept:
+		crew_shot.call("request_accept_from_client", _crew_shot_invitation_id)
+	else:
+		crew_shot.call("request_decline_from_client", _crew_shot_invitation_id)
+
+func _request_crew_shot_cancel():
+	var cannoneer := _get_crew_shot_cannoneer()
+	var crew_shot = cannoneer.get_node_or_null("Abilities/CrewShot") if cannoneer else null
+	if crew_shot:
+		crew_shot.call("request_cancel_from_client")
+	else:
+		_set_crew_shot_held(-1, false, Vector3.ZERO)
+
+func _get_crew_shot_cannoneer() -> Node:
+	var players_node := SceneManager.get_players_node()
+	if players_node and _crew_shot_invitation_cannoneer_id >= 0:
+		return players_node.get_node_or_null(str(_crew_shot_invitation_cannoneer_id))
+	if players_node and _crew_shot_carrier_id >= 0:
+		return players_node.get_node_or_null(str(_crew_shot_carrier_id))
+	return null
+
+func _clear_crew_shot_invitation():
+	_crew_shot_invitation_cannoneer_id = -1
+	_crew_shot_invitation_id = -1
+	if not is_multiplayer_authority():
+		return
+	var hud := get_tree().get_first_node_in_group("UI")
+	if hud:
+		hud.call("hide_crew_shot_prompt")
+
+func set_crew_shot_invite_from_server(cannoneer_id: int, invitation_id: int, show_invite: bool):
+	_set_crew_shot_invite(cannoneer_id, invitation_id, show_invite)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _rpc_set_crew_shot_invite(cannoneer_id: int, invitation_id: int, show_invite: bool):
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+	_set_crew_shot_invite(cannoneer_id, invitation_id, show_invite)
+
+func _set_crew_shot_invite(cannoneer_id: int, invitation_id: int, show_invite: bool):
+	if not is_multiplayer_authority():
+		return
+	if show_invite:
+		_crew_shot_invitation_cannoneer_id = cannoneer_id
+		_crew_shot_invitation_id = invitation_id
+		var cannoneer_name := PlayerManager.get_player_name(cannoneer_id)
+		var hud := get_tree().get_first_node_in_group("UI")
+		if hud:
+			hud.call(
+				"show_crew_shot_prompt",
+				cannoneer_name + " offers a cannon launch  |  G: accept  |  H: decline"
+			)
+	elif (
+		_crew_shot_invitation_cannoneer_id == cannoneer_id
+		and _crew_shot_invitation_id == invitation_id
+	):
+		_clear_crew_shot_invitation()
+
+func set_crew_shot_held_from_server(cannoneer_id: int, is_held: bool, launch_velocity: Vector3):
+	_set_crew_shot_held(cannoneer_id, is_held, launch_velocity)
+
+@rpc("any_peer", "call_remote", "reliable")
+func _rpc_set_crew_shot_held(cannoneer_id: int, is_held: bool, launch_velocity: Vector3):
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+	_set_crew_shot_held(cannoneer_id, is_held, launch_velocity)
+
+func _set_crew_shot_held(cannoneer_id: int, is_held: bool, launch_velocity: Vector3):
+	if is_held:
+		if _crew_shot_is_held and _crew_shot_carrier_id != cannoneer_id:
+			return
+		_clear_crew_shot_invitation()
+		_crew_shot_carrier_id = cannoneer_id
+		_crew_shot_is_held = true
+		_crew_shot_carrier_missing_time = 0.0
+		movement_override = true
+		velocity = Vector3.ZERO
+		$CollisionShape3D.set_deferred("disabled", true)
+		_follow_crew_shot_carrier()
+		_update_crew_shot_visibility()
+		if is_multiplayer_authority():
+			var hud := get_tree().get_first_node_in_group("UI")
+			if hud:
+				hud.call("show_crew_shot_prompt", "LOADED IN CANNON  |  G: cancel")
+		return
+
+	if not _crew_shot_is_held or _crew_shot_carrier_id != cannoneer_id:
+		return
+	_follow_crew_shot_carrier()
+	_crew_shot_is_held = false
+	_crew_shot_carrier_id = -1
+	_crew_shot_carrier_missing_time = 0.0
+	movement_override = false
+	$CollisionShape3D.set_deferred("disabled", not _is_active)
+	velocity = launch_velocity if health_component.health > 0 else Vector3.ZERO
+	_update_crew_shot_visibility()
+	if is_multiplayer_authority():
+		var hud := get_tree().get_first_node_in_group("UI")
+		if hud:
+			hud.call("hide_crew_shot_prompt")
+
+func _update_crew_shot_visibility():
+	var hidden_from_carrier := (
+		_crew_shot_is_held
+		and multiplayer.get_unique_id() == _crew_shot_carrier_id
+	)
+	var body_mesh := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if body_mesh:
+		body_mesh.visible = _is_active and not hidden_from_carrier
+	if is_instance_valid(_team_outline):
+		_update_team_outline()
 	if is_instance_valid(_smoke_outline):
-		_smoke_outline.visible = smoke_visible
+		_smoke_outline.visible = _smoke_outline_is_visible and not hidden_from_carrier
+	if is_instance_valid(_crew_shot_ghost):
+		_crew_shot_ghost.visible = _is_active and hidden_from_carrier
+	if is_instance_valid(world_health_bar):
+		world_health_bar.visible = _is_active and not hidden_from_carrier
+
+func _setup_crew_shot_ghost():
+	var body_mesh := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if not body_mesh or not body_mesh.mesh:
+		return
+
+	_crew_shot_ghost = body_mesh.duplicate() as MeshInstance3D
+	_crew_shot_ghost.name = "CrewShotGhost"
+	var ghost_material := StandardMaterial3D.new()
+	ghost_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	ghost_material.albedo_color = Color(0.35, 0.8, 1.0, 0.35)
+	ghost_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	ghost_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_crew_shot_ghost.material_override = ghost_material
+	_crew_shot_ghost.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_crew_shot_ghost.visible = false
+	body_mesh.add_sibling(_crew_shot_ghost)
+
+func _follow_crew_shot_carrier():
+	var carrier := _get_crew_shot_cannoneer() as Node3D
+	if not carrier:
+		return false
+	var seat := carrier.get_node_or_null("CrewShotSeat") as Marker3D
+	if seat:
+		global_position = seat.global_position
+	else:
+		global_position = carrier.global_position + carrier.global_basis * Vector3(0.0, 0.9, -1.0)
+	return true
 
 func _unhandled_input(event):
 	if not is_multiplayer_authority():
+		return
+
+	if handle_crew_shot_input(event):
 		return
 	
 	if event is InputEventMouseMotion:
@@ -254,6 +443,19 @@ func _physics_process(delta):
 		return
 	if not spawn_confirmed:
 		return
+	if _crew_shot_is_held:
+		if _follow_crew_shot_carrier():
+			_crew_shot_carrier_missing_time = 0.0
+		else:
+			_crew_shot_carrier_missing_time += delta
+			if _crew_shot_carrier_missing_time >= 1.0:
+				_set_crew_shot_held(_crew_shot_carrier_id, false, Vector3.ZERO)
+		if _crew_shot_is_held:
+			velocity = Vector3.ZERO
+			net_position = position
+			net_rotation = rotation
+			net_head_rotation = head.rotation
+			return
 	
 	if not is_on_floor():
 		velocity.y -= gravity * GRAVITY_MULTIPLIER * delta
@@ -262,7 +464,7 @@ func _physics_process(delta):
 		velocity.y = JUMP_VELOCITY
 	
 	if not movement_override:
-		var speed = SPEED
+		var speed = SPEED * movement_speed_multiplier * crew_shot_speed_multiplier
 		var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		
@@ -295,6 +497,17 @@ func _setup_health_bar(peer_id: int):
 func set_active(active: bool):
 	_is_active = active
 	if not active:
+		_clear_crew_shot_invitation()
+		if _crew_shot_is_held:
+			if multiplayer.is_server():
+				var cannoneer := _get_crew_shot_cannoneer()
+				var crew_shot = cannoneer.get_node_or_null("Abilities/CrewShot") if cannoneer else null
+				if crew_shot:
+					crew_shot.call(
+						"cancel_passenger_from_server",
+						get_multiplayer_authority()
+					)
+			_set_crew_shot_held(_crew_shot_carrier_id, false, Vector3.ZERO)
 		movement_override = false
 		velocity = Vector3.ZERO
 		var abilities_node = get_node_or_null("Abilities")
@@ -306,10 +519,8 @@ func set_active(active: bool):
 	set_physics_process(active and is_multiplayer_authority())
 	set_process_unhandled_input(active and is_multiplayer_authority())
 	$CollisionShape3D.disabled = not active
-	$MeshInstance3D.visible = active
+	_update_crew_shot_visibility()
 	_update_team_outline()
-	if world_health_bar:
-		world_health_bar.visible = active
 
 func confirm_spawn(spawn_pos: Vector3):
 	print("confirm_spawn called on ", multiplayer.get_unique_id(), " pos: ", spawn_pos)

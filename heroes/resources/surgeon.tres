@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="HeroData" format=3]
+
+[ext_resource type="Script" path="res://hero_base/resources/hero_data.gd" id="1_hero_data"]
+[ext_resource type="PackedScene" path="res://heroes/surgeon/scenes/surgeon.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_hero_data")
+hero_name = "Surgeon"
+hero_description = "A field medic who can treat allies at range or risk close-quarters treatment."
+hero_scene = ExtResource("2_scene")

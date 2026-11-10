@@ -37,9 +37,9 @@
 - [ ] **Octopus in a Barrel** — implement ultimate. See [[Octopus in a Barrel]].
 - [x] **Ex Navy Officer**
 - [ ] **Scout Sword Dude** — resolve Ability 2, ultimate, and story, then implement. See [[Scout Sword Dude]].
-- [x] **Prototype Cannoneer** — Defer ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
+- [x] **Prototype Cannoneer** — ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
 - [ ] **Hook** — define full kit and hook behavior, then implement. See [[Hook]].
-- [ ] **Prototype Surgeon** — graybox a healing primary plus one simple damage/defense option; test whether supporting allies is engaging and legible. Defer a complete kit, story, and final art. See [[Surgeon]].
+- [x] **Prototype Surgeon** — graybox a ranged Burst Rifle plus Quick Dose and Field Wrap healing abilities; test whether supporting allies is engaging and legible. Defer a complete kit, story, and final art. See [[Surgeon]].
 
 Prototype these two before expanding the full roster. Keep both prototypes intentionally small, run playtests, then decide whether to iterate, redesign, or cut before investing in full kits and polish.
 

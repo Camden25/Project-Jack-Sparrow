@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://cmuv3ve5x2al8" path="res://addons/proto-csgs/textures/light/texture_13.png" id="7_83prx"]
 [ext_resource type="Script" uid="uid://cet5jqvmnljyy" path="res://maps/scripts/respawn_manager.gd" id="7_w8u4w"]
 [ext_resource type="PackedScene" uid="uid://b3ea6mybfr1vx" path="res://maps/scenes/control_point.tscn" id="8_0aqjy"]
-[ext_resource type="PackedScene" path="res://maps/scenes/practice_dummy.tscn" id="9_jl8g3"]
+[ext_resource type="PackedScene" uid="uid://cx84dmh52sy6h" path="res://maps/scenes/practice_dummy.tscn" id="9_jl8g3"]
 [ext_resource type="PackedScene" uid="uid://dxw7cledbpiia" path="res://addons/proto-csgs/proto_csg_box_3d.tscn" id="10_jxctw"]
 [ext_resource type="PackedScene" path="res://maps/scenes/healing_zone.tscn" id="11_healing_zone"]
 [ext_resource type="PackedScene" uid="uid://belldtp2oailc" path="res://ui/scenes/pause_menu.tscn" id="17_g0tfq"]
@@ -257,6 +257,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.061141, 10.234221, 11.1033
 [node name="PracticeDummy4" parent="PracticeDummys" unique_id=681260892 instance=ExtResource("9_jl8g3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7129376, 10.246548, 6.091732)
 
+[node name="PracticeDummy6" parent="PracticeDummys" unique_id=1239708873 instance=ExtResource("9_jl8g3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.070417, 0.28909564, 17.504639)
+
 [node name="PracticeDummy3" parent="PracticeDummys" unique_id=648090385 instance=ExtResource("9_jl8g3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.493301, 3.8433447, -2.4531653)
 
@@ -267,11 +270,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0167603, 3.8433447, 0.1273
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1213274, 3.755539, 2.1187503)
 
 [node name="AllyPracticeDummy" parent="PracticeDummys" unique_id=288585132 instance=ExtResource("9_jl8g3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.110984, 0.25, 19.606674)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2683382, 4.4752507, 20.753857)
 is_ally = true
+stay_damaged = true
+
+[node name="AllyPracticeDummy2" parent="PracticeDummys" unique_id=46720756 instance=ExtResource("9_jl8g3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.2945614, 0.7052659, 20.617887)
+is_ally = true
+stay_damaged = true
 
 [node name="AllyHealingZone" parent="." unique_id=655942176 instance=ExtResource("11_healing_zone")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2204146, 0.2932644, 19.10899)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.70354, 0.2932644, 16.490961)
 
 [node name="Map" type="Node3D" parent="." unique_id=1812213538]
 

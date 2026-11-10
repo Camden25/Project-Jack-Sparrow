@@ -52,6 +52,8 @@ func swap_abilities(new_abilities_node: Node):
 func _unhandled_input(event):
 	if not is_multiplayer_authority():
 		return
+	if handle_crew_shot_input(event):
+		return
 	
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * SENSITIVITY)

@@ -12,6 +12,7 @@ extends CanvasLayer
 @onready var ping_label: Label = $PingLabel
 @onready var hit_marker_container: Control = $HitMarkerContainer
 @onready var kill_feed_container: VBoxContainer = $KillFeedContainer
+@onready var crew_shot_prompt: Label = $CrewShotPrompt
 
 var local_player: HeroBase = null
 var tracked_weapon: Weapon = null
@@ -32,6 +33,7 @@ func _ready():
 		GameModeEvents.round_ended.connect(_on_round_ended)
 	
 	reload_label.hide()
+	crew_shot_prompt.hide()
 	death_label.hide()
 	hide()
 	
@@ -47,6 +49,7 @@ func _on_player_killed_check_local(killer_id: int, victim_id: int):
 func _on_scene_loaded(scene: Node):
 	if not scene.has_node("Players"):
 		hide()
+		hide_crew_shot_prompt()
 		local_player = null
 		tracked_weapon = null
 		return
@@ -203,8 +206,16 @@ func _add_kill_feed_entry(killer_id: int, victim_id: int):
 func set_ping_label():
 	ping_label.text = str(int(NetworkManager.get_peer_ping(NetworkManager.get_my_peer_id()) * 1000)) + " ms"
 
+func show_crew_shot_prompt(prompt_text: String):
+	crew_shot_prompt.text = prompt_text
+	crew_shot_prompt.show()
+
+func hide_crew_shot_prompt():
+	crew_shot_prompt.hide()
+
 func reset_hud() -> void:
 	reload_label.hide()
+	hide_crew_shot_prompt()
 	death_label.hide()
 	wins_label.text = "A: 0  |  B: 0"
 	objective_label.text = "A: 0%  |  B: 0%"

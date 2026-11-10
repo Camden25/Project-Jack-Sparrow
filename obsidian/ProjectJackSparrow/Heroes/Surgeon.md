@@ -1,33 +1,22 @@
 # Surgeon
 
-> Unnamed support concept. The only confirmed kit note is that the primary fire may heal.
+**Status:** 🟡 Graybox prototype in the hero roster. Kit values are initial playtest tuning, not final balance.
 
-**Status:** 🟡 Early concept; recommended next graybox prototype. No hero scene/resource is registered in the project.
+## Prototype Kit
 
----
-
-## Kit Overview (Unconfirmed)
-
-| Slot | Name | Type | Status |
+| Input | Name | Function | Initial tuning |
 |---|---|---|---|
-| Primary fire | Healing action (exact mechanic TBD) | Healing | ❌ Design only |
-| Secondary fire | TBD | — | ❌ Undecided |
-| Abilities | TBD | — | ❌ Undecided |
-| Ultimate | TBD | — | ❌ Undecided |
+| Primary fire | Burst Rifle | Three-round hitscan burst; reduced per-shot damage versus other heroes | 8 damage/shot, 24-round magazine |
+| Secondary fire | Quick Dose | Throw a dose that bursts on impact and heals nearby allies | 20 healing in a 3-unit radius, 10-second cooldown |
+| Ability 1 | Field Wrap | Slowly treat all injured allies in a visible circle around Surgeon; targets are refreshed each healing tick, so allies can enter mid-treatment | Up to 50 healing per ally over 1.25 seconds in range, 2.2-unit radius, 50% movement speed, 12-second cooldown |
 
----
+Quick Dose and Field Wrap have independent cooldowns; there is no shared healing resource. Surgeon has no movement ability or ultimate in this intentionally small prototype. The weapon is ranged; melee weapons are deferred until Scout Sword Dude.
 
-## Open Design Questions
+## Playtest Questions
 
-- Is primary fire a direct heal, a projectile, or a close-range treatment tool?
-- Define range, healing rate, resource/cooldown, and whether it can target self.
-- Decide how the Surgeon contributes damage and what the rest of the kit does.
-- Develop the character's story, visual direction, and horror/pirate theme.
+- Is healing useful without making Surgeon feel mandatory?
+- Does Field Wrap's multi-target healing-over-time, range, and movement slow make it feel risky but fair?
+- Does the Burst Rifle let Surgeon contribute without matching other heroes' kill potential?
+- Are the two separate healing cooldowns simple and balanced in practice?
 
----
-
-## Implementation Status
-
-Prototype a simple healing primary and one straightforward damage or self-defense option to find out whether healing is satisfying and understandable in a team fight. Keep tuning, story, art, and the rest of the kit out of scope until playtests validate the core loop.
-
-The project currently has no Surgeon scene, hero resource, or roster entry; no healing-primary implementation should be inferred from the shared `HeroBase` signals.
+Tune the values and revise or cut the prototype based on playtests before expanding the kit, story, or art.

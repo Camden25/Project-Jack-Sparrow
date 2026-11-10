@@ -3,7 +3,8 @@ extends Node
 var _registry: Dictionary = {
 	"smoke_canister" : preload("res://heroes/ex_navy_officer/abilities/smoke_canister/scenes/smoke_canister_projectile.tscn"),
 	"anchor": preload("res://heroes/octopus_in_a_barrel/abilities/drop_anchor/scenes/anchor_projectile.tscn"),
-	"cannonball": preload("res://heroes/cannoneer/weapons/cannonball.tscn")
+	"cannonball": preload("res://heroes/cannoneer/weapons/cannonball.tscn"),
+	"quick_dose": preload("res://heroes/surgeon/abilities/quick_dose_projectile.tscn")
 	}
 
 func register(key: String, scene: PackedScene):

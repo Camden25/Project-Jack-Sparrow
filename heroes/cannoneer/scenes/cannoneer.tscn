@@ -5,6 +5,8 @@
 [ext_resource type="Resource" uid="uid://4x1frve2yy5n" path="res://heroes/cannoneer/resources/cannon.tres" id="3_cannon_data"]
 [ext_resource type="Script" uid="uid://e1t6tn7rdqhw" path="res://heroes/cannoneer/abilities/recoil_hop/recoil_hop.gd" id="4_87qqg"]
 [ext_resource type="Resource" path="res://heroes/cannoneer/resources/recoil_hop.tres" id="5_wbtur"]
+[ext_resource type="Script" uid="uid://cp1bg8c6s8g8x" path="res://heroes/cannoneer/abilities/crew_shot/crew_shot.gd" id="6_crew_shot"]
+[ext_resource type="Resource" uid="uid://brhm72fekh8ok" path="res://heroes/cannoneer/resources/crew_shot.tres" id="7_crew_shot_data"]
 [ext_resource type="Script" uid="uid://bdafd8qptqc2c" path="res://player/scripts/interpolation_controller.gd" id="12_nnjsn"]
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="13_3xteh"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="14_d6sdf"]
@@ -104,10 +106,21 @@ viewmodel_path = NodePath("../../Head/ViewmodelRoot/MusketViewmodel")
 world_mesh_path = NodePath("../../Skeleton3D/MusketWorldMesh")
 metadata/_custom_type_script = "uid://btvx7koewdbtq"
 
+[node name="CrewShotAbility" type="Node" parent="Abilities" unique_id=991282364]
+script = ExtResource("6_crew_shot")
+pickup_range = 3.0
+launch_speed = 10.0
+launch_lift = 5.0
+data = ExtResource("7_crew_shot_data")
+metadata/_custom_type_script = "uid://cp1bg8c6s8g8x"
+
 [node name="RecoilHopAbility" type="Node" parent="Abilities" unique_id=107511572]
 script = ExtResource("4_87qqg")
 data = ExtResource("5_wbtur")
 metadata/_custom_type_script = "uid://e1t6tn7rdqhw"
+
+[node name="CrewShotSeat" type="Marker3D" parent="." unique_id=872034120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.8)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
 replication_config = SubResource("SceneReplicationConfig_ebtu4")

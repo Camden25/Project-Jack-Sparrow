@@ -39,6 +39,9 @@ func _can_activate() -> bool:
 func _activate():
 	pass  # override in subclass
 
+func handle_primary_fire() -> bool:
+	return false
+
 func cancel():
 	pass
 

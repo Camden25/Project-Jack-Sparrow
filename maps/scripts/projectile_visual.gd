@@ -47,6 +47,10 @@ func _ready():
 			material.albedo_color = Color(0.13, 0.12, 0.11)
 			material.metallic = 0.55
 			material.roughness = 0.45
+		"quick_dose":
+			sphere.radius = 0.16
+			sphere.height = 0.32
+			material.albedo_color = Color(0.35, 0.9, 0.55, 1)
 	
 	mesh_instance.mesh = sphere
 	mesh_instance.material_override = material

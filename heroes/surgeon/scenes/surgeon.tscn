@@ -5,6 +5,12 @@
 [ext_resource type="Script" uid="uid://b1pglgqj84ttf" path="res://player/scripts/lag_compensation_buffer.gd" id="3_hijy6"]
 [ext_resource type="Script" uid="uid://dmn3hvpnidvbm" path="res://player/scripts/player_health.gd" id="4_7e7vx"]
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="5_nak7h"]
+[ext_resource type="Script" uid="uid://cawqcefu2cgkt" path="res://heroes/surgeon/weapons/burst_rifle.gd" id="6_burst_rifle"]
+[ext_resource type="Script" uid="uid://ddjlhnpabcc4x" path="res://heroes/surgeon/abilities/quick_dose.gd" id="7_quick_dose"]
+[ext_resource type="Script" uid="uid://bxg66qiudmumq" path="res://heroes/surgeon/abilities/field_wrap.gd" id="8_field_wrap"]
+[ext_resource type="Resource" uid="uid://dpl5cmqi5bt30" path="res://heroes/surgeon/resources/burst_rifle.tres" id="9_burst_rifle_data"]
+[ext_resource type="Resource" uid="uid://bajev0heeh05p" path="res://heroes/surgeon/resources/quick_dose.tres" id="10_quick_dose_data"]
+[ext_resource type="Resource" uid="uid://gbieg8haeowy" path="res://heroes/surgeon/resources/field_wrap.tres" id="11_field_wrap_data"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
 albedo_color = Color(0.2899773, 0.5703125, 0.17599487, 1)
@@ -55,7 +61,7 @@ fov = 60.0
 
 [node name="ViewmodelRoot" type="Node3D" parent="Head" unique_id=734619863]
 
-[node name="MusketViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1605365548]
+[node name="BurstRifleViewmodel" type="MeshInstance3D" parent="Head/ViewmodelRoot" unique_id=1605365548]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.5)
 layers = 524289
 mesh = SubResource("BoxMesh_6h167")
@@ -68,7 +74,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1736886413]
 
-[node name="MusketWorldMesh" type="MeshInstance3D" parent="Skeleton3D" unique_id=914551381]
+[node name="BurstRifleWorldMesh" type="MeshInstance3D" parent="Skeleton3D" unique_id=914551381]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -0.7)
 visible = false
 mesh = SubResource("BoxMesh_whncg")
@@ -83,6 +89,26 @@ mesh = SubResource("CapsuleMesh_wf8xl")
 surface_material_override/0 = SubResource("StandardMaterial3D_vjx7y")
 
 [node name="Abilities" type="Node" parent="." unique_id=1901336776]
+
+[node name="BurstRifle" type="Node" parent="Abilities" unique_id=264327767]
+script = ExtResource("6_burst_rifle")
+muzzle_point_path = NodePath("../../Head/ViewmodelRoot/MuzzlePoint")
+data = ExtResource("9_burst_rifle_data")
+viewmodel_path = NodePath("../../Head/ViewmodelRoot/BurstRifleViewmodel")
+world_mesh_path = NodePath("../../Skeleton3D/BurstRifleWorldMesh")
+
+[node name="FieldWrap" type="Node" parent="Abilities" unique_id=1666885861]
+script = ExtResource("8_field_wrap")
+heal_amount = 50
+treatment_range = 3.5
+data = ExtResource("11_field_wrap_data")
+metadata/_custom_type_script = "uid://bxg66qiudmumq"
+
+[node name="QuickDose" type="Node" parent="Abilities" unique_id=1604716244]
+script = ExtResource("7_quick_dose")
+heal_amount = 30
+data = ExtResource("10_quick_dose_data")
+metadata/_custom_type_script = "uid://ddjlhnpabcc4x"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1776342785]
 replication_config = SubResource("SceneReplicationConfig_ebtu4")

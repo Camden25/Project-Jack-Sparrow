@@ -32,14 +32,14 @@ func _ready():
 	max_contacts_reported = 4
 	continuous_cd = true
 	body_entered.connect(_on_body_entered)
-
+	
 	if not multiplayer.is_server():
 		return
-
+	
 	var shooter := _get_player_node(shooter_id)
 	if shooter is PhysicsBody3D:
 		add_collision_exception_with(shooter)
-
+	
 	broadcast_visual_launch(
 		"cannonball",
 		_pending_origin,

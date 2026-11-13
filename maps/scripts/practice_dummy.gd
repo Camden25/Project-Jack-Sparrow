@@ -190,16 +190,16 @@ func _is_visible_to_local_camera() -> bool:
 	var local_camera := get_viewport().get_camera_3d()
 	if not local_camera:
 		return true
-
+	
 	var players_node := SceneManager.get_players_node()
 	if not players_node:
 		return true
-
+	
 	var local_player := players_node.get_node_or_null(str(multiplayer.get_unique_id()))
 	var excluded_rids: Array[RID] = []
 	if local_player is CollisionObject3D:
 		excluded_rids.append(local_player.get_rid())
-
+	
 	for height in [0.45, 0.9, 1.35]:
 		var query := PhysicsRayQueryParameters3D.create(
 			local_camera.global_position,
@@ -209,13 +209,13 @@ func _is_visible_to_local_camera() -> bool:
 		var result := get_world_3d().direct_space_state.intersect_ray(query)
 		if result.is_empty():
 			return true
-
+		
 		var hit_node := result.get("collider") as Node
 		while is_instance_valid(hit_node):
 			if hit_node == self:
 				return true
 			hit_node = hit_node.get_parent()
-
+	
 	return false
 
 func set_smoke_outline_visible(visible_smoke: bool) -> void:
@@ -223,13 +223,13 @@ func set_smoke_outline_visible(visible_smoke: bool) -> void:
 	if is_instance_valid(_smoke_outline_mesh):
 		_smoke_outline_mesh.visible = visible_smoke and _is_active and not is_ally
 
-func _on_health_changed(new_health: int) -> void:
+func _on_health_changed(new_health: float) -> void:
 	world_health_bar.call("update_health", new_health, health_component.MAX_HEALTH)
 
 func _on_dummy_defeated() -> void:
 	if not multiplayer.is_server():
 		return
-
+	
 	_set_active.rpc(false)
 	await get_tree().create_timer(RESPAWN_DELAY).timeout
 	if not is_inside_tree():

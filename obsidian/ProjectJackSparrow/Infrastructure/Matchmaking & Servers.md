@@ -58,18 +58,6 @@ On GameLift: fleet management handles spin-up automatically, game session callba
 
 ---
 
-## Steam App ID
-
-> ⚠️ **Do NOT purchase yet.**
-
-- Costs $100 (one-time)
-- Once purchased, game is visible in Valve's system and 30-day review clock starts
-- Current dev uses App ID 480 (Spacewar) — works fine for P2P and lobbies
-- Buy when: close to public playtest, dedicated server needs real App ID, or store page needs to go live
-- The $100 is not the issue — premature visibility and review timing is
-
----
-
 ## Matchmaking Architecture
 
 ### Phase 1 — Steam Lobby Queue (build this first)

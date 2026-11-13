@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dnhn7braga8se"]
 
 [ext_resource type="Script" uid="uid://be1bv1qfgjyjm" path="res://menus/scripts/lobby_ui.gd" id="1_3pl75"]
+[ext_resource type="PackedScene" path="res://ui/scenes/settings_menu.tscn" id="2_settings"]
 
 [node name="LobbyUi" type="Control" unique_id=2020736158]
 layout_mode = 3
@@ -35,7 +36,7 @@ vertical_alignment = 1
 layout_mode = 2
 text = "Host Lobby"
 
-[node name="JoinButton" type="Button" parent="VBoxContainer" unique_id=1147435224]
+[node name="RefreshButton" type="Button" parent="VBoxContainer" unique_id=1147435224]
 layout_mode = 2
 text = "Refresh Lobbies"
 
@@ -70,3 +71,10 @@ text = "Map 0"
 [node name="PracticeButton" type="Button" parent="VBoxContainer" unique_id=125754507]
 layout_mode = 2
 text = "Practice Range (Local)"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="SettingsMenu" parent="." instance=ExtResource("2_settings")]
+visible = false

@@ -56,8 +56,9 @@ func _unhandled_input(event):
 		return
 	
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * SENSITIVITY)
-		head.rotate_x(-event.relative.y * SENSITIVITY)
+		var sensitivity: float = SENSITIVITY * SettingsManager.mouse_sensitivity_multiplier
+		rotate_y(-event.relative.x * sensitivity)
+		head.rotate_x(-event.relative.y * sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 	
 	if event.is_action_pressed("primary_fire"):

@@ -18,7 +18,7 @@
 [ext_resource type="Shader" uid="uid://888ahmhk2yyh" path="res://heroes/ex_navy_officer/abilities/smoke_canister/smoke_outline.gdshader" id="12_outline"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
-albedo_color = Color(0.49609375, 0.4759884, 0.17440796, 1)
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h167"]
 material = SubResource("StandardMaterial3D_5ahsj")
@@ -36,7 +36,7 @@ radius = 0.4
 height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
-albedo_color = Color(0.071777344, 0.4032135, 0.4375, 1)
+albedo_color = Color(0.4392157, 0.07058823, 0.07058823, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
 properties/0/path = NodePath(".:net_position")

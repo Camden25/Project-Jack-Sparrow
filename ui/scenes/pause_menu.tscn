@@ -1,59 +1,74 @@
 [gd_scene format=3 uid="uid://belldtp2oailc"]
 
 [ext_resource type="Script" uid="uid://b15itufhjp2u5" path="res://ui/scripts/pause_menu.gd" id="1_23uef"]
+[ext_resource type="PackedScene" path="res://ui/scenes/settings_menu.tscn" id="2_settings"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23uef"]
 bg_color = Color(0, 0.2548828, 0.28125, 0.2901961)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="PauseMenu" type="CanvasLayer" unique_id=1400824456]
 process_mode = 3
 script = ExtResource("1_23uef")
 
-[node name="Panel" type="Panel" parent="." unique_id=1117423761]
+[node name="Dimmer" type="ColorRect" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0, 0, 0, 0.68)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PausePanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_23uef")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1000993125]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="Control" type="Control" parent="VBoxContainer" unique_id=1013086854]
+[node name="Margin" type="MarginContainer" parent="CenterContainer/PausePanel"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
 
-[node name="Control3" type="Control" parent="VBoxContainer" unique_id=1054309094]
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/PausePanel/Margin"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = 14
 
-[node name="ResumeButton" type="Button" parent="VBoxContainer" unique_id=1988886445]
+[node name="Title" type="Label" parent="CenterContainer/PausePanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CenterContainer/PausePanel/Margin/VBox"]
 process_mode = 3
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
 text = "Resume"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer" unique_id=783684491]
+[node name="SettingsButton" type="Button" parent="CenterContainer/PausePanel/Margin/VBox"]
 process_mode = 3
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 6
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/PausePanel/Margin/VBox"]
+process_mode = 3
+layout_mode = 2
 text = "Main Menu"
 
-[node name="Control2" type="Control" parent="VBoxContainer" unique_id=1945457944]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="SettingsMenu" parent="." instance=ExtResource("2_settings")]
+visible = false
 
-[node name="Control4" type="Control" parent="VBoxContainer" unique_id=1069812718]
-layout_mode = 2
-size_flags_vertical = 3
-
-[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PausePanel/Margin/VBox/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PausePanel/Margin/VBox/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="CenterContainer/PausePanel/Margin/VBox/QuitButton" to="." method="_on_quit_button_pressed"]

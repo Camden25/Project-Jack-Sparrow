@@ -2,7 +2,7 @@ extends Control
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var host_button: Button = $VBoxContainer/HostButton
-@onready var join_button: Button = $VBoxContainer/JoinButton
+@onready var refresh_button: Button = $VBoxContainer/RefreshButton
 @onready var practice_button: Button = $VBoxContainer/PracticeButton
 @onready var invite_button: Button = $VBoxContainer/InviteButton
 @onready var start_button: Button = $VBoxContainer/StartButton
@@ -11,6 +11,8 @@ extends Control
 @onready var map_label: Label = $VBoxContainer/SelectedMap
 @onready var lobby_list: ItemList = $VBoxContainer/LobbyList
 @onready var join_selected_button: Button = $VBoxContainer/JoinSelectedButton
+@onready var settings_button: Button = $VBoxContainer/SettingsButton
+@onready var settings_menu: SettingsMenu = $SettingsMenu
 
 @export var available_maps: Array[String]
 var selected_map_index: int = 0
@@ -30,13 +32,16 @@ func _ready():
 	
 	# Button signals
 	host_button.pressed.connect(_on_host_pressed)
-	join_button.pressed.connect(_on_join_pressed)
+	refresh_button.pressed.connect(_on_refresh_pressed)
 	join_selected_button.pressed.connect(_on_join_selected_pressed)
 	lobby_list.item_selected.connect(_on_lobby_selected)
 	practice_button.pressed.connect(_on_practice_pressed)
 	invite_button.pressed.connect(_on_invite_pressed)
 	start_button.pressed.connect(_on_start_pressed)
 	switch_map_button.pressed.connect(_on_switch_map_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
+	settings_menu.return_pressed.connect(_on_settings_return_pressed)
+	settings_menu.hide()
 	
 	status_label.text = "Not connected"
 	join_selected_button.disabled = true
@@ -66,17 +71,16 @@ func _on_host_pressed():
 	status_label.text = "Creating lobby..."
 	print("HOST BUTTON PRESSED")
 	host_button.disabled = true
-	join_button.disabled = true
+	refresh_button.disabled = true
 	practice_button.hide()
 	NetworkManager.host_game()
 
-func _on_join_pressed():
+func _on_refresh_pressed():
 	status_label.text = "Searching..."
-	join_button.disabled = true
+	refresh_button.disabled = true
 	host_button.disabled = true
 	join_selected_button.disabled = true
 	lobby_list.clear()
-	practice_button.hide()
 	NetworkManager.request_lobby_list()
 
 func _on_join_selected_pressed():
@@ -87,7 +91,7 @@ func _on_join_selected_pressed():
 	var lobby_id := int(lobby_list.get_item_metadata(selected_items[0]))
 	status_label.text = "Joining lobby..."
 	join_selected_button.disabled = true
-	join_button.disabled = true
+	refresh_button.disabled = true
 	host_button.disabled = true
 	NetworkManager.join_game(lobby_id)
 
@@ -113,6 +117,12 @@ func _on_switch_map_pressed():
 	selected_map_index %= available_maps.size()
 	map_label.text = "Map " + str(selected_map_index)
 
+func _on_settings_pressed():
+	settings_menu.show()
+
+func _on_settings_return_pressed():
+	settings_menu.hide()
+
 #endregion
 
 
@@ -121,7 +131,7 @@ func _on_switch_map_pressed():
 func _on_lobby_created(_lobby_id: int):
 	status_label.text = "Lobby created"
 	host_button.hide()
-	join_button.hide()
+	refresh_button.hide()
 	lobby_list.hide()
 	join_selected_button.hide()
 	start_button.show()
@@ -130,7 +140,7 @@ func _on_lobby_created(_lobby_id: int):
 func _on_lobby_joined(_lobby_id: int):
 	status_label.text = "Joined lobby"
 	host_button.hide()
-	join_button.hide()
+	refresh_button.hide()
 	lobby_list.hide()
 	join_selected_button.hide()
 	_refresh_player_list()
@@ -146,9 +156,9 @@ func _on_server_disconnected():
 	status_label.text = "Disconnected from server"
 	_refresh_player_list()
 	host_button.show()
-	join_button.show()
+	refresh_button.show()
 	host_button.disabled = false
-	join_button.disabled = false
+	refresh_button.disabled = false
 	lobby_list.show()
 	join_selected_button.show()
 	invite_button.hide()
@@ -174,7 +184,7 @@ func _on_lobby_match_list(lobbies: Array):
 		lobby_list.set_item_metadata(index, lobby_id)
 
 	host_button.disabled = false
-	join_button.disabled = false
+	refresh_button.disabled = false
 
 	if lobby_list.item_count == 0:
 		status_label.text = "No open lobbies found"
@@ -186,7 +196,7 @@ func _on_lobby_match_list(lobbies: Array):
 func _on_lobby_join_failed(reason: String):
 	status_label.text = reason
 	host_button.disabled = false
-	join_button.disabled = false
+	refresh_button.disabled = false
 	join_selected_button.disabled = lobby_list.get_selected_items().is_empty()
 
 #endregion
@@ -225,7 +235,7 @@ func start_game():
 func _restore_lobby_state():
 	status_label.text = "Lobby"
 	host_button.hide()
-	join_button.hide()
+	refresh_button.hide()
 	lobby_list.hide()
 	join_selected_button.hide()
 	

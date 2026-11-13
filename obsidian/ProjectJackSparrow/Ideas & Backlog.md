@@ -125,5 +125,4 @@ Replace all bare `print()` calls. Can be toggled per system.
 
 - **Demo** before paid launch — steam next fest
 - **Community server browser** — players host their own servers, browser in lobby UI
-- **Seasonal cosmetics** — skins that don't affect gameplay, fund server costs
 - **Streamer mode** — hide Steam names for privacy while streaming

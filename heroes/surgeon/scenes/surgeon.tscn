@@ -13,7 +13,7 @@
 [ext_resource type="Resource" uid="uid://gbieg8haeowy" path="res://heroes/surgeon/resources/field_wrap.tres" id="11_field_wrap_data"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
-albedo_color = Color(0.2899773, 0.5703125, 0.17599487, 1)
+albedo_color = Color(0.4745098, 0.10980395, 0.10980395, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h167"]
 material = SubResource("StandardMaterial3D_5ahsj")
@@ -31,7 +31,7 @@ radius = 0.4
 height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
-albedo_color = Color(0.52958584, 0.5703125, 0.16931152, 1)
+albedo_color = Color(0.23737745, 0.5686275, 0.16862744, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
 properties/0/path = NodePath(".:net_position")

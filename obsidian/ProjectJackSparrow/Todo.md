@@ -2,7 +2,7 @@
 
 ## 🔴 Bugs
 
-- [ ] **Lobby player list** — names not always correct on join. Debounce applied, may need more work.
+- [ ] **Lobby player list** — names not always correct on join
 
 ---
 
@@ -19,7 +19,7 @@
 ## 🟡 Gameplay Systems
 
 - [ ] **Spectator mode** — mid-game joiners become spectators instead of getting spawned or hero-selecting into a live round.
-- [ ] **Healing charge wiring** — add a `healing_done` emitter and verify ultimate charge when a healing hero becomes playable; damage-based charge and Ex Navy Officer's Volley are already active.
+- [x] **Healing charge wiring** — add a `healing_done` emitter and verify ultimate charge when a healing hero becomes playable; damage-based charge and Ex Navy Officer's Volley are already active.
 - [ ] **Round flow** — if the design requires hero select every round, update `ControlPointMode`/`GameFlowManager`; intermediate point wins currently restart the round without reopening selection.
 - [ ] **Multi-use abilities** — `uses_remaining` is stubbed out in `ability.gd`, not implemented.
 - [ ] **Match history / score summary** — show before returning to lobby.
@@ -34,12 +34,14 @@
 ## 🟡 Heroes
 
 - [ ] **Captain** — implement recon-focused kit. See [[Captain]].
-- [ ] **Octopus in a Barrel** — implement ultimate. See [[Octopus in a Barrel]].
+- [ ] **Octopus in a Barrel** — design and implement ultimate. See [[Octopus in a Barrel]].
 - [x] **Ex Navy Officer**
 - [ ] **Scout Sword Dude** — resolve Ability 2, ultimate, and story, then implement. See [[Scout Sword Dude]].
 - [x] **Prototype Cannoneer** — ally-cannon, ultimate, story, and final art. See [[Cannoneer]].
+- [ ] **Cannoneer** — implement ultimate
 - [ ] **Hook** — define full kit and hook behavior, then implement. See [[Hook]].
 - [x] **Prototype Surgeon** — graybox a ranged Burst Rifle plus Quick Dose and Field Wrap healing abilities; test whether supporting allies is engaging and legible. Defer a complete kit, story, and final art. See [[Surgeon]].
+- [ ] **Surgeon** — design and implement ultimate
 
 Prototype these two before expanding the full roster. Keep both prototypes intentionally small, run playtests, then decide whether to iterate, redesign, or cut before investing in full kits and polish.
 
@@ -61,7 +63,7 @@ Prototype these two before expanding the full roster. Keep both prototypes inten
 
 - [ ] **Debug flag system** — replace all print statements with debug flags.
 - [ ] **Dedicated server setup** — Hetzner VPS or AWS GameLift with Spot Instances. See [[Matchmaking & Servers]].
-- [ ] **Steam App ID** — do NOT buy yet. Wait until close to public playtest. See [[Matchmaking & Servers]].
+- [x] **Steam App ID**
 - [ ] **Steam achievements and stats**.
 - [ ] **Mid-game joining** — spectator mode first, then proper late-join flow.
 - [ ] **Queue server** — simple Python/Node.js service for matchmaking. See [[Matchmaking & Servers]].

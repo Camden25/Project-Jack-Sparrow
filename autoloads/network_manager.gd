@@ -9,6 +9,9 @@ const LOBBY_STATE_OPEN = "lobby"
 const LOBBY_STATE_IN_GAME = "in_game"
 
 var steam_lobby_id: int = 0
+var steam_initialized: bool = false
+var _steam_callbacks_embedded: bool = false
+var _steam_init_failure_reason: String = ""
 
 var peer_pings: Dictionary = {}  # peer_id: ping_seconds
 var _ping_timestamps: Dictionary = {}  # peer_id: send_time
@@ -29,11 +32,22 @@ signal lobby_join_failed(reason: String)
 signal lobby_list_updated(lobbies: Array)
 
 func _ready():
-	var init = Steam.steamInitEx()
-	if init.status != Steam.STEAM_API_INIT_RESULT_OK:
-		push_error("Steam failed to initialize: " + str(init.verbal))
+	var app_id := int(ProjectSettings.get_setting("steam/initialization/app_id", 0))
+	_steam_callbacks_embedded = bool(
+		ProjectSettings.get_setting("steam/initialization/embed_callbacks", false)
+	)
+	var init: Dictionary = Steam.steamInitEx(app_id, _steam_callbacks_embedded)
+	var init_status := int(init.get("status", -1))
+	if init_status != Steam.STEAM_API_INIT_RESULT_OK:
+		_steam_init_failure_reason = (
+			"Steam failed to initialize for App ID %d (status %d): %s"
+			% [app_id, init_status, str(init.get("verbal", "No failure details returned."))]
+		)
+		push_error(_steam_init_failure_reason)
 		return
 	
+	steam_initialized = true
+	print("Steam initialized with App ID: ", app_id)
 	Steam.initRelayNetworkAccess()
 	
 	print("Steam running:", Steam.isSteamRunning())
@@ -72,13 +86,16 @@ func _ready():
 		_ping_loop()
 
 func _process(_delta):
-	Steam.run_callbacks()
+	if steam_initialized and not _steam_callbacks_embedded:
+		Steam.run_callbacks()
 
 
 #region HOSTING
 
 func host_game():
 	print("Network Manager: host_game")
+	if not _require_steam("create a lobby"):
+		return
 	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, MAX_PLAYERS)
 
 func _on_steam_lobby_created(result: int, lobby_id: int):
@@ -123,6 +140,8 @@ func _on_steam_lobby_created(result: int, lobby_id: int):
 #region JOINING
 
 func join_game(lobby_id: int):
+	if not _require_steam("join a lobby"):
+		return
 	Steam.joinLobby(lobby_id)
 
 func _on_steam_lobby_joined(lobby_id: int, _p, _l, response: int):
@@ -140,7 +159,7 @@ func _on_steam_lobby_joined(lobby_id: int, _p, _l, response: int):
 		steam_lobby_id = 0
 		lobby_join_failed.emit("That match is already in progress.")
 		return
-
+	
 	steam_lobby_id = lobby_id
 	
 	await get_tree().process_frame
@@ -195,11 +214,11 @@ func join_dedicated_server(ip: String, port: int = DEFAULT_PORT):
 
 func _on_peer_connected(peer_id: int):
 	print("Peer connected: " + str(peer_id))
-
+	
 	if multiplayer.is_server() and game_state == GameState.IN_GAME:
 		multiplayer.multiplayer_peer.disconnect_peer(peer_id, true)
 		return
-
+	
 	emit_signal("player_connected", peer_id)
 	
 	if multiplayer.is_server():
@@ -263,13 +282,13 @@ func disconnect_game():
 
 func start_local_practice() -> Error:
 	disconnect_game()
-
+	
 	var peer := ENetMultiplayerPeer.new()
 	var error := peer.create_server(0, 1)
 	if error != OK:
 		push_error("Could not start local practice server: " + error_string(error))
 		return error
-
+	
 	multiplayer.multiplayer_peer = peer
 	set_game_state(GameState.IN_GAME)
 	PlayerManager.register_player(1, 0, "Local Player")
@@ -283,9 +302,23 @@ func _on_lobby_match_list(lobbies: Array):
 	lobby_list_updated.emit(lobbies)
 
 func request_lobby_list():
+	if not _require_steam("search for lobbies"):
+		return
 	Steam.addRequestLobbyListStringFilter(GAME_LOBBY_KEY, "camden_projectjacksparrow", Steam.LOBBY_COMPARISON_EQUAL)
 	Steam.addRequestLobbyListStringFilter(LOBBY_STATE_KEY, LOBBY_STATE_OPEN, Steam.LOBBY_COMPARISON_EQUAL)
 	Steam.requestLobbyList()
+
+func _require_steam(operation: String) -> bool:
+	if steam_initialized:
+		return true
+
+	var init_reason := _steam_init_failure_reason
+	if init_reason.is_empty():
+		init_reason = "Steam initialization has not completed."
+	var reason := "Cannot %s. %s" % [operation, init_reason]
+	push_warning(reason)
+	lobby_join_failed.emit(reason)
+	return false
 
 func set_game_state(state: GameState):
 	game_state = state
@@ -315,8 +348,6 @@ func _client_ready_in_world(world_ready_token: int):
 			var world = SceneManager.get_world()
 			if world:
 				world._spawn_player(peer_id)
-				var spawn_pos = world.respawn_manager.get_spawn_position(peer_id)
-				world._set_client_spawn_position.rpc_id(peer_id, spawn_pos)
 	_acknowledge_client_world_ready.rpc_id(peer_id, world_ready_token)
 
 @rpc("authority", "call_remote", "reliable")

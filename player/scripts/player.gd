@@ -47,6 +47,7 @@ const SMOKE_OUTLINE_RENDER_LAYER := 19
 const SMOKE_OUTLINE_RENDER_MASK := 1 << (SMOKE_OUTLINE_RENDER_LAYER - 1)
 const TEAM_A_GATE_LAYER := 3
 const TEAM_B_GATE_LAYER := 4
+const SERVER_PEER_ID := 1
 const VISIBLE_OUTLINE_SHADER = preload("res://player/shaders/visible_outline.gdshader")
 const XRAY_OUTLINE_SHADER = preload("res://player/shaders/xray_outline.gdshader")
 const ENEMY_OUTLINE_COLOR := Color(1.0, 0.08, 0.08)
@@ -59,7 +60,7 @@ func _enter_tree():
 
 	var sync = get_node_or_null("MultiplayerSynchronizer")
 	if sync:
-		sync.set_multiplayer_authority(peer_id)
+		sync.set_multiplayer_authority(SERVER_PEER_ID)
 
 func _ready():
 	_setup_smoke_outline_viewport()
@@ -408,8 +409,9 @@ func _unhandled_input(event):
 		return
 	
 	if event is InputEventMouseMotion:
-		rotate_y(-event.relative.x * SENSITIVITY)
-		head.rotate_x(-event.relative.y * SENSITIVITY)
+		var sensitivity: float = SENSITIVITY * SettingsManager.mouse_sensitivity_multiplier
+		rotate_y(-event.relative.x * sensitivity)
+		head.rotate_x(-event.relative.y * sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 	
 	if event.is_action_pressed("primary_fire"):
@@ -452,9 +454,7 @@ func _physics_process(delta):
 				_set_crew_shot_held(_crew_shot_carrier_id, false, Vector3.ZERO)
 		if _crew_shot_is_held:
 			velocity = Vector3.ZERO
-			net_position = position
-			net_rotation = rotation
-			net_head_rotation = head.rotation
+			_update_network_state()
 			return
 	
 	if not is_on_floor():
@@ -481,9 +481,30 @@ func _physics_process(delta):
 	
 	# HeroBase will call move_and_slide()
 	
+	_update_network_state()
+
+func _update_network_state() -> void:
 	net_position = position
 	net_rotation = rotation
 	net_head_rotation = head.rotation
+	if not multiplayer.is_server():
+		_submit_network_state.rpc_id(
+			SERVER_PEER_ID,
+			net_position,
+			net_rotation,
+			net_head_rotation
+		)
+
+@rpc("any_peer", "call_remote", "unreliable_ordered")
+func _submit_network_state(pos: Vector3, player_rotation: Vector3, head_rotation: Vector3) -> void:
+	if not multiplayer.is_server():
+		return
+	if multiplayer.get_remote_sender_id() != get_multiplayer_authority():
+		return
+
+	net_position = pos
+	net_rotation = player_rotation
+	net_head_rotation = head_rotation
 
 func _setup_health_bar(peer_id: int):
 	print("_setup_health_bar called for ", peer_id, " on client ", multiplayer.get_unique_id())

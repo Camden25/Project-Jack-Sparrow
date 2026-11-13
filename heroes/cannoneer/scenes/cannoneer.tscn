@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://c1d8y3fvli0m3" path="res://ui/scenes/world_health_bar.tscn" id="15_mkjb1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ahsj"]
-albedo_color = Color(0.4573529, 0.17254901, 0.4980392, 1)
+albedo_color = Color(0.046875, 0.046875, 0.046875, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6h167"]
 material = SubResource("StandardMaterial3D_5ahsj")
@@ -31,7 +31,7 @@ radius = 0.4
 height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vjx7y"]
-albedo_color = Color(0.123291016, 0.39453125, 0, 1)
+albedo_color = Color(0.29200003, 0.31720003, 0.4, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ebtu4"]
 properties/0/path = NodePath(".:net_position")
